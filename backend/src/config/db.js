@@ -33,6 +33,7 @@ export const connectDB = async () => {
 
   try {
     const conn = await mongoose.connect(mongoUri, {
+      dbName: process.env.DB_NAME || 'crm',
       serverSelectionTimeoutMS: 10000,
       connectTimeoutMS: 10000,
     });

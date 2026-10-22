@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import fs from 'fs';
 
-const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://shabeeba:9995982324@cluster0.i23tzbf.mongodb.net/crm?appName=Cluster0';
+const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://najadahammed34_db_user:TxIXECCRZ2hIkdBB@cluster0.e6luv3h.mongodb.net/crm';
 
 async function inspect() {
   await mongoose.connect(MONGO_URI);
