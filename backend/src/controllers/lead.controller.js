@@ -29,6 +29,9 @@ const logAudit = (action, req, resourceId, details) => {
 // Optimized Analytics cache invalidation helper using SCAN instead of KEYS
 const clearAnalyticsCache = async () => {
   try {
+    if (!redis || typeof redis.scan !== 'function' || redis.status !== 'ready') {
+      return;
+    }
     let cursor = '0';
     let totalCleared = 0;
     
