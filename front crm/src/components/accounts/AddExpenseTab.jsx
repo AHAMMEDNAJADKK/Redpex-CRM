@@ -1,0 +1,1671 @@
+import React, { useState, useEffect, useMemo } from 'react';
+import { createPortal } from 'react-dom';
+import { getExpenseCategories, getExpenses, createExpense, updateExpense, deleteExpense, approveOrRejectExpense } from '../../services/accountsService';
+import ExpenseCategoriesTab from './ExpenseCategoriesTab';
+import { 
+  PlusCircle, 
+  Search, 
+  Calendar, 
+  CreditCard, 
+  UserCheck, 
+  FileText, 
+  Paperclip, 
+  Trash2, 
+  Eye, 
+  Edit3,
+  X, 
+  CheckCircle, 
+  AlertCircle, 
+  RefreshCw, 
+  Loader2,
+  DollarSign,
+  Tag,
+  Receipt,
+  Coins,
+  SlidersHorizontal,
+  ArrowUpDown,
+  RotateCcw
+} from 'lucide-react';
+import { getOpeningBalance, setOpeningBalance as saveOpeningBalanceApi } from '../../services/accountsService';
+import { useToast } from '../ToastProvider';
+
+const AddExpenseTab = () => {
+  const { showToast } = useToast();
+  const [expenseSubTab, setExpenseSubTab] = useState(() => {
+    if (typeof window !== 'undefined' && window.location.pathname.includes('/accounts/categories')) {
+      return 'categories';
+    }
+    return 'expenses';
+  });
+
+  // Edit Expense State
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingExpense, setEditingExpense] = useState(null);
+  const [editExpenseSubmitting, setEditExpenseSubmitting] = useState(false);
+  const [editForm, setEditForm] = useState({
+    date: '',
+    paidTo: '',
+    category: '',
+    paymentMode: 'Cash',
+    amount: '',
+    description: ''
+  });
+
+  const handleOpenEdit = (exp) => {
+    const st = String(exp.status || 'PENDING').toUpperCase();
+    if (st === 'APPROVED') {
+      showToast('Approved expenses cannot be edited.', 'warning');
+      return;
+    }
+    setEditingExpense(exp);
+    let expDate = new Date().toISOString().split('T')[0];
+    if (exp.date) {
+      try {
+        expDate = new Date(exp.date).toISOString().split('T')[0];
+      } catch (e) {}
+    }
+    setEditForm({
+      date: expDate,
+      paidTo: exp.paidTo || '',
+      category: exp.category?._id || exp.category || '',
+      paymentMode: exp.paymentMode || 'Cash',
+      amount: exp.amount !== undefined ? String(exp.amount) : '',
+      description: exp.description || ''
+    });
+    setIsEditModalOpen(true);
+  };
+
+  const handleSaveEdit = async (e) => {
+    e.preventDefault();
+    if (!editingExpense) return;
+    if (!editForm.paidTo || !editForm.amount) {
+      showToast('Please fill in Paid To and Amount.', 'warning');
+      return;
+    }
+
+    setEditExpenseSubmitting(true);
+    try {
+      const payload = {
+        date: editForm.date,
+        paidTo: editForm.paidTo.trim(),
+        category: editForm.category || undefined,
+        paymentMode: editForm.paymentMode,
+        amount: parseFloat(editForm.amount) || 0,
+        description: editForm.description ? editForm.description.trim() : ''
+      };
+
+      const res = await updateExpense(editingExpense._id, payload);
+      if (res.success || res.data) {
+        const updatedRecord = res.data || {};
+        showToast('Expense updated successfully!', 'success');
+        setIsEditModalOpen(false);
+        setEditingExpense(null);
+        setExpenses(prev => prev.map(e => {
+          if (String(e._id || e.id) === String(editingExpense._id)) {
+            const selectedCat = categories.find(c => String(c._id) === String(payload.category));
+            return {
+              ...e,
+              ...updatedRecord,
+              date: payload.date || e.date,
+              paidTo: payload.paidTo,
+              amount: payload.amount,
+              totalAmount: payload.amount,
+              paymentMode: payload.paymentMode,
+              description: payload.description,
+              categoryName: selectedCat ? selectedCat.name : (updatedRecord.categoryName || e.categoryName)
+            };
+          }
+          return e;
+        }));
+        loadData();
+      } else {
+        showToast(res.message || 'Failed to update expense.', 'warning');
+      }
+    } catch (err) {
+      console.error('Error updating expense:', err);
+      showToast('Failed to update expense.', 'warning');
+    } finally {
+      setEditExpenseSubmitting(false);
+    }
+  };
+
+  // Expense Opening Balance State
+  const [showExpenseObModal, setShowExpenseObModal] = useState(false);
+  const [expenseObSaving, setExpenseObSaving] = useState(false);
+  const [expenseObAmount, setExpenseObAmount] = useState(0);
+  const [expenseObForm, setExpenseObForm] = useState({
+    expenseAmount: '',
+    asOfDate: new Date().toISOString().split('T')[0],
+    paymentMode: 'ALL',
+    note: ''
+  });
+
+  const fetchExpenseOb = async () => {
+    try {
+      const res = await getOpeningBalance();
+      if (res && res.success && res.data) {
+        setExpenseObAmount(res.data.expenseAmount !== undefined ? res.data.expenseAmount : 0);
+      }
+    } catch (e) {
+      console.warn('Error fetching expense opening balance:', e);
+    }
+  };
+
+  const handleOpenExpenseObModal = async () => {
+    try {
+      const res = await getOpeningBalance();
+      if (res && res.success && res.data) {
+        setExpenseObForm({
+          expenseAmount: res.data.expenseAmount !== undefined ? res.data.expenseAmount : '',
+          asOfDate: res.data.asOfDate ? new Date(res.data.asOfDate).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+          paymentMode: res.data.paymentMode || 'ALL',
+          note: res.data.note || ''
+        });
+      }
+    } catch (e) {
+      console.warn('Error opening expense OB modal:', e);
+    }
+    setShowExpenseObModal(true);
+  };
+
+  const handleSaveExpenseOpeningBalance = async (e) => {
+    e.preventDefault();
+    setExpenseObSaving(true);
+    try {
+      const res = await saveOpeningBalanceApi({
+        expenseAmount: expenseObForm.expenseAmount,
+        asOfDate: expenseObForm.asOfDate,
+        paymentMode: expenseObForm.paymentMode,
+        note: expenseObForm.note
+      });
+      if (res && res.success) {
+        setShowExpenseObModal(false);
+        showToast('Expense Opening Balance updated successfully!', 'success');
+        fetchExpenseOb();
+        loadData();
+      } else {
+        showToast(res?.message || 'Failed to update opening balance.', 'error');
+      }
+    } catch (err) {
+      console.error('Error saving expense opening balance:', err);
+      showToast('Error updating expense opening balance.', 'error');
+    } finally {
+      setExpenseObSaving(false);
+    }
+  };
+
+  useEffect(() => {
+    if (expenseSubTab === 'expenses') {
+      loadData();
+      fetchExpenseOb();
+    }
+  }, [expenseSubTab]);
+
+  const [categories, setCategories] = useState([]);
+  const [expenses, setExpenses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
+
+  // Add Expense Modal State
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+  // Form State
+  const [date, setDate] = useState(() => new Date().toISOString().split('T')[0]);
+  const [categoryId, setCategoryId] = useState('');
+  const [amount, setAmount] = useState('');
+  const [paymentMode, setPaymentMode] = useState('Cash');
+  const [paidTo, setPaidTo] = useState('');
+  const [description, setDescription] = useState('');
+  const [attachment, setAttachment] = useState(null);
+  const [attachmentPreviewName, setAttachmentPreviewName] = useState('');
+
+  // Tax & GST States
+  const [taxOption, setTaxOption] = useState('No GST'); // 'No GST', 'Exclusive GST', 'Inclusive GST'
+  const [gstCategory, setGstCategory] = useState('CGST_SGST'); // 'CGST_SGST', 'IGST', 'UTGST', 'EXEMPT'
+  const [gstRate, setGstRate] = useState(0);
+  const [gstRatesList, setGstRatesList] = useState([0, 0.25, 3, 5, 12, 18, 28]);
+
+  const handleAddCustomGst = () => {
+    const input = window.prompt("Enter custom GST rate percentage (e.g. 6 or 15):");
+    if (input === null) return;
+    const parsed = parseFloat(input);
+    if (isNaN(parsed) || parsed < 0 || parsed > 100) {
+      showToast("Please enter a valid GST percentage (0 to 100).", "warning");
+      return;
+    }
+    if (!gstRatesList.includes(parsed)) {
+      setGstRatesList(prev => [...prev, parsed].sort((a, b) => a - b));
+    }
+    setGstRate(parsed);
+    if (taxOption === 'No GST') setTaxOption('Exclusive GST');
+    showToast(`Added custom GST rate: ${parsed}%`, "success");
+  };
+
+  const calculateTaxValues = (baseAmt, option, rate, categoryType) => {
+    const base = parseFloat(baseAmt) || 0;
+    if (option === 'No GST' || !rate || rate <= 0 || categoryType === 'EXEMPT') {
+      return { gstAmount: 0, cgstAmount: 0, sgstAmount: 0, igstAmount: 0, totalAmount: base, baseAmount: base };
+    }
+
+    let totalTax = 0;
+    let totalAmt = base;
+    let calcBase = base;
+
+    if (option === 'Exclusive GST') {
+      totalTax = (base * rate) / 100;
+      totalAmt = base + totalTax;
+      calcBase = base;
+    } else if (option === 'Inclusive GST') {
+      calcBase = base / (1 + rate / 100);
+      totalTax = base - calcBase;
+      totalAmt = base;
+    }
+
+    let cgst = 0;
+    let sgst = 0;
+    let igst = 0;
+
+    if (categoryType === 'CGST_SGST' || categoryType === 'UTGST') {
+      cgst = totalTax / 2;
+      sgst = totalTax / 2;
+    } else if (categoryType === 'IGST') {
+      igst = totalTax;
+    }
+
+    return {
+      gstAmount: totalTax,
+      cgstAmount: cgst,
+      sgstAmount: sgst,
+      igstAmount: igst,
+      totalAmount: totalAmt,
+      baseAmount: calcBase
+    };
+  };
+
+  const currentTaxCalc = calculateTaxValues(amount, taxOption, gstRate, gstCategory);
+
+  // Filter & Sort States
+  const [filterCategory, setFilterCategory] = useState('');
+  const [filterMode, setFilterMode] = useState('');
+  const [filterStatus, setFilterStatus] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [sortBy, setSortBy] = useState('date'); // 'date' | 'amount' | 'paidTo' | 'category'
+  const [sortOrder, setSortOrder] = useState('desc'); // 'desc' | 'asc'
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+
+  // Active Filter Count
+  const activeFilterCount = React.useMemo(() => {
+    let count = 0;
+    if (filterCategory) count++;
+    if (filterMode) count++;
+    if (filterStatus) count++;
+    if (startDate) count++;
+    if (endDate) count++;
+    if (sortBy !== 'date' || sortOrder !== 'desc') count++;
+    return count;
+  }, [filterCategory, filterMode, filterStatus, startDate, endDate, sortBy, sortOrder]);
+
+  // Top Expense Summary Metrics Calculation
+  const expenseSummaryMetrics = React.useMemo(() => {
+    let totalOutflow = 0;
+    let count = expenses.length;
+    let approvedCount = 0;
+    let approvedAmount = 0;
+    let pendingCount = 0;
+    let pendingAmount = 0;
+
+    expenses.forEach(e => {
+      const amt = Number(e.totalAmount || e.amount || 0);
+      totalOutflow += amt;
+      const st = (e.status || 'PENDING').toUpperCase();
+      if (st === 'APPROVED' || st === 'PAID') {
+        approvedCount++;
+        approvedAmount += amt;
+      } else if (st === 'PENDING') {
+        pendingCount++;
+        pendingAmount += amt;
+      }
+    });
+
+    return { totalOutflow, count, approvedCount, approvedAmount, pendingCount, pendingAmount };
+  }, [expenses]);
+
+  const handleRemoveReceiptAttachment = async () => {
+    if (!editingExpense) return;
+    if (!window.confirm('Are you sure you want to remove the receipt attachment from this expense entry?')) return;
+    try {
+      const res = await updateExpense(editingExpense._id, { removeAttachment: true });
+      if (res.success || res.data) {
+        showToast('Receipt attachment removed successfully!', 'success');
+        setEditingExpense(prev => prev ? { ...prev, attachment: '' } : null);
+        setExpenses(prev => prev.map(item => String(item._id) === String(editingExpense._id) ? { ...item, attachment: '' } : item));
+      } else {
+        showToast(res.message || 'Failed to remove receipt.', 'warning');
+      }
+    } catch (err) {
+      showToast('Error removing receipt attachment.', 'error');
+    }
+  };
+
+  const sortedAndFilteredExpenses = React.useMemo(() => {
+    let result = [...expenses];
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      result = result.filter(e => 
+        (e.paidTo || '').toLowerCase().includes(term) ||
+        (e.description || '').toLowerCase().includes(term) ||
+        (e.categoryName || e.category?.name || '').toLowerCase().includes(term)
+      );
+    }
+    if (startDate) {
+      result = result.filter(e => {
+        const d = e.date ? new Date(e.date).toISOString().split('T')[0] : '';
+        return d >= startDate;
+      });
+    }
+    if (endDate) {
+      result = result.filter(e => {
+        const d = e.date ? new Date(e.date).toISOString().split('T')[0] : '';
+        return d <= endDate;
+      });
+    }
+
+    result.sort((a, b) => {
+      let valA, valB;
+      if (sortBy === 'amount') {
+        valA = Number(a.totalAmount || a.amount || 0);
+        valB = Number(b.totalAmount || b.amount || 0);
+      } else if (sortBy === 'paidTo') {
+        valA = (a.paidTo || '').toLowerCase();
+        valB = (b.paidTo || '').toLowerCase();
+      } else if (sortBy === 'category') {
+        valA = (a.category?.name || a.categoryName || '').toLowerCase();
+        valB = (b.category?.name || b.categoryName || '').toLowerCase();
+      } else {
+        valA = new Date(a.date || 0).getTime();
+        valB = new Date(b.date || 0).getTime();
+      }
+
+      if (valA < valB) return sortOrder === 'asc' ? -1 : 1;
+      if (valA > valB) return sortOrder === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    return result;
+  }, [expenses, searchTerm, startDate, endDate, sortBy, sortOrder]);
+
+  // View Attachment Modal
+  const [previewFile, setPreviewFile] = useState(null);
+
+  const currentUserStr = localStorage.getItem('user');
+  let currentUserName = 'Current User';
+  let isApprover = false;
+  try {
+    if (currentUserStr) {
+      const u = JSON.parse(currentUserStr);
+      currentUserName = u.name || u.email || 'Current User';
+      const roleStr = String(u.role || '').toLowerCase();
+      isApprover = u.isSuperAdmin === true || ['0', '1', '2', 'admin', 'superadmin', 'md', 'coo', 'executive_director'].includes(roleStr);
+    }
+  } catch (e) {}
+
+  const loadData = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const [catRes, expRes] = await Promise.all([
+        getExpenseCategories(),
+        getExpenses({ category: filterCategory, paymentMode: filterMode, status: filterStatus, search: searchTerm })
+      ]);
+      if (catRes.success) setCategories(catRes.data || []);
+      if (expRes.success) setExpenses(expRes.data || []);
+    } catch (err) {
+      console.error('Data load error:', err);
+      setError('Failed to load expense records.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadData();
+  }, [filterCategory, filterMode, filterStatus, searchTerm]);
+
+  const totalCategoryOb = useMemo(() => {
+    return categories.reduce((sum, c) => sum + (Number(c.openingBalance) || 0), 0);
+  }, [categories]);
+
+  const pendingCount = useMemo(() => {
+    return expenses.filter(e => (e.status || 'APPROVED').toUpperCase() === 'PENDING').length;
+  }, [expenses]);
+
+  const handleExpenseAction = async (id, action) => {
+    let rejectionReason = '';
+    if (action === 'REJECTED') {
+      const input = window.prompt('Enter rejection reason (Optional):');
+      if (input === null) return;
+      rejectionReason = input;
+    }
+    try {
+      const res = await approveOrRejectExpense(id, { action, rejectionReason });
+      if (res.success) {
+        showToast(`Expense ${action.toLowerCase()} successfully!`, 'success');
+        loadData();
+      }
+    } catch (err) {
+      showToast(err.response?.data?.message || 'Failed to update expense status.', 'error');
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setAttachment(file);
+      setAttachmentPreviewName(file.name);
+    } else {
+      setAttachment(null);
+      setAttachmentPreviewName('');
+    }
+  };
+
+  const handleSubmitExpense = async (e) => {
+    e.preventDefault();
+    if (!categoryId || !amount || !paymentMode || !paidTo.trim()) {
+      showToast('Please fill in all required fields.', 'warning');
+      return;
+    }
+
+    setSaving(true);
+    setError('');
+
+    try {
+      const formData = new FormData();
+      formData.append('date', date);
+      formData.append('category', categoryId);
+      formData.append('amount', amount);
+      formData.append('paymentMode', paymentMode);
+      formData.append('paidTo', paidTo.trim());
+      formData.append('description', description.trim());
+      formData.append('taxOption', taxOption);
+      formData.append('gstCategory', gstCategory);
+      formData.append('gstRate', gstRate);
+      formData.append('gstAmount', currentTaxCalc.gstAmount);
+      formData.append('cgstAmount', currentTaxCalc.cgstAmount);
+      formData.append('sgstAmount', currentTaxCalc.sgstAmount);
+      formData.append('igstAmount', currentTaxCalc.igstAmount);
+      formData.append('totalAmount', currentTaxCalc.totalAmount);
+      if (attachment) {
+        formData.append('attachment', attachment);
+      }
+
+      const res = await createExpense(formData);
+      if (res.success) {
+        showToast('Expense record saved successfully!', 'success');
+        setAmount('');
+        setPaidTo('');
+        setDescription('');
+        setAttachment(null);
+        setAttachmentPreviewName('');
+        setIsAddModalOpen(false);
+        loadData();
+      }
+    } catch (err) {
+      showToast(err.response?.data?.message || 'Error recording expense.', 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDeleteExpense = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this expense entry?')) return;
+    try {
+      const res = await deleteExpense(id);
+      if (res.success) {
+        showToast('Expense entry deleted.', 'success');
+        loadData();
+      }
+    } catch (err) {
+      showToast(err.response?.data?.message || 'Error deleting expense.', 'error');
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      {/* Sub-tab Navigation Header inside Expense */}
+      <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-1.5 shadow-xs flex items-center justify-between gap-3 flex-wrap">
+        <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800/80 p-1 rounded-xl">
+          <button
+            type="button"
+            onClick={() => setExpenseSubTab('expenses')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition cursor-pointer ${
+              expenseSubTab === 'expenses'
+                ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-xs'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+            }`}
+          >
+            <PlusCircle size={15} />
+            <span>Expenses List</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setExpenseSubTab('categories')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition cursor-pointer ${
+              expenseSubTab === 'categories'
+                ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-xs'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+            }`}
+          >
+            <Tag size={15} />
+            <span>Expense Categories</span>
+            {categories.length > 0 && (
+              <span className={`px-1.5 py-0.5 rounded-md text-[10px] font-extrabold ${
+                expenseSubTab === 'categories'
+                  ? 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400'
+                  : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
+              }`}>
+                {categories.length}
+              </span>
+            )}
+          </button>
+        </div>
+
+        {totalCategoryOb > 0 && (
+          <div 
+            onClick={() => setExpenseSubTab('categories')}
+            className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-900/60 text-xs font-bold text-amber-700 dark:text-amber-300 cursor-pointer hover:bg-amber-100 dark:hover:bg-amber-900/40 transition"
+            title="Total Category Opening Balances. Click to view categories."
+          >
+            <Coins size={14} className="text-amber-600 dark:text-amber-400" />
+            <span>Categories OB: ₹{totalCategoryOb.toLocaleString('en-IN')}</span>
+          </div>
+        )}
+      </div>
+
+      {expenseSubTab === 'categories' ? (
+        <ExpenseCategoriesTab />
+      ) : (
+        <>
+          {/* Top Summary Metric Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className="bg-white dark:bg-slate-900 border border-rose-500/20 dark:border-rose-500/30 rounded-2xl p-3.5 shadow-2xs min-w-0">
+              <div className="flex items-center justify-between gap-1">
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-bold min-w-0 truncate" title="Total Expense Outflow">Total Expense Outflow</p>
+                <DollarSign size={16} className="text-rose-600 dark:text-rose-400 shrink-0" />
+              </div>
+              <h4 className="text-base font-black text-rose-600 dark:text-rose-400 mt-1 font-mono min-w-0 truncate" title={`₹${expenseSummaryMetrics.totalOutflow.toLocaleString('en-IN')}`}>
+                ₹{expenseSummaryMetrics.totalOutflow.toLocaleString('en-IN')}
+              </h4>
+              <p className="text-[10px] text-slate-400 mt-0.5 min-w-0 truncate" title="Total Operational Expenses Outflow">Total Expenses Recorded</p>
+            </div>
+
+            <div className="bg-white dark:bg-slate-900 border border-blue-500/20 dark:border-blue-500/30 rounded-2xl p-3.5 shadow-2xs min-w-0">
+              <div className="flex items-center justify-between gap-1">
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-bold min-w-0 truncate" title="Expense Count">Expense Count</p>
+                <Receipt size={16} className="text-blue-600 dark:text-blue-400 shrink-0" />
+              </div>
+              <h4 className="text-base font-black text-blue-600 dark:text-blue-400 mt-1 font-mono min-w-0 truncate" title={`${expenseSummaryMetrics.count}`}>
+                {expenseSummaryMetrics.count} Entries
+              </h4>
+              <p className="text-[10px] text-slate-400 mt-0.5 min-w-0 truncate" title="Total Expense Vouchers">Total Expense Vouchers</p>
+            </div>
+
+            <div className="bg-white dark:bg-slate-900 border border-emerald-500/20 dark:border-emerald-500/30 rounded-2xl p-3.5 shadow-2xs min-w-0">
+              <div className="flex items-center justify-between gap-1">
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-bold min-w-0 truncate" title="Approved Expenses">Approved Expenses</p>
+                <CheckCircle size={16} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
+              </div>
+              <h4 className="text-base font-black text-emerald-600 dark:text-emerald-400 mt-1 font-mono min-w-0 truncate" title={`₹${expenseSummaryMetrics.approvedAmount.toLocaleString('en-IN')} (${expenseSummaryMetrics.approvedCount})`}>
+                ₹{expenseSummaryMetrics.approvedAmount.toLocaleString('en-IN')}
+              </h4>
+              <p className="text-[10px] text-slate-400 mt-0.5 min-w-0 truncate" title={`${expenseSummaryMetrics.approvedCount} Approved Vouchers`}>{expenseSummaryMetrics.approvedCount} Vouchers Approved</p>
+            </div>
+
+            <div className="bg-white dark:bg-slate-900 border border-amber-500/20 dark:border-amber-500/30 rounded-2xl p-3.5 shadow-2xs min-w-0">
+              <div className="flex items-center justify-between gap-1">
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-bold min-w-0 truncate" title="Pending Approval">Pending Approval</p>
+                <AlertCircle size={16} className="text-amber-600 dark:text-amber-400 shrink-0" />
+              </div>
+              <h4 className="text-base font-black text-amber-600 dark:text-amber-400 mt-1 font-mono min-w-0 truncate" title={`₹${expenseSummaryMetrics.pendingAmount.toLocaleString('en-IN')} (${expenseSummaryMetrics.pendingCount})`}>
+                ₹{expenseSummaryMetrics.pendingAmount.toLocaleString('en-IN')}
+              </h4>
+              <p className="text-[10px] text-slate-400 mt-0.5 min-w-0 truncate" title={`${expenseSummaryMetrics.pendingCount} Pending Vouchers`}>{expenseSummaryMetrics.pendingCount} Pending Approval</p>
+            </div>
+          </div>
+
+          {/* Sleek 1-Row Toolbar Header */}
+          <div className="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-3 shadow-xs flex flex-col md:flex-row items-center justify-between gap-3">
+        {/* Left Title */}
+        <div className="flex items-center gap-2.5 flex-wrap">
+          <div className="w-8 h-8 rounded-xl bg-indigo-600/10 dark:bg-indigo-400/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
+            <FileText className="w-4 h-4" />
+          </div>
+          <div>
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white tracking-tight">
+              Expense Records
+            </h3>
+          </div>
+
+          {/* Expense Opening Balance Badge */}
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200/60 dark:border-rose-800 text-[11px] font-bold text-rose-700 dark:text-rose-300 shrink-0">
+            <Coins size={13} />
+            <span>OB: ₹{expenseObAmount.toLocaleString('en-IN')}</span>
+          </div>
+
+          {/* Categories Opening Balance Badge */}
+          {totalCategoryOb > 0 && (
+            <div 
+              onClick={() => setExpenseSubTab('categories')}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200/60 dark:border-amber-800 text-[11px] font-bold text-amber-700 dark:text-amber-300 shrink-0 cursor-pointer hover:bg-amber-100 dark:hover:bg-amber-900/40 transition"
+              title="Total Category Opening Balances. Click to view & manage categories."
+            >
+              <Tag size={13} />
+              <span>Categories OB: ₹{totalCategoryOb.toLocaleString('en-IN')}</span>
+            </div>
+          )}
+
+          {/* Pending Expenses Badge Toggle */}
+          {pendingCount > 0 && (
+            <button
+              type="button"
+              onClick={() => setFilterStatus(prev => prev === 'PENDING' ? '' : 'PENDING')}
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[11px] font-bold shrink-0 cursor-pointer transition border ${
+                filterStatus === 'PENDING'
+                  ? 'bg-amber-500 text-white border-amber-600 shadow-2xs'
+                  : 'bg-amber-50 dark:bg-amber-950/50 border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300 hover:bg-amber-100'
+              }`}
+              title="Click to filter showing only Pending Expenses"
+            >
+              <UserCheck size={13} />
+              <span>⏳ {pendingCount} Pending Approval{pendingCount > 1 ? 's' : ''}</span>
+            </button>
+          )}
+        </div>
+
+        {/* Right Search, Filters & Action Button */}
+        <div className="flex items-center gap-2.5 w-full md:w-auto flex-wrap justify-end">
+          {/* Search Input */}
+          <div className="relative w-full md:w-48">
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && loadData()}
+              placeholder="Search paid to, notes..."
+              className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl pl-8 pr-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+            />
+            <Search size={13} className="absolute left-2.5 top-2.5 text-slate-400" />
+          </div>
+
+          {/* Single Sort & Filter Button */}
+          <button
+            type="button"
+            onClick={() => setIsFilterModalOpen(true)}
+            className={`py-1.5 px-3 rounded-xl font-bold text-xs flex items-center gap-1.5 transition cursor-pointer border ${
+              activeFilterCount > 0
+                ? 'bg-indigo-50 dark:bg-indigo-950/60 border-indigo-300 dark:border-indigo-700 text-indigo-700 dark:text-indigo-300 shadow-2xs'
+                : 'bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+            }`}
+          >
+            <SlidersHorizontal size={14} className={activeFilterCount > 0 ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-500'} />
+            <span>Sort & Filter</span>
+            {activeFilterCount > 0 && (
+              <span className="px-1.5 py-0.2 bg-indigo-600 text-white rounded-full text-[10px] font-extrabold ml-0.5">
+                {activeFilterCount}
+              </span>
+            )}
+          </button>
+
+          <button
+            onClick={loadData}
+            className="p-1.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition cursor-pointer"
+            title="Refresh List"
+          >
+            <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
+          </button>
+
+          {/* Set Expense Opening Balance Button */}
+          <button
+            type="button"
+            onClick={handleOpenExpenseObModal}
+            className="py-1.5 px-3 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl shadow-xs flex items-center gap-1.5 transition cursor-pointer active:scale-98 shrink-0"
+          >
+            <Coins size={14} />
+            <span>Set Opening Balance</span>
+          </button>
+
+          {/* + Record Expense Modal Button */}
+          <button
+            onClick={() => setIsAddModalOpen(true)}
+            className="py-1.5 px-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-xs flex items-center gap-1.5 transition cursor-pointer active:scale-98 shrink-0"
+          >
+            <PlusCircle size={14} />
+            + Record Expense
+          </button>
+        </div>
+      </div>
+
+      {/* Expenses Table */}
+      <div className="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl shadow-xs overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs border-collapse">
+            <thead className="bg-slate-50/70 dark:bg-slate-950/50 border-b border-slate-200/60 dark:border-slate-800 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+              <tr>
+                <th className="py-3 px-4">Date</th>
+                <th className="py-3 px-4">Category</th>
+                <th className="py-3 px-4">Paid To</th>
+                <th className="py-3 px-4">Mode</th>
+                <th className="py-3 px-4 text-right">Amount (₹)</th>
+                <th className="py-3 px-4">Status</th>
+                <th className="py-3 px-4">Added By</th>
+                <th className="py-3 px-4 text-center">Attachment</th>
+                <th className="py-3 px-4 text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50 text-slate-700 dark:text-slate-300 font-medium">
+              {loading ? (
+                <tr>
+                  <td colSpan={9} className="py-12 text-center text-slate-400">
+                    <Loader2 className="animate-spin text-indigo-600 mx-auto mb-2" size={24} />
+                    Loading expenses...
+                  </td>
+                </tr>
+              ) : sortedAndFilteredExpenses.length === 0 ? (
+                <tr>
+                  <td colSpan={9} className="py-12 text-center text-slate-400">
+                    No expense records found matching current filters.
+                  </td>
+                </tr>
+              ) : (
+                sortedAndFilteredExpenses.map((exp) => {
+                  const status = exp.status || 'PENDING';
+                  return (
+                    <tr key={exp._id} className="hover:bg-slate-50/50 dark:hover:bg-slate-950/30 transition">
+                      <td className="py-3.5 px-4 whitespace-nowrap font-medium text-slate-500 dark:text-slate-400">
+                        {new Date(exp.date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+                      </td>
+                      <td className="py-3.5 px-4">
+                        <div className="flex flex-col gap-0.5">
+                          <div className="flex items-center gap-1 flex-wrap">
+                            <span className="px-2 py-0.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 font-bold text-[10px] w-fit">
+                              {exp.categoryName || exp.category?.name || 'Expense'}
+                            </span>
+                            {exp.type === 'Salary' && (exp.categoryName || exp.category?.name || '').toLowerCase() !== 'salary' && (
+                              <span className="px-1.5 py-0.5 rounded-md bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-300 font-extrabold text-[9px]">
+                                Salary
+                              </span>
+                            )}
+                            {exp.isPurchase && !(exp.categoryName || exp.category?.name || '').toLowerCase().includes('purchase') && (
+                              <span className="px-1.5 py-0.5 rounded-md bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-300 font-extrabold text-[9px]">
+                                Purchase
+                              </span>
+                            )}
+                          </div>
+                          {exp.category?.openingBalance > 0 && (
+                            <span className="text-[9px] text-amber-600 dark:text-amber-400 font-medium pl-0.5">
+                              OB: ₹{Number(exp.category.openingBalance).toLocaleString('en-IN')}
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="py-3.5 px-4 font-bold text-slate-900 dark:text-slate-100">
+                        {exp.paidTo}
+                        {exp.description && (
+                          <div className="text-[11px] font-normal text-slate-400 line-clamp-1">{exp.description}</div>
+                        )}
+                      </td>
+                      <td className="py-3.5 px-4">
+                        <span className="px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-[10px]">
+                          {exp.paymentMode}
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-4 text-right font-bold text-rose-600 dark:text-rose-400">
+                        ₹{parseFloat((() => {
+                          if (exp.salaryPaymentId && typeof exp.salaryPaymentId === 'object') {
+                            return exp.salaryPaymentId.paidAmount ?? exp.salaryPaymentId.customNetPay ?? exp.amount;
+                          }
+                          if (exp.paidAmount !== undefined) return exp.paidAmount;
+                          return exp.amount || 0;
+                        })()).toLocaleString('en-IN')}
+                      </td>
+                      <td className="py-3.5 px-4">
+                        {status === 'APPROVED' && (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 text-[10px] font-bold">
+                            ✓ Approved
+                          </span>
+                        )}
+                        {status === 'REJECTED' && (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-400 text-[10px] font-bold">
+                            ✕ Rejected
+                          </span>
+                        )}
+                        {status === 'PENDING' && (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 text-[10px] font-bold">
+                            ⏳ Pending
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-3.5 px-4 text-slate-500 text-[11px]">
+                        {exp.addedByName || exp.addedBy?.name || 'Accountant'}
+                      </td>
+                      <td className="py-3.5 px-4 text-center">
+                        {exp.attachmentUrl ? (
+                          <button
+                            onClick={() => setPreviewFile(exp.attachmentUrl)}
+                            className="p-1 rounded-lg text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 transition cursor-pointer"
+                            title="View Attachment"
+                          >
+                            <Eye size={14} />
+                          </button>
+                        ) : (
+                          <span className="text-slate-400 text-[11px]">—</span>
+                        )}
+                      </td>
+                      <td className="py-3.5 px-4 text-right whitespace-nowrap">
+                        <div className="flex items-center justify-end gap-1">
+                          {status === 'PENDING' && (
+                            <button
+                              onClick={() => handleOpenEdit(exp)}
+                              className="p-1 rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/40 transition cursor-pointer"
+                              title="Edit Expense"
+                            >
+                              <Edit3 size={14} />
+                            </button>
+                          )}
+                          {isApprover && status === 'PENDING' && (
+                            <>
+                              <button
+                                onClick={() => handleExpenseAction(exp._id, 'APPROVED')}
+                                className="px-2 py-1 rounded-lg bg-emerald-600 text-white font-bold text-[10px] hover:bg-emerald-700 transition cursor-pointer"
+                              >
+                                Approve
+                              </button>
+                              <button
+                                onClick={() => handleExpenseAction(exp._id, 'REJECTED')}
+                                className="px-2 py-1 rounded-lg bg-rose-600 text-white font-bold text-[10px] hover:bg-rose-700 transition cursor-pointer"
+                              >
+                                Reject
+                              </button>
+                            </>
+                          )}
+                          <button
+                            onClick={() => handleDeleteExpense(exp._id)}
+                            className="p-1 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition cursor-pointer"
+                            title="Delete"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Display-Centered Wide Add Expense Modal (Responsive Scrollable Flexbox - Portal to document.body) */}
+      {isAddModalOpen && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4">
+          <div className="fixed inset-0 bg-slate-950/60" onClick={() => setIsAddModalOpen(false)} />
+          <div className="relative z-10 w-full max-w-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden my-auto">
+            <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-950/60 shrink-0">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <PlusCircle size={16} className="text-indigo-500" />
+                Record New Expense Entry
+              </h3>
+              <button
+                type="button"
+                onClick={() => setIsAddModalOpen(false)}
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmitExpense} className="p-5 overflow-y-auto space-y-4 text-xs">
+              {/* Row 1: Date (1 col) + Expense Category (1 col) + Amount (1 col) */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                <div>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+                    Date <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    required
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 cursor-pointer font-medium"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+                    Expense Category <span className="text-rose-500">*</span>
+                  </label>
+                  <select
+                    required
+                    value={categoryId}
+                    onChange={(e) => setCategoryId(e.target.value)}
+                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-2.5 py-2 text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 cursor-pointer"
+                  >
+                    <option value="">-- Select Category --</option>
+                    {categories.map((cat) => (
+                      <option key={cat._id} value={cat._id}>
+                        {cat.name} {Number(cat.openingBalance || 0) > 0 ? `(OB: ₹${Number(cat.openingBalance).toLocaleString('en-IN')})` : ''}
+                      </option>
+                    ))}
+                  </select>
+                  {categoryId && (() => {
+                    const selectedCat = categories.find(c => String(c._id) === String(categoryId));
+                    if (selectedCat && Number(selectedCat.openingBalance || 0) > 0) {
+                      return (
+                        <p className="text-[10px] text-amber-600 dark:text-amber-400 mt-1 font-medium flex items-center gap-1">
+                          <span>Opening Balance:</span>
+                          <span className="font-bold font-mono">₹{Number(selectedCat.openingBalance).toLocaleString('en-IN')}</span>
+                        </p>
+                      );
+                    }
+                    return null;
+                  })()}
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+                    Amount (₹) <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    min="0"
+                    step="any"
+                    placeholder="e.g. 2500"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 font-bold"
+                  />
+                </div>
+              </div>
+
+              {/* Tax & GST Section with GST Categories and (+) Plus Button for Custom GST */}
+              <div className="bg-slate-50 dark:bg-slate-950/70 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 space-y-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                  <label className="text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
+                    <Receipt size={14} className="text-indigo-500" />
+                    Tax & GST Options
+                  </label>
+                  <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">
+                    Calculated GST: <strong className="text-indigo-600 dark:text-indigo-400">₹{currentTaxCalc.gstAmount.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</strong> | Total: <strong className="text-slate-900 dark:text-white">₹{currentTaxCalc.totalAmount.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</strong>
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">GST Application</label>
+                    <select
+                      value={taxOption}
+                      onChange={(e) => {
+                        setTaxOption(e.target.value);
+                        if (e.target.value !== 'No GST' && gstRate === 0) setGstRate(18);
+                      }}
+                      className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-2.5 py-2 text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer"
+                    >
+                      <option value="No GST">No GST (0%)</option>
+                      <option value="Exclusive GST">Exclusive GST (Base + GST Tax)</option>
+                      <option value="Inclusive GST">Inclusive GST (Amount Includes GST)</option>
+                    </select>
+                  </div>
+
+                  {taxOption !== 'No GST' && (
+                    <>
+                      <div>
+                        <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">GST Category / Type</label>
+                        <select
+                          value={gstCategory}
+                          onChange={(e) => setGstCategory(e.target.value)}
+                          className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-2.5 py-2 text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer"
+                        >
+                          <option value="CGST_SGST">CGST + SGST (Intra-State / Same State)</option>
+                          <option value="IGST">IGST (Inter-State / Outside State)</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">
+                          GST Rate (%)
+                        </label>
+                        <div className="flex items-center gap-1.5">
+                          <select
+                            value={gstRate}
+                            onChange={(e) => setGstRate(parseFloat(e.target.value))}
+                            className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-2.5 py-2 text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer"
+                          >
+                            {gstRatesList.map((rate) => (
+                              <option key={rate} value={rate}>
+                                GST {rate}%
+                              </option>
+                            ))}
+                          </select>
+                          <button
+                            type="button"
+                            onClick={handleAddCustomGst}
+                            className="p-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white transition cursor-pointer shrink-0 shadow-xs"
+                            title="Add Custom GST Rate %"
+                          >
+                            <Plus size={15} />
+                          </button>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                {taxOption !== 'No GST' && currentTaxCalc.gstAmount > 0 && (
+                  <div className="pt-2 border-t border-slate-200/60 dark:border-slate-800 flex items-center gap-3 text-[11px] font-medium text-slate-500 dark:text-slate-400 flex-wrap">
+                    {gstCategory === 'CGST_SGST' ? (
+                      <>
+                        <span className="px-2 py-0.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 font-bold">
+                          CGST ({gstRate / 2}%): ₹{currentTaxCalc.cgstAmount.toLocaleString('en-IN', { maximumFractionDigits: 2 })}
+                        </span>
+                        <span className="px-2 py-0.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 font-bold">
+                          SGST ({gstRate / 2}%): ₹{currentTaxCalc.sgstAmount.toLocaleString('en-IN', { maximumFractionDigits: 2 })}
+                        </span>
+                      </>
+                    ) : (
+                      <span className="px-2 py-0.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 font-bold">
+                        IGST ({gstRate}%): ₹{currentTaxCalc.igstAmount.toLocaleString('en-IN', { maximumFractionDigits: 2 })}
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Row 2: Payment Mode (1 col) + Paid To (1 col) + Attachment (1 col) */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                <div>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+                    Payment Mode <span className="text-rose-500">*</span>
+                  </label>
+                  <select
+                    required
+                    value={paymentMode}
+                    onChange={(e) => setPaymentMode(e.target.value)}
+                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-2.5 py-2 text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 cursor-pointer"
+                  >
+                    <option value="Cash">Cash</option>
+                    <option value="Bank">Bank Transfer</option>
+                    <option value="UPI">UPI / QR</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+                    Paid To <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Vendor or Receiver Name"
+                    value={paidTo}
+                    onChange={(e) => setPaidTo(e.target.value)}
+                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 font-medium"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+                    Attachment (Optional)
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="file"
+                      accept="image/*,application/pdf"
+                      onChange={handleFileChange}
+                      className="hidden"
+                      id="expense-attachment-modal-input"
+                    />
+                    <label
+                      htmlFor="expense-attachment-modal-input"
+                      className="w-full flex items-center justify-between px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-600 dark:text-slate-300 text-xs cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+                    >
+                      <span className="truncate">{attachmentPreviewName || 'Choose file...'}</span>
+                      <Paperclip size={14} className="shrink-0 text-slate-400" />
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              {/* Row 3: Description / Notes (3 cols) */}
+              <div>
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+                  Description / Notes
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Purchased monthly printer paper & cartridges"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 font-medium"
+                />
+              </div>
+
+              {/* Submit Buttons */}
+              <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100 dark:border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setIsAddModalOpen(false)}
+                  className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="px-6 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-xs transition cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
+                >
+                  {saving ? (
+                    <>
+                      <Loader2 className="animate-spin" size={13} />
+                      Saving...
+                    </>
+                  ) : (
+                    'Save Expense Entry'
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* Attachment Preview Modal (Portal to document.body) */}
+      {previewFile && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4">
+          <div className="fixed inset-0 bg-slate-950/70" onClick={() => setPreviewFile(null)} />
+          <div className="relative z-10 w-full max-w-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-2xl space-y-3 my-auto">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+              <h4 className="text-xs font-bold text-slate-800 dark:text-slate-100">Attachment Preview</h4>
+              <button
+                onClick={() => setPreviewFile(null)}
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition"
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <div className="max-h-[70vh] overflow-y-auto flex items-center justify-center">
+              {previewFile.endsWith('.pdf') ? (
+                <iframe src={previewFile} className="w-full h-[60vh] rounded-xl" title="PDF Preview" />
+              ) : (
+                <img src={previewFile} alt="Attachment" className="max-w-full max-h-[60vh] object-contain rounded-xl" />
+              )}
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+      {/* Set Expense Opening Balance Modal (Portal to document.body) */}
+      {showExpenseObModal && createPortal(
+        <div className="fixed inset-0 z-[9999] bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+              <div className="flex items-center gap-2">
+                <div className="p-2 rounded-xl bg-rose-50 dark:bg-rose-950/40 text-rose-600">
+                  <Coins size={18} />
+                </div>
+                <h3 className="font-bold text-sm text-slate-900 dark:text-white">Set Expense Opening Balance</h3>
+              </div>
+              <button 
+                onClick={() => setShowExpenseObModal(false)}
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition cursor-pointer"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Quick Switcher between Global Opening Balance and Category Opening Balances */}
+            <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
+              <span className="flex-1 py-1.5 rounded-lg text-xs font-bold bg-white dark:bg-slate-900 text-rose-600 dark:text-rose-400 shadow-xs text-center">
+                Global Expense OB
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowExpenseObModal(false);
+                  setExpenseSubTab('categories');
+                }}
+                className="flex-1 py-1.5 rounded-lg text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition text-center flex items-center justify-center gap-1.5 cursor-pointer"
+                title="Go to Expense Categories to set opening balance to every category"
+              >
+                <Tag size={13} />
+                <span>Every Category OB</span>
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveExpenseOpeningBalance} className="space-y-3.5">
+              <div>
+                <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">
+                  Expense Opening Balance (₹) <span className="text-rose-500">*</span>
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  required
+                  placeholder="e.g. 20000"
+                  value={expenseObForm.expenseAmount}
+                  onChange={(e) => setExpenseObForm({ ...expenseObForm, expenseAmount: e.target.value })}
+                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-sm font-semibold text-slate-900 dark:text-white focus:ring-2 focus:ring-rose-500/40 outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">
+                  As of Date (Effective Date)
+                </label>
+                <input
+                  type="date"
+                  value={expenseObForm.asOfDate}
+                  onChange={(e) => setExpenseObForm({ ...expenseObForm, asOfDate: e.target.value })}
+                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-sm font-semibold text-slate-900 dark:text-white focus:ring-2 focus:ring-rose-500/40 outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">
+                  Account / Payment Mode
+                </label>
+                <select
+                  value={expenseObForm.paymentMode}
+                  onChange={(e) => setExpenseObForm({ ...expenseObForm, paymentMode: e.target.value })}
+                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-sm font-semibold text-slate-900 dark:text-white focus:ring-2 focus:ring-rose-500/40 outline-none"
+                >
+                  <option value="ALL">All Combined Accounts</option>
+                  <option value="CASH">Cash in Hand</option>
+                  <option value="BANK">Bank Account</option>
+                  <option value="ONLINE">Online / UPI</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">
+                  Notes / Reference
+                </label>
+                <textarea
+                  rows={2}
+                  placeholder="Starting expense balance note..."
+                  value={expenseObForm.note}
+                  onChange={(e) => setExpenseObForm({ ...expenseObForm, note: e.target.value })}
+                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs font-medium text-slate-900 dark:text-white focus:ring-2 focus:ring-rose-500/40 outline-none"
+                />
+              </div>
+
+              <div className="p-3 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-900/60 flex items-center justify-between text-xs">
+                <div className="flex items-center gap-2 text-amber-800 dark:text-amber-300">
+                  <Tag size={14} className="shrink-0 text-amber-600" />
+                  <span className="font-semibold text-[11px]">Sum of All Category Opening Balances:</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowExpenseObModal(false);
+                    setExpenseSubTab('categories');
+                  }}
+                  className="font-bold text-amber-700 dark:text-amber-300 hover:underline font-mono text-xs cursor-pointer"
+                  title="Click to manage opening balance for every category"
+                >
+                  ₹{totalCategoryOb.toLocaleString('en-IN')} (Manage →)
+                </button>
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setShowExpenseObModal(false)}
+                  className="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={expenseObSaving}
+                  className="px-4 py-2 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white shadow-xs transition cursor-pointer flex items-center gap-1.5"
+                >
+                  {expenseObSaving ? <Loader2 size={14} className="animate-spin" /> : <Coins size={14} />}
+                  <span>Save Expense Opening</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* Sleek Sort & Filter Modal (Portal to document.body) */}
+      {isFilterModalOpen && createPortal(
+        <div className="fixed inset-0 z-[9999] bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-5 my-auto max-h-[90vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400">
+                  <SlidersHorizontal size={18} />
+                </div>
+                <div>
+                  <h3 className="font-bold text-sm text-slate-900 dark:text-white">Sort & Filter Expenses</h3>
+                  <p className="text-[11px] text-slate-400">Filter expense ledger by category, mode, status, date & sorting</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsFilterModalOpen(false)}
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition cursor-pointer p-1 rounded-lg"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Filter Controls Grid */}
+            <div className="space-y-4">
+              {/* Category Filter */}
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5">
+                  <Tag size={13} className="text-indigo-500" /> Expense Category
+                </label>
+                <select
+                  value={filterCategory}
+                  onChange={(e) => setFilterCategory(e.target.value)}
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-200 outline-none focus:ring-2 focus:ring-indigo-500/40"
+                >
+                  <option value="">All Expense Categories</option>
+                  {categories.map((c) => (
+                    <option key={c._id} value={c._id}>{c.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Payment Mode & Status Filter Grid */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5">
+                    <CreditCard size={13} className="text-indigo-500" /> Payment Mode
+                  </label>
+                  <select
+                    value={filterMode}
+                    onChange={(e) => setFilterMode(e.target.value)}
+                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-200 outline-none focus:ring-2 focus:ring-indigo-500/40"
+                  >
+                    <option value="">All Payment Modes</option>
+                    <option value="Cash">Cash in Hand</option>
+                    <option value="UPI_BANK">UPI / Bank Account</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5">
+                    <UserCheck size={13} className="text-indigo-500" /> Approval Status
+                  </label>
+                  <select
+                    value={filterStatus}
+                    onChange={(e) => setFilterStatus(e.target.value)}
+                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-200 outline-none focus:ring-2 focus:ring-indigo-500/40"
+                  >
+                    <option value="">All Statuses</option>
+                    <option value="PENDING">Pending Approval</option>
+                    <option value="APPROVED">Approved</option>
+                    <option value="REJECTED">Rejected</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Date Range Filter Grid */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5">
+                    <Calendar size={13} className="text-indigo-500" /> Start Date
+                  </label>
+                  <input
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-200 outline-none focus:ring-2 focus:ring-indigo-500/40"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5">
+                    <Calendar size={13} className="text-indigo-500" /> End Date
+                  </label>
+                  <input
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-200 outline-none focus:ring-2 focus:ring-indigo-500/40"
+                  />
+                </div>
+              </div>
+
+              {/* Sort Field & Order Grid */}
+              <div className="grid grid-cols-2 gap-3 pt-2 border-t border-slate-100 dark:border-slate-800">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5">
+                    <ArrowUpDown size={13} className="text-indigo-500" /> Sort By
+                  </label>
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-200 outline-none focus:ring-2 focus:ring-indigo-500/40"
+                  >
+                    <option value="date">Entry Date</option>
+                    <option value="amount">Expense Amount</option>
+                    <option value="paidTo">Paid To / Recipient</option>
+                    <option value="category">Category Name</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Sort Order</label>
+                  <select
+                    value={sortOrder}
+                    onChange={(e) => setSortOrder(e.target.value)}
+                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-200 outline-none focus:ring-2 focus:ring-indigo-500/40"
+                  >
+                    <option value="desc">Descending (Newest / Highest First)</option>
+                    <option value="asc">Ascending (Oldest / Lowest First)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Footer Actions */}
+            <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
+              <button
+                type="button"
+                onClick={() => {
+                  setFilterCategory('');
+                  setFilterMode('');
+                  setFilterStatus('');
+                  setStartDate('');
+                  setEndDate('');
+                  setSortBy('date');
+                  setSortOrder('desc');
+                }}
+                className="px-3 py-2 text-xs font-bold text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer flex items-center gap-1 transition"
+              >
+                <RotateCcw size={13} /> Reset All
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsFilterModalOpen(false)}
+                className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-xs transition cursor-pointer active:scale-98"
+              >
+                Apply & Close
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* Edit Expense Modal */}
+      {isEditModalOpen && editingExpense && createPortal(
+        <div 
+          className="fixed inset-0 z-[9999] bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setIsEditModalOpen(false);
+          }}
+        >
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 my-auto max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0">
+                  <Edit3 size={18} />
+                </div>
+                <div>
+                  <h3 className="text-sm font-extrabold text-slate-900 dark:text-white">
+                    Edit Expense Entry
+                  </h3>
+                  <p className="text-[10px] font-semibold text-amber-600 dark:text-amber-400">
+                    Modify expense details
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsEditModalOpen(false)}
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 rounded-lg cursor-pointer"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveEdit} className="space-y-3.5 text-xs">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">Expense Date</label>
+                  <input
+                    type="date"
+                    required
+                    value={editForm.date}
+                    onChange={(e) => setEditForm({ ...editForm, date: e.target.value })}
+                    className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">Paid To / Recipient</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Vendor / Employee Name"
+                    value={editForm.paidTo}
+                    onChange={(e) => setEditForm({ ...editForm, paidTo: e.target.value })}
+                    className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">Category</label>
+                  <select
+                    value={editForm.category}
+                    onChange={(e) => setEditForm({ ...editForm, category: e.target.value })}
+                    className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  >
+                    <option value="">-- Select Category --</option>
+                    {categories.map(cat => (
+                      <option key={cat._id} value={cat._id}>{cat.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">Payment Mode</label>
+                  <select
+                    value={editForm.paymentMode}
+                    onChange={(e) => setEditForm({ ...editForm, paymentMode: e.target.value })}
+                    className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  >
+                    <option value="Cash">Cash</option>
+                    <option value="Bank Transfer">Bank Transfer</option>
+                    <option value="UPI">UPI / Online</option>
+                    <option value="Cheque">Cheque</option>
+                    <option value="Credit Card">Credit Card</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">Amount (₹)</label>
+                <input
+                  type="number"
+                  min="0"
+                  step="any"
+                  required
+                  placeholder="0.00"
+                  value={editForm.amount}
+                  onChange={(e) => setEditForm({ ...editForm, amount: e.target.value })}
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-mono font-bold text-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">Description / Remarks</label>
+                <textarea
+                  rows="2"
+                  placeholder="Additional expense purpose or notes..."
+                  value={editForm.description}
+                  onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                  className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                />
+              </div>
+
+              {/* Attached Receipt Action */}
+              {editingExpense.attachment && (
+                <div className="p-3 bg-rose-50/60 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 rounded-xl flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 text-xs font-semibold text-rose-800 dark:text-rose-300 min-w-0 truncate">
+                    <Paperclip size={14} className="shrink-0 text-rose-600" />
+                    <span className="truncate">Attached Receipt File</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleRemoveReceiptAttachment}
+                    className="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-[11px] font-bold flex items-center gap-1 shrink-0 transition cursor-pointer"
+                    title="Delete attached receipt file"
+                  >
+                    <Trash2 size={13} /> Delete Receipt
+                  </button>
+                </div>
+              )}
+
+              <div className="pt-2 flex items-center justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsEditModalOpen(false)}
+                  className="px-3.5 py-1.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={editExpenseSubmitting}
+                  className="px-4 py-1.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow-xs cursor-pointer flex items-center gap-1.5"
+                >
+                  <Edit3 size={14} />
+                  <span>Save Changes</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>,
+        document.body
+      )}
+        </>
+      )}
+    </div>
+  );
+};
+
+export default AddExpenseTab;

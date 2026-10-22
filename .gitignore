@@ -1,0 +1,50 @@
+# Environment variables and secrets
+.env
+.env.*
+*.env
+**/.env
+**/.env.*
+private.key
+*.key
+
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Production build outputs
+dist/
+**/dist/
+dist-ssr/
+*.local
+
+# Uploads & Storage
+uploads/
+**/uploads/
+backend/uploads/
+
+# Logs & Debugging
+logs/
+**/logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# Test Dumps & Temporary Scans
+*.json.dump
+all_users_dump.json
+**/all_users_dump.json
+http_test_results.json
+inspect_output.txt
+inspect_result.json
+test_output.txt
+test_student_api_results.json
+
+# Archives
+*.zip
+*.tar.gz
+
+# IDE and System files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

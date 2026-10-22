@@ -1,0 +1,12 @@
+{
+  "name": "redpex-crm",
+  "version": "1.0.0",
+  "description": "Redpex Fire & Safety Enterprise CRM",
+  "private": true,
+  "scripts": {
+    "backend": "npm --prefix backend run dev",
+    "frontend": "npm --prefix \"front crm\" run dev",
+    "test": "npm --prefix backend test",
+    "build": "npm --prefix \"front crm\" run build"
+  }
+}
