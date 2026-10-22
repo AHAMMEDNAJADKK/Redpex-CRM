@@ -1,3 +1,4 @@
+import './src/config/env.js';
 import 'dotenv/config';
 import express from 'express';
 import mongoose from 'mongoose';
@@ -188,12 +189,6 @@ app.use((err, req, res, next) => {
     error: err.message || 'Internal Server Error Fallback',
     message: err.message || 'Internal Server Error Fallback'
   });
-});
-
-// 7. Centralized Database Connection
-connectDB().catch((error) => {
-  console.error(" ❌ CRITICAL DATABASE INITIALIZATION ERROR:", error.message);
-  process.exit(1);
 });
 
 export default app;

@@ -18,10 +18,15 @@ jest.unstable_mockModule('../config/redis.js', () => ({
 }));
 
 const { default: app } = await import('../../app.js');
+const { default: connectDB } = await import('../config/db.js');
 const { isUserSuperAdmin, requireSuperAdmin, requireAdmin } = await import('../middleware/auth.middleware.js');
 
 describe('Super Admin Authentication & RBAC Privilege Safeguards', () => {
   const jwtSecret = process.env.JWT_SECRET || 'supersecretjwtkey_12345';
+
+  beforeAll(async () => {
+    await connectDB();
+  }, 20000);
 
   afterAll(async () => {
     try {
@@ -57,7 +62,7 @@ describe('Super Admin Authentication & RBAC Privilege Safeguards', () => {
         // In offline unit environment, verify error is not a 500 crash
         expect([200, 401, 503]).toContain(res.status);
       }
-    });
+    }, 15000);
 
     test('POST /api/v1/auth/login with incorrect password fails with 401 Unauthorized', async () => {
       const res = await request(app)
@@ -71,7 +76,7 @@ describe('Super Admin Authentication & RBAC Privilege Safeguards', () => {
       if (res.status === 401) {
         expect(res.body.detail || res.body.message).toContain('Invalid credentials');
       }
-    });
+    }, 15000);
   });
 
   describe('2. isUserSuperAdmin & RBAC Middleware Logic', () => {
@@ -106,7 +111,7 @@ describe('Super Admin Authentication & RBAC Privilege Safeguards', () => {
       await requireSuperAdmin(req, res, next);
       expect(res.status).toHaveBeenCalledWith(403);
       expect(next).not.toHaveBeenCalled();
-    });
+    }, 15000);
 
     test('requireSuperAdmin allows verified Super Admin to proceed', async () => {
       const req = {
@@ -121,7 +126,7 @@ describe('Super Admin Authentication & RBAC Privilege Safeguards', () => {
       await requireSuperAdmin(req, res, next);
       expect(next).toHaveBeenCalled();
       expect(res.status).not.toHaveBeenCalled();
-    });
+    }, 15000);
   });
 
   describe('3. Privilege Escalation Prevention on User Management Endpoints', () => {
@@ -162,7 +167,7 @@ describe('Super Admin Authentication & RBAC Privilege Safeguards', () => {
         .set('Authorization', `Bearer ${normalUserToken}`);
 
       expect(deleteRes.status).toBe(403);
-    });
+    }, 15000);
 
     test('Regular admin cannot promote an account to Super Admin', async () => {
       const regularAdminToken = jwt.sign(
@@ -189,7 +194,7 @@ describe('Super Admin Authentication & RBAC Privilege Safeguards', () => {
       // Regular admin is rejected when trying to create a superadmin
       expect(res.status).toBe(403);
       expect(res.body.message || res.body.error).toContain('Only Super Admins can create Super Admin accounts');
-    });
+    }, 15000);
 
     test('Unauthenticated requests to administrative endpoints return 401 Unauthorized', async () => {
       const res = await request(app)

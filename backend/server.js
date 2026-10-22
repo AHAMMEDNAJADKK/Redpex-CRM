@@ -1,29 +1,41 @@
+import './src/config/env.js';
 import app from './app.js';
 import mongoose from 'mongoose';
+import connectDB from './src/config/db.js';
+import redis from './src/config/redis.js';
 import { schedulerService } from './src/services/scheduler.service.js';
 import { execSync } from 'child_process';
 
-const PORT = process.env.PORT || 5000;
+const PORT = parseInt(process.env.PORT || '5000', 10);
 
+/**
+ * Safely releases the target port if occupied by a zombie or previous Node process
+ */
 function freePort(port) {
   try {
     if (process.platform === 'win32') {
       const result = execSync(
-        `netstat -ano | findstr :${port}`,
+        `netstat -ano -p tcp`,
         { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }
       );
       const lines = result.trim().split('\n');
       const pids = new Set();
+      const portRegex = new RegExp(`:${port}\\s+.*LISTENING\\s+(\\d+)`, 'i');
+
       for (const line of lines) {
-        const parts = line.trim().split(/\s+/);
-        const pid = parts[parts.length - 1];
-        if (pid && /^\d+$/.test(pid) && pid !== '0' && pid !== String(process.pid)) {
-          pids.add(pid);
+        const match = line.match(portRegex);
+        if (match && match[1]) {
+          const pid = match[1].trim();
+          if (pid && pid !== '0' && pid !== String(process.pid)) {
+            pids.add(pid);
+          }
         }
       }
+
       for (const pid of pids) {
         try {
           execSync(`taskkill /PID ${pid} /F`, { stdio: 'ignore' });
+          console.log(`🧹 Port ${port} released (terminated zombie PID ${pid})`);
         } catch (_) {}
       }
     } else {
@@ -42,20 +54,28 @@ process.on('unhandledRejection', (reason) => {
 
 let isListening = false;
 let server = null;
+let retryCount = 0;
+const MAX_PORT_RETRIES = 2;
 
 const startServer = () => {
   if (isListening) return;
-  isListening = true;
 
   if (!process.env.JWT_SECRET) {
     console.warn('⚠️ WARNING: JWT_SECRET environment variable is not defined in environment. Using default secure key fallback.');
   }
 
   server = app.listen(PORT, () => {
-    console.log(`==================================================`);
-    console.log(`  🚀 Staff Management & CRM Server is active!`);
-    console.log(`  Port: ${PORT}`);
-    console.log(`==================================================`);
+    isListening = true;
+    const redisStatus = redis && (redis.status === 'ready' || redis.status === 'connect') ? 'Connected' : 'Offline (Bypassed)';
+    const dbStatus = mongoose.connection.readyState === 1 ? 'Connected to Atlas' : 'Connecting';
+
+    console.log(`\n==================================================`);
+    console.log(`  🚀 Redpex CRM Backend Server is ACTIVE!`);
+    console.log(`  Listening on Port : ${PORT}`);
+    console.log(`  Database Status   : ${dbStatus}`);
+    console.log(`  Redis Cache Status: ${redisStatus}`);
+    console.log(`  Health Check URL  : http://localhost:${PORT}/api/health`);
+    console.log(`==================================================\n`);
 
     // Initialize scheduler only once after server starts
     if (!global.schedulerStarted) {
@@ -70,14 +90,21 @@ const startServer = () => {
 
   server.on('error', (err) => {
     if (err.code === 'EADDRINUSE') {
-      console.warn(`⚠️ Port ${PORT} is in use. Auto-releasing port ${PORT}...`);
-      freePort(PORT);
-      isListening = false;
-      setTimeout(() => {
-        startServer();
-      }, 1000);
+      if (retryCount < MAX_PORT_RETRIES) {
+        retryCount++;
+        console.warn(`⚠️ Port ${PORT} is occupied. Attempting auto-release (attempt ${retryCount}/${MAX_PORT_RETRIES})...`);
+        freePort(PORT);
+        isListening = false;
+        setTimeout(() => {
+          startServer();
+        }, 1200);
+      } else {
+        console.error(`🚨 FATAL: Port ${PORT} is already in use by another application. Please free port ${PORT} or configure a different PORT in .env.`);
+        process.exit(1);
+      }
     } else {
       console.error('🚨 HTTP Server Error:', err.message);
+      process.exit(1);
     }
   });
 };
@@ -101,9 +128,19 @@ process.once('SIGUSR2', () => handleGracefulShutdown('SIGUSR2'));
 process.on('SIGINT', () => handleGracefulShutdown('SIGINT'));
 process.on('SIGTERM', () => handleGracefulShutdown('SIGTERM'));
 
-if (mongoose.connection.readyState === 1) {
-  startServer();
-} else {
-  mongoose.connection.once('open', startServer);
-  setTimeout(startServer, 1500);
+/**
+ * Clean linear async startup bootstrap
+ */
+async function bootstrap() {
+  try {
+    console.log('⏳ Connecting to MongoDB Atlas database...');
+    await connectDB();
+    startServer();
+  } catch (err) {
+    console.error('❌ CRITICAL BACKEND STARTUP ERROR: Database connection failed.');
+    console.error('   Details:', err.message);
+    process.exit(1);
+  }
 }
+
+bootstrap();

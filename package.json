@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "Redpex Fire & Safety Enterprise CRM",
   "private": true,
+  "type": "module",
   "scripts": {
+    "start": "node server.js",
     "backend": "npm --prefix backend run dev",
     "frontend": "npm --prefix \"front crm\" run dev",
     "test": "npm --prefix backend test",

@@ -16,8 +16,15 @@ jest.unstable_mockModule('../config/redis.js', () => ({
 }));
 
 const { default: app } = await import('../../app.js');
+const { default: connectDB } = await import('../config/db.js');
 
 describe('Redpex Health & System API Tests', () => {
+  beforeAll(async () => {
+    try {
+      await connectDB();
+    } catch (_) {}
+  }, 20000);
+
   afterAll(async () => {
     try {
       await mongoose.disconnect();

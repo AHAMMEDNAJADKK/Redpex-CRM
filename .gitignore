@@ -43,6 +43,9 @@ test_student_api_results.json
 *.zip
 *.tar.gz
 
+# Legacy alias junctions
+KODDP20260612-kod.os/
+
 # IDE and System files
 .vscode/
 .idea/
