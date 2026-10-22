@@ -85,9 +85,14 @@ router.get(
 );
 
 // DELETE TASK
-// DELETE /api/v1/tasks/delete/:task_id
+// DELETE /api/v1/tasks/delete/:task_id or DELETE /api/v1/tasks/:task_id
 router.delete(
   '/delete/:task_id',
+  validateParams(taskIdParamsSchema),
+  deleteTask
+);
+router.delete(
+  '/:task_id',
   validateParams(taskIdParamsSchema),
   deleteTask
 );
