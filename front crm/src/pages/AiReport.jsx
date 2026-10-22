@@ -8,7 +8,8 @@ import {
 } from 'lucide-react';
 import AiChatWidget from '../components/AiChatWidget';
 
-const API_URL = import.meta.env?.VITE_API_URL || import.meta.env?.REACT_APP_API_URL || 'http://localhost:5000/api/v1';
+const RAW_API_URL = import.meta.env?.VITE_API_URL || import.meta.env?.REACT_APP_API_URL || '/api';
+const API_URL = RAW_API_URL.replace(/\/v1\/?$/, '').replace(/\/+$/, '');
 
 const QUICK_PROMPT_CHIPS = [
   '⚡ Focus on Development Bottlenecks',

@@ -364,7 +364,6 @@ const PayslipModal = ({ isOpen, onClose, salaryRecord, onSaved, isSmall = false 
     try {
       const payload = {
         email: finalEmail.trim(),
-        brevoApiKey: import.meta.env.VITE_BREVO_API_KEY,
         senderEmail: import.meta.env.VITE_EMAIL_SENDER_ADDRESS,
         senderName: import.meta.env.VITE_EMAIL_SENDER_NAME
       };

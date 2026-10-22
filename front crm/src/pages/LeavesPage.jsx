@@ -30,7 +30,7 @@ import {
 
 import { useToast } from '../components/ToastProvider';
 
-const rawApiBase = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/+$/, '');
+const rawApiBase = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
 const API_BASE = rawApiBase.endsWith('/v1') ? rawApiBase : `${rawApiBase}/v1`;
 
 const getAuthHeaders = () => {

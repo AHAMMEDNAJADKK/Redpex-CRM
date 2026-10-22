@@ -27,7 +27,8 @@ export const CreateDepartmentModal = ({ isOpen, onClose, onSuccess }) => {
       const fetchUsers = async () => {
         setLoadingUsers(true);
         try {
-          const API_URL = import.meta.env?.VITE_API_URL || import.meta.env?.REACT_APP_API_URL || 'http://localhost:5000/api';
+          const RAW_API_URL = import.meta.env?.VITE_API_URL || import.meta.env?.REACT_APP_API_URL || '/api';
+          const API_URL = RAW_API_URL.replace(/\/v1\/?$/, '').replace(/\/+$/, '');
           const token = localStorage.getItem('token');
           const res = await axios.get(`${API_URL}/v1/users/list`, {
             headers: { Authorization: `Bearer ${token}` }

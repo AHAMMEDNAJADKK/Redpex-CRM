@@ -7,11 +7,13 @@ import { schedulerService } from './src/services/scheduler.service.js';
 import { execSync } from 'child_process';
 
 const PORT = parseInt(process.env.PORT || '5000', 10);
+const HOST = process.env.HOST || '0.0.0.0';
 
 /**
  * Safely releases the target port if occupied by a zombie or previous Node process
  */
 function freePort(port) {
+  if (process.env.NODE_ENV === 'production') return;
   try {
     if (process.platform === 'win32') {
       const result = execSync(
@@ -64,17 +66,19 @@ const startServer = () => {
     console.warn('⚠️ WARNING: JWT_SECRET environment variable is not defined in environment. Using default secure key fallback.');
   }
 
-  server = app.listen(PORT, () => {
+  server = app.listen(PORT, HOST, () => {
     isListening = true;
     const redisStatus = redis && (redis.status === 'ready' || redis.status === 'connect') ? 'Connected' : 'Offline (Bypassed)';
     const dbStatus = mongoose.connection.readyState === 1 ? 'Connected to Atlas' : 'Connecting';
 
     console.log(`\n==================================================`);
     console.log(`  🚀 Redpex CRM Backend Server is ACTIVE!`);
+    console.log(`  Environment       : ${process.env.NODE_ENV || 'development'}`);
+    console.log(`  Host Binding      : ${HOST}`);
     console.log(`  Listening on Port : ${PORT}`);
     console.log(`  Database Status   : ${dbStatus}`);
     console.log(`  Redis Cache Status: ${redisStatus}`);
-    console.log(`  Health Check URL  : http://localhost:${PORT}/api/health`);
+    console.log(`  Health Check URL  : http://${HOST === '0.0.0.0' ? 'localhost' : HOST}:${PORT}/api/health`);
     console.log(`==================================================\n`);
 
     // Initialize scheduler only once after server starts
@@ -109,10 +113,24 @@ const startServer = () => {
   });
 };
 
-// Graceful shutdown on nodemon restart (SIGUSR2) or process exit (SIGINT, SIGTERM)
-const handleGracefulShutdown = (signal) => {
+// Graceful shutdown on nodemon restart (SIGUSR2) or container termination (SIGINT, SIGTERM)
+const handleGracefulShutdown = async (signal) => {
+  console.log(`Received ${signal}. Shutting down HTTP server gracefully...`);
   if (server) {
-    server.close(() => {
+    server.close(async () => {
+      try {
+        if (mongoose.connection.readyState !== 0) {
+          await mongoose.connection.close(false);
+          console.log('✅ MongoDB connection closed.');
+        }
+        if (redis && typeof redis.quit === 'function' && redis.status === 'ready') {
+          await redis.quit();
+          console.log('✅ Redis connection closed.');
+        }
+      } catch (err) {
+        console.warn('⚠️ Error during graceful connection cleanup:', err.message);
+      }
+      console.log('✅ Redpex CRM Backend terminated cleanly.');
       if (signal === 'SIGUSR2') {
         process.kill(process.pid, 'SIGUSR2');
       } else {
