@@ -20,7 +20,7 @@ export const provisionSuperAdmin = async () => {
   }
 
   console.log(`🔌 Connecting to MongoDB for Super Admin provisioning (${sanitizeMongoUri(mongoUri)})...`);
-  await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 10000 });
+  await mongoose.connect(mongoUri, { dbName: process.env.DB_NAME || 'crm', serverSelectionTimeoutMS: 10000 });
   console.log('✅ Connected to MongoDB Atlas.');
 
   const existing = await User.findOne({ email: SUPERADMIN_EMAIL });
