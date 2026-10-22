@@ -13,6 +13,7 @@ import {
   getPaginationMetadata
 } from '../utils/pagination.util.js';
 import { AppError } from '../middleware/errorHandler.js';
+import { isUserSuperAdmin } from '../middleware/auth.middleware.js';
 import { v2 as cloudinary } from 'cloudinary';
 
 // Configure Cloudinary using environment variables
@@ -242,14 +243,17 @@ export const userController = {
         status
       } = req.query;
 
-      const conditions = [
-        {
+      const conditions = [];
+
+      // For non-superadmin users, protect superadmin records from directory listing
+      if (!isUserSuperAdmin(req.user)) {
+        conditions.push({
           isSuperAdmin: { $ne: true },
           is_super_admin: { $ne: true },
           role: { $nin: ['superadmin', 'Superadmin', 'Super Admin'] },
           role_id: { $nin: ['0', 0] }
-        }
-      ];
+        });
+      }
 
       if (role) {
         const roleLower = String(role).toLowerCase().trim();
@@ -523,13 +527,25 @@ export const userController = {
 
       const selectedDesignation = await findDesignationById(designation);
 
+      const targetRole = String(role || '').toLowerCase().trim();
+      const isTargetSuper = targetRole === 'superadmin' || targetRole === 'super_admin' || String(req.body.role_id) === '0' || Boolean(req.body.isSuperAdmin);
+
+      // Privilege Escalation Prevention: Only SuperAdmins can create SuperAdmin accounts
+      if (isTargetSuper && !isUserSuperAdmin(req.user)) {
+        throw new AppError('Access denied: Only Super Admins can create Super Admin accounts.', 403);
+      }
+
+      const finalRoleId = isTargetSuper ? '0' : (targetRole === 'admin' ? '1' : (targetRole === 'manager' ? '2' : '3'));
+      const finalRole = isTargetSuper ? 'superadmin' : (role || 'employee');
+
       const newUser =
         await User.create({
           name,
           email,
           phone,
-          role: role || 'employee',
-          role_id: role === 'admin' ? '1' : (role === 'manager' ? '2' : '3'),
+          role: finalRole,
+          role_id: finalRoleId,
+          isSuperAdmin: isTargetSuper,
           department,
           departmentId,
           designation: selectedDesignation?.name || '',
@@ -645,6 +661,26 @@ export const userController = {
         );
       }
 
+      // Security: Only SuperAdmins can modify a SuperAdmin account
+      if (isUserSuperAdmin(existingUser) && !isUserSuperAdmin(req.user)) {
+        throw new AppError('Access denied: Only Super Admins can modify a Super Admin profile.', 403);
+      }
+
+      const requesterRole = String(req.user?.role || '').toLowerCase().trim();
+      const requesterRoleId = String(req.user?.role_id || '').trim();
+      const isRequesterAdminOrSuper = isUserSuperAdmin(req.user) || ['1', '2', 'admin', 'hr', 'manager'].includes(requesterRole) || ['1', '2'].includes(requesterRoleId);
+
+      const requestedRole = role ? String(role).toLowerCase().trim() : null;
+      const isRequestingSuper = requestedRole === 'superadmin' || requestedRole === 'super_admin' || String(req.body.role_id) === '0' || req.body.isSuperAdmin === true;
+
+      if (isRequestingSuper && !isUserSuperAdmin(req.user)) {
+        throw new AppError('Access denied: Only Super Admins can grant or promote to the Super Admin role.', 403);
+      }
+
+      if (!isRequesterAdminOrSuper && (role !== undefined || req.body.role_id !== undefined || req.body.isSuperAdmin !== undefined)) {
+        throw new AppError('Access denied: You do not have permission to alter user roles.', 403);
+      }
+
       let fileUrl = avatar || profile_image || profileImage || existingUser.avatar || existingUser.profile_image || null;
       fileUrl = await processProfileImageFile(req, fileUrl);
 
@@ -710,10 +746,10 @@ export const userController = {
         updateFields.profile_image = profile_image || avatar || profileImage;
       }
 
-      if (role) {
-        updateFields.role = role;
-        updateFields.role_id = role === 'superadmin' ? '0' : (role === 'hr' ? '1' : (role === 'admin' ? '2' : '3'));
-        updateFields.isSuperAdmin = role === 'superadmin';
+      if (role && isRequesterAdminOrSuper) {
+        updateFields.role = isRequestingSuper ? 'superadmin' : role;
+        updateFields.role_id = isRequestingSuper ? '0' : (role === 'hr' ? '1' : (role === 'admin' ? '2' : '3'));
+        updateFields.isSuperAdmin = isRequestingSuper;
       }
 
       if (status !== undefined) {
@@ -796,13 +832,35 @@ export const userController = {
         );
       }
 
-      const role_id = role === 'superadmin' ? '0' : (role === 'hr' ? '1' : (role === 'admin' ? '2' : '3'));
-      const isSuperAdmin = role === 'superadmin';
+      const requesterIsSuper = isUserSuperAdmin(req.user);
+      const targetIsSuper = isUserSuperAdmin(user);
+
+      // 1. Only Super Admin can change a Super Admin's role
+      if (targetIsSuper && !requesterIsSuper) {
+        throw new AppError('Access denied: Only Super Admins can alter a Super Admin account.', 403);
+      }
+
+      // 2. Protected primary account check: superadmin@gmail.com role cannot be demoted
+      if (user.email === 'superadmin@gmail.com' && String(role || '').toLowerCase().trim() !== 'superadmin') {
+        throw new AppError('Protected account: The primary Super Admin role cannot be demoted.', 403);
+      }
+
+      const roleClean = String(role || '').toLowerCase().trim();
+      const promotingToSuper = roleClean === 'superadmin' || roleClean === 'super_admin' || String(req.body.role_id) === '0';
+
+      // 3. Only Super Admin can promote someone to Super Admin
+      if (promotingToSuper && !requesterIsSuper) {
+        throw new AppError('Access denied: Only Super Admins can assign the Super Admin role.', 403);
+      }
+
+      const role_id = promotingToSuper ? '0' : (roleClean === 'hr' ? '1' : (roleClean === 'admin' ? '2' : '3'));
+      const isSuperAdmin = promotingToSuper;
+      const finalRole = promotingToSuper ? 'superadmin' : role;
 
       const updatedUser =
         await User.findByIdAndUpdate(
           id,
-          { role, role_id, isSuperAdmin },
+          { role: finalRole, role_id, isSuperAdmin },
           { new: true }
         );
 
@@ -854,6 +912,14 @@ export const userController = {
         );
       }
 
+      if (user.email === 'superadmin@gmail.com') {
+        throw new AppError('Protected account: The primary Super Admin account cannot be deactivated.', 403);
+      }
+
+      if (isUserSuperAdmin(user) && !isUserSuperAdmin(req.user)) {
+        throw new AppError('Access denied: Only Super Admins can deactivate a Super Admin account.', 403);
+      }
+
       await User.findByIdAndUpdate(
         id,
         { isActive: false }
@@ -900,6 +966,14 @@ export const userController = {
           'Employee profile not found.',
           404
         );
+      }
+
+      if (user.email === 'superadmin@gmail.com') {
+        throw new AppError('Protected account: The primary Super Admin account cannot be deleted.', 403);
+      }
+
+      if (isUserSuperAdmin(user) && !isUserSuperAdmin(req.user)) {
+        throw new AppError('Access denied: Only Super Admins can delete a Super Admin account.', 403);
       }
 
       // Delete associated student attendance, enrollment, and batch roster records if any
@@ -1020,6 +1094,20 @@ export const userController = {
       const user = await User.findById(id);
       if (!user) {
         throw new AppError('Employee profile not found.', 404);
+      }
+
+      const requesterIsSuper = isUserSuperAdmin(req.user);
+      const targetIsSuper = isUserSuperAdmin(user);
+
+      // Only Super Admin can change a Super Admin's permissions
+      if (targetIsSuper && !requesterIsSuper) {
+        throw new AppError('Access denied: Only Super Admins can alter Super Admin permissions.', 403);
+      }
+
+      // Only Super Admin can grant or revoke Super Admin privileges
+      const touchesSuperAdmin = isSuperAdmin !== undefined || String(role || '').toLowerCase().trim() === 'superadmin';
+      if (touchesSuperAdmin && !requesterIsSuper) {
+        throw new AppError('Access denied: Only Super Admins can grant or modify Super Admin privileges.', 403);
       }
 
       if (permissions !== undefined && Array.isArray(permissions)) {

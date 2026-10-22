@@ -7,6 +7,7 @@
     "backend": "npm --prefix backend run dev",
     "frontend": "npm --prefix \"front crm\" run dev",
     "test": "npm --prefix backend test",
+    "seed:superadmin": "npm --prefix backend run seed:superadmin",
     "build": "npm --prefix \"front crm\" run build"
   }
 }

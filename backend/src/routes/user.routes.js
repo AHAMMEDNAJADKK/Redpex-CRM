@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { userController } from '../controllers/user.controller.js';
-import checkAuth, { requireRole } from '../middleware/auth.middleware.js';
+import checkAuth, { requireRole, requireAdmin, requireSuperAdmin } from '../middleware/auth.middleware.js';
 import upload from '../middleware/upload.middleware.js';
 
 const router = Router();
@@ -46,11 +46,13 @@ router.get(
 // CREATE USER
 router.post(
   '/create',
+  requireAdmin,
   upload.any(),
   userController.createUser
 );
 router.post(
   '/',
+  requireAdmin,
   upload.any(),
   userController.createUser
 );
@@ -93,40 +95,48 @@ router.post(
 // CHANGE ROLE
 router.patch(
   '/:id/role',
+  requireAdmin,
   userController.changeUserRole
 );
 
 // UPDATE PERMISSIONS & SIDEBAR ACCESS
 router.put(
   '/:id/permissions',
+  requireAdmin,
   userController.updatePermissions
 );
 router.post(
   '/:id/permissions',
+  requireAdmin,
   userController.updatePermissions
 );
 
 // DEACTIVATE USER
 router.patch(
   '/:id/deactivate',
+  requireAdmin,
   userController.deactivateUser
 );
 
 // DELETE USER
 router.delete(
   '/delete/:id',
+  requireAdmin,
   userController.deleteUser
 );
 router.post(
   '/delete/:id',
+  requireAdmin,
   userController.deleteUser
 );
 router.delete(
   '/:id',
+  requireAdmin,
   userController.deleteUser
 );
 router.delete(
   '/delete',
+  requireAdmin,
   (req, res, next) => {
     req.params.id = req.body.id || req.body._id;
     next();
@@ -135,6 +145,7 @@ router.delete(
 );
 router.post(
   '/delete',
+  requireAdmin,
   (req, res, next) => {
     req.params.id = req.body.id || req.body._id;
     next();

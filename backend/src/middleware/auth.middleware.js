@@ -167,40 +167,76 @@ export const requireAdminOrStaff = (req, res, next) => {
 };
 
 /**
+ * Helper to test whether a user object has Super Admin status
+ */
+export const isUserSuperAdmin = (user) => {
+  if (!user) return false;
+  const roleId = String(user.role_id || user.roleId || '').trim();
+  const roleName = String(user.role || '').toLowerCase().trim();
+  return (
+    user.isSuperAdmin === true ||
+    user.is_super_admin === true ||
+    roleId === '0' ||
+    roleName === 'superadmin' ||
+    roleName === 'super_admin'
+  );
+};
+
+/**
  * Strict SuperAdmin Authorization Middleware
  */
 export const requireSuperAdmin = async (req, res, next) => {
-  const roleId = String(req.user?.role_id || req.user?.roleId || '').trim();
-  const roleName = String(req.user?.role || '').toLowerCase().trim();
+  if (isUserSuperAdmin(req.user)) return next();
+
   const userId = req.user?.id || req.user?._id || req.user?.userId;
-
-  let isSuper = 
-    req.user?.isSuperAdmin === true ||
-    req.user?.is_super_admin === true ||
-    roleId === '0' ||
-    roleName.includes('super');
-
-  if (!isSuper && userId) {
+  if (userId) {
     try {
       const User = (await import('../models/user.model.js')).default;
       const userObj = await User.findById(userId);
-      if (userObj && (
-        userObj.isSuperAdmin === true || 
-        userObj.is_super_admin === true ||
-        String(userObj.role).toLowerCase().includes('super') || 
-        String(userObj.role_id) === '0' ||
-        String(userObj.roleId) === '0'
-      )) {
-        isSuper = true;
+      if (userObj && isUserSuperAdmin(userObj)) {
         req.user.isSuperAdmin = true;
+        req.user.role = userObj.role;
+        req.user.role_id = userObj.role_id;
+        return next();
       }
     } catch (err) {}
   }
 
-  if (!isSuper) {
+  return res.status(403).json({
+    success: false,
+    message: 'Access denied. SuperAdmin privileges required for this operation.',
+    detail: 'Access denied. SuperAdmin privileges required for this operation.'
+  });
+};
+
+/**
+ * Admin Role Restriction Middleware
+ * Ensures user is at least Admin/HR/Manager or SuperAdmin
+ */
+export const requireAdmin = (req, res, next) => {
+  if (isUserSuperAdmin(req.user)) return next();
+
+  const roleId = String(req.user?.role_id || req.user?.roleId || '').trim();
+  const roleName = String(req.user?.role || '').toLowerCase().trim();
+
+  if (roleId === '10' || roleName === 'student') {
     return res.status(403).json({
       success: false,
-      detail: 'Access denied. Only SuperAdmins are authorized to delete enrollment records.'
+      message: 'Access denied. Students cannot perform administrative operations.',
+      detail: 'Access denied. Students cannot perform administrative operations.'
+    });
+  }
+
+  const isAdminOrHR = 
+    ['1', '2', 'admin', 'hr', 'manager'].includes(roleId) ||
+    ['1', '2', 'admin', 'hr', 'manager'].includes(roleName) ||
+    roleName.toUpperCase() === 'MD' || roleName.toUpperCase() === 'COO';
+
+  if (!isAdminOrHR) {
+    return res.status(403).json({
+      success: false,
+      message: 'Access denied. Administrator privileges required.',
+      detail: 'Access denied. Administrator privileges required.'
     });
   }
 

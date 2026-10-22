@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 
 const API_BASE = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
 
@@ -10,7 +10,14 @@ const UserContext = createContext({
 });
 
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    try {
+      const savedUserStr = localStorage.getItem('user');
+      return savedUserStr ? JSON.parse(savedUserStr) : null;
+    } catch {
+      return null;
+    }
+  });
   const [loading, setLoading] = useState(true);
 
   const getAuthHeaders = useCallback(() => {
@@ -77,6 +84,10 @@ export const UserProvider = ({ children }) => {
       setLoading(false);
     }
   }, [getAuthHeaders]);
+
+  useEffect(() => {
+    fetchCurrentUser();
+  }, [fetchCurrentUser]);
 
   return (
     <UserContext.Provider value={{ user, setUser, refetchUser: fetchCurrentUser, loading }}>
