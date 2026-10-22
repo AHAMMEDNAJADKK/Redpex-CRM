@@ -182,6 +182,9 @@ export const authService = {
    * Revoke all refresh sessions in Redis for a specific User ID
    */
   revokeAllSessions: async (userId) => {
+    if (!redis || typeof redis.scan !== 'function' || (redis.status !== 'ready' && redis.status !== 'connect')) {
+      return;
+    }
     logger.info(`🧹 Revoking all active sessions for User: ${userId}`);
     
     try {

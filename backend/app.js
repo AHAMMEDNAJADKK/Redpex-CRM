@@ -50,25 +50,66 @@ if (cloudinaryEnvWarnings.length > 0) {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// 1. CORS Configuration
-const allowedOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
-  : ['https://crm-test.vercel.app', 'http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175'];
+// 1. CORS Configuration (Render Web Service + Vercel Production Origin Support)
+const defaultOrigins = [
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://localhost:5175',
+  'http://localhost:3000',
+  'http://localhost:4173',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:3000'
+];
 
-app.use(cors({
+const envOrigins = [
+  ...(process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',') : []),
+  ...(process.env.CLIENT_URL ? process.env.CLIENT_URL.split(',') : []),
+  ...(process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [])
+].map(o => o.trim().replace(/\/+$/, '')).filter(Boolean);
+
+const allowedOriginsSet = new Set([...defaultOrigins, ...envOrigins]);
+
+const isAllowedOrigin = (origin) => {
+  if (!origin) return true; // Direct API calls, server-to-server, health check probes, mobile clients
+  const cleanOrigin = origin.trim().replace(/\/+$/, '');
+  if (allowedOriginsSet.has(cleanOrigin)) return true;
+  // Non-production local ports support
+  if (process.env.NODE_ENV !== 'production') {
+    if (/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(cleanOrigin)) return true;
+  }
+  // Vercel deployment preview domains match if configured
+  if (process.env.FRONTEND_URL && cleanOrigin === process.env.FRONTEND_URL.trim().replace(/\/+$/, '')) {
+    return true;
+  }
+  return false;
+};
+
+const corsOptions = {
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
+    if (isAllowedOrigin(origin)) {
       callback(null, true);
     } else {
-      callback(null, true);
+      callback(null, false);
     }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
-}));
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Requested-With',
+    'Accept',
+    'Origin',
+    'x-brevo-api-key',
+    'x-sender-email',
+    'x-sender-name',
+    'x-api-key'
+  ],
+  exposedHeaders: ['Content-Range', 'X-Content-Range', 'Content-Disposition']
+};
 
-app.options('*', cors());
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 // 2. Parsers Middleware
 app.use(express.json({ limit: '10mb' }));

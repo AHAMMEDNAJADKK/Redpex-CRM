@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useToast } from './ToastProvider';
 import { playNotificationBeep } from '../utils/soundUtils';
 
-const rawApiBase = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/+$/, '');
+const rawApiBase = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
 const API_BASE = rawApiBase.endsWith('/v1') ? rawApiBase : `${rawApiBase}/v1`;
 
 const formatTimeDisplay = (dVal) => {

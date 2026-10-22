@@ -16,7 +16,8 @@ import {
   Activity
 } from 'lucide-react';
 
-const API_URL = import.meta.env?.VITE_API_URL || import.meta.env?.REACT_APP_API_URL || 'http://localhost:5000/api/v1';
+const RAW_API_URL = import.meta.env?.VITE_API_URL || import.meta.env?.REACT_APP_API_URL || '/api';
+const API_URL = RAW_API_URL.replace(/\/v1\/?$/, '').replace(/\/+$/, '');
 
 export const AiAnalyzeButton = ({ onClick, label = "AI Analyze", className = "" }) => {
   return (

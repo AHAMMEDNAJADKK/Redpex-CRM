@@ -4,7 +4,7 @@ import axios from 'axios';
 import { PDFDocument } from 'pdf-lib';
 
 // Get base URL from environment or default to local development port
-const RAW_API_URL = import.meta.env?.VITE_API_URL || import.meta.env?.REACT_APP_API_URL || 'http://localhost:5000/api';
+const RAW_API_URL = import.meta.env?.VITE_API_URL || import.meta.env?.REACT_APP_API_URL || '/api';
 const API_URL = RAW_API_URL.replace(/\/v1\/?$/, '').replace(/\/+$/, '');
 
 // Create dedicated Axios instance for departments
