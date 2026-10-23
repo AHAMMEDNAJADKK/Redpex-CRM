@@ -52,6 +52,8 @@ const __dirname = path.dirname(__filename);
 
 // 1. CORS Configuration (Render Web Service + Vercel Production Origin Support)
 const defaultOrigins = [
+  'https://redpexcrm.vercel.app',
+  'https://redpex-crm.vercel.app',
   'http://localhost:5173',
   'http://localhost:5174',
   'http://localhost:5175',
@@ -73,6 +75,9 @@ const isAllowedOrigin = (origin) => {
   if (!origin) return true; // Direct API calls, server-to-server, health check probes, mobile clients
   const cleanOrigin = origin.trim().replace(/\/+$/, '');
   if (allowedOriginsSet.has(cleanOrigin)) return true;
+  if (cleanOrigin === 'https://redpexcrm.vercel.app' || cleanOrigin === 'https://redpex-crm.vercel.app') {
+    return true;
+  }
   // Non-production local ports support
   if (process.env.NODE_ENV !== 'production') {
     if (/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(cleanOrigin)) return true;
@@ -81,6 +86,7 @@ const isAllowedOrigin = (origin) => {
   if (process.env.FRONTEND_URL && cleanOrigin === process.env.FRONTEND_URL.trim().replace(/\/+$/, '')) {
     return true;
   }
+  console.warn(`[CORS Blocked] Origin: ${cleanOrigin} is not in allowed origins.`);
   return false;
 };
 
@@ -105,7 +111,8 @@ const corsOptions = {
     'x-sender-name',
     'x-api-key'
   ],
-  exposedHeaders: ['Content-Range', 'X-Content-Range', 'Content-Disposition']
+  exposedHeaders: ['Content-Range', 'X-Content-Range', 'Content-Disposition'],
+  optionsSuccessStatus: 204
 };
 
 app.use(cors(corsOptions));
@@ -131,6 +138,7 @@ app.get('/public/pdf/:token', servePublicPdf);
 
 // 4. Specific/Dedicated API Routers
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/auth', authRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/attendance', attendanceRoutes); 

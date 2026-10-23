@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import { getApiBaseUrl } from '../utils/apiUrl';
 
-const API_BASE = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
+const API_BASE = getApiBaseUrl();
 
 const UserContext = createContext({
   user: null,
