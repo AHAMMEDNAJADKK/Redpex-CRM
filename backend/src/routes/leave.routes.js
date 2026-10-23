@@ -16,6 +16,14 @@ const router = Router();
 router.use(verifyJWT);
 
 // Employee routes
+router.get('/', (req, res, next) => {
+  const role = String(req.user?.role || req.user?.role_id || '').toLowerCase().trim();
+  const isPrivileged = req.user?.isSuperAdmin === true || ['0', '1', '2', 'admin', 'hr', 'superadmin'].includes(role);
+  if (isPrivileged) {
+    return getAllLeaveRequests(req, res, next);
+  }
+  return getMyLeaveRequests(req, res, next);
+});
 router.post('/', createLeaveRequest);
 router.get('/my', getMyLeaveRequests);
 router.get('/history', getLeaveHistory);
