@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 import React, { useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -12,8 +13,8 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable'; 
 import { useToast } from '../components/ToastProvider';
 import StudentProfileModal from '../components/StudentProfileModal';
-
-const API_BASE = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
+
+const API_BASE = getApiBaseUrl();
 const STUDENT_ROLE_ID = "10"; 
 
 const FormInput = ({ label, name, type = "text", icon, onChange, value, placeholder = "", required = false }) => (

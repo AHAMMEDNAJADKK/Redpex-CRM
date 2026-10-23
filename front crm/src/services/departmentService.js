@@ -1,7 +1,7 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 // src/services/departmentService.js
 
 import axios from 'axios';
-import { getApiBaseUrl } from '../utils/apiUrl';
 import { PDFDocument } from 'pdf-lib';
 
 // Get base URL from environment or default to local development port

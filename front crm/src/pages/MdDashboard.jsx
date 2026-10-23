@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 import React, { useState, useEffect, useCallback } from 'react';
 import { useToast } from '../components/ToastProvider';
 import HrDashboard from './HrDashboard';
@@ -9,13 +10,13 @@ import CounselorDashboard from './CounselorDashboard';
 import DeveloperDashboard from './DeveloperDashboard';
 import GraphicDesignerDashboard from './GraphicDesignerDashboard';
 import VideographerDashboard from './VideographerDashboard';
-import { 
+import { 
   Users, Megaphone, GraduationCap, Code2, Palette, Video, 
   Calculator, ShieldCheck, BookOpen, Building2, Target, RefreshCw,
   FolderKanban, ListTodo, Wallet, TrendingDown, TrendingUp, ShoppingBag, PieChart, BarChart3, Clock
 } from 'lucide-react';
 
-const API_BASE = import.meta.env.VITE_API_URL || '/api';
+const API_BASE = getApiBaseUrl();
 
 const DEPARTMENT_TABS = [
   { id: 'overview', label: 'Executive Overview', icon: ShieldCheck, color: 'text-indigo-600' },

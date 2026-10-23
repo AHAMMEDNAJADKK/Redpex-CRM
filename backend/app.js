@@ -136,41 +136,30 @@ app.get('/api/public/pdf/:token', servePublicPdf);
 app.get('/public/pdf/:token/raw', servePublicPdf);
 app.get('/public/pdf/:token', servePublicPdf);
 
-// 4. Specific/Dedicated API Routers
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use('/auth', authRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/v1/auth', authRoutes);
-app.use('/api/attendance', attendanceRoutes); 
-app.use('/api/v1/attendance', attendanceRoutes); 
-app.use('/api/user', userRoutes); 
-app.use('/api/v1/user', userRoutes); 
-app.use('/api/tasks', taskRoutes);
-app.use('/api/v1/tasks', taskRoutes);
-// app.use('/api/v1/leaves', leaveRoutes);
-app.use('/api/leaves', leaveRoutes);
-app.use('/api/v1/ai', aiRoutes);
-app.use('/api/v1/md-dashboard', mdDashboardRoutes);
-app.use('/api/md-dashboard', mdDashboardRoutes);
-app.use('/api/v1/accounts', accountRoutes);
-app.use('/api/accounts', accountRoutes);
-app.use('/api/v1/academy', academyRoutes);
-app.use('/api/academy', academyRoutes);
-app.use('/api/v1/notifications', notificationRoutes);
-app.use('/api/notifications', notificationRoutes);
-app.use('/v1/notifications', notificationRoutes);
-app.use('/notifications', notificationRoutes);
-app.use('/api/v1/recruitment', recruitmentRoutes);
-app.use('/api/recruitment', recruitmentRoutes);
+// 4. Specific/Dedicated API Routers (mounted across /api/v1, /api, /v1, and root /)
+app.use(['/auth', '/api/auth', '/api/v1/auth', '/v1/auth'], authRoutes);
+app.use(['/attendance', '/api/attendance', '/api/v1/attendance', '/v1/attendance'], attendanceRoutes); 
+app.use(['/user', '/api/user', '/api/v1/user', '/v1/user'], userRoutes); 
+app.use(['/tasks', '/api/tasks', '/api/v1/tasks', '/v1/tasks'], taskRoutes);
+app.use(['/leaves', '/api/leaves', '/api/v1/leaves', '/v1/leaves'], leaveRoutes);
+app.use(['/ai', '/api/ai', '/api/v1/ai', '/v1/ai'], aiRoutes);
+app.use(['/md-dashboard', '/api/md-dashboard', '/api/v1/md-dashboard', '/v1/md-dashboard'], mdDashboardRoutes);
+app.use(['/accounts', '/api/accounts', '/api/v1/accounts', '/v1/accounts'], accountRoutes);
+app.use(['/academy', '/api/academy', '/api/v1/academy', '/v1/academy'], academyRoutes);
+app.use(['/notifications', '/v1/notifications', '/api/notifications', '/api/v1/notifications'], notificationRoutes);
+app.use(['/recruitment', '/api/recruitment', '/api/v1/recruitment', '/v1/recruitment'], recruitmentRoutes);
 
-// 4. Broad, Versioned, & Catch-all Fallbacks (Broadest matching paths go lower)
+// Broad, Versioned, & Catch-all Fallbacks (Broadest matching paths go lower)
 app.use('/api/v1', studentRoutes);
 app.use('/api/v1', crmRoutes);
 app.use('/api', studentRoutes); 
 app.use('/api', crmRoutes);
 app.use('/v1', studentRoutes);
 app.use('/v1', crmRoutes);
+app.use('/', studentRoutes);
+app.use('/', crmRoutes);
 app.use('/api', apiRoutes);      // Legacy base fallback route handler
+app.use('/', apiRoutes);
 
 // Centralized Health & Database Readiness Check Route
 app.get(['/api/health', '/health'], (req, res) => {

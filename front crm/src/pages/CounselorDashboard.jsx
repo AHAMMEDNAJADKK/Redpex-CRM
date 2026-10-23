@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -7,8 +8,8 @@ import {
   Zap, ShieldAlert, Loader2, Eye, Activity, Building2, UserCheck, Filter
 } from 'lucide-react';
 import { useToast } from '../components/ToastProvider';
-
-const rawApiBase = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
+
+const rawApiBase = getApiBaseUrl();
 const API_BASE = rawApiBase.endsWith('/v1') ? rawApiBase.slice(0, -3) : rawApiBase;
 
 /* ─── Color map for Course Interest ─── */

@@ -13,7 +13,9 @@ const CACHE_TTL = 300;
 const getRLSFilter = async (req) => {
   const role = String(req.user?.role || req.user?.role_id || '').toLowerCase().trim();
   const userId = req.user?.id || req.user?._id;
-  const isPrivileged = ['1', '2', 'hr', 'admin'].includes(role);
+  const roleId = String(req.user?.role_id || req.user?.roleId || '').trim();
+  const isSuperAdmin = req.user?.isSuperAdmin === true || req.user?.is_super_admin === true || role === 'superadmin' || role === '0' || role.includes('super');
+  const isPrivileged = isSuperAdmin || ['0', '1', '2', 'hr', 'admin'].includes(role) || ['0', '1', '2'].includes(roleId);
 
   let matchFilter = {};
 

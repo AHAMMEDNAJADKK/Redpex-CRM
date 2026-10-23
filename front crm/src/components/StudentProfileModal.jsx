@@ -1,12 +1,13 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
+import { 
   X, User, Mail, Phone, MapPin, GraduationCap, ShieldCheck, 
   Calendar, Award, CreditCard, BookOpen, CheckCircle2, AlertCircle, Edit, Loader2, Save, Trash2
 } from 'lucide-react';
 
-const API_BASE = import.meta.env.VITE_API_URL;
+const API_BASE = getApiBaseUrl();
 
 const StudentProfileModal = ({ studentId, isOpen, onClose, onEditStudent, onDeleteStudent, getHeaders }) => {
   const [profileData, setProfileData] = useState(null);

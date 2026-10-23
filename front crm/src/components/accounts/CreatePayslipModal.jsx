@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../../utils/apiUrl';
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import axios from 'axios';
@@ -5,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Plus, DollarSign, Users, Calendar, Sparkles, Loader2, CheckCircle2 } from 'lucide-react';
 import { createSalaryPayment } from '../../services/accountsService';
 import { useToast } from '../ToastProvider';
-
+
 const CreatePayslipModal = ({ isOpen, onClose, onSuccess }) => {
   const { showToast } = useToast();
   const [employees, setEmployees] = useState([]);
@@ -103,7 +104,7 @@ const CreatePayslipModal = ({ isOpen, onClose, onSuccess }) => {
         token = token.replace(/^"(.*)"$/, '$1').trim();
         if (token.startsWith('Bearer ')) token = token.slice(7).trim();
 
-        const host = import.meta.env.VITE_API_URL || '/api';
+        const host = getApiBaseUrl();
         const apiUrl = `${host.replace(/\/+$/, '')}/v1/users`;
 
         const res = await axios.get(apiUrl, {

@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -8,8 +9,8 @@ import {
 } from 'lucide-react';
 import { useToast } from '../components/ToastProvider';
 import PerformanceTab from '../components/PerformanceTab';
-
-const RAW_API_BASE = import.meta.env.VITE_API_URL || '/api';
+
+const RAW_API_BASE = getApiBaseUrl();
 const API_BASE = (RAW_API_BASE.endsWith('/') ? RAW_API_BASE.slice(0, -1) : RAW_API_BASE).replace(/\/+$/, '');
 
 const ROLES = [

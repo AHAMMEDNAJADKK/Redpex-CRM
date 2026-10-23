@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 import React, { useState, useEffect, useCallback } from "react";
 import { Plus, Search, Filter, AlertCircle, RefreshCw } from "lucide-react";
 import { motion } from "framer-motion";
@@ -7,7 +8,7 @@ import CalendarView from "../modules/calendar/CalendarView";
 import CalendarWorkModal from "../modules/calendar/CalendarWorkModal";
 import CalendarWorkDetails from "../modules/calendar/CalendarWorkDetails";
 import ConfirmModal from "../components/ConfirmModal";
-import {
+import {
   getCalendarWorks,
   getMyCalendarWork,
   createCalendarWork,
@@ -63,7 +64,7 @@ const CalendarWorkPage = () => {
     setLoadingEmployees(true);
     try {
       const response = await fetch(
-        `${(import.meta.env.VITE_API_URL || "/api").replace(/\/+$/, "")}/v1/users?limit=500`,
+        `${getApiBaseUrl()}/v1/users?limit=500`,
         {
           headers: {
             Authorization: `Bearer ${(localStorage.getItem("token") || "")

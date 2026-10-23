@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../../utils/apiUrl';
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, Plus, Trash2, Loader2, FileText, GraduationCap, Coins, Users, CheckCircle2, Receipt, Eye } from 'lucide-react';
@@ -5,8 +6,8 @@ import { getClients } from '../../services/clientService';
 import { useToast } from '../ToastProvider';
 import IncomeInvoiceModal from './IncomeInvoiceModal';
 import AddItemOptionModal from './AddItemOptionModal';
-
-const API_BASE = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
+
+const API_BASE = getApiBaseUrl();
 
 const PAYMENT_METHODS = ['Bank Transfer', 'Cash', 'UPI', 'Credit Card', 'Cheque', 'Other'];
 

@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 // ==========================================
 // FRONTEND: Attendance.jsx
 // Minimal Personal Attendance Log In & Log Out Page
@@ -14,7 +15,8 @@ import {
   UserX
 } from 'lucide-react';
 
-const API_BASE = import.meta.env.VITE_API_URL || '/api';
+
+const API_BASE = getApiBaseUrl();
 
 // Helper to get IST Date YYYY-MM-DD
 const getISTDate = () => {

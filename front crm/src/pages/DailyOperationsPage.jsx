@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 import React, { useState, useEffect, useCallback } from 'react';
 import ReactDOM from 'react-dom';
 import { 
@@ -8,8 +9,8 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from '../components/ToastProvider';
 import { useUser } from '../contexts/UserContext';
-
-const API_BASE = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
+
+const API_BASE = getApiBaseUrl();
 
 const getApiEndpoint = (path) => {
   const cleanPath = path.startsWith('/') ? path : `/${path}`;

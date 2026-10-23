@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
   UserPlus, 
@@ -24,8 +25,8 @@ import {
 } from 'lucide-react';
 import { useToast } from '../components/ToastProvider';
 import ConfirmModal from '../components/ConfirmModal';
-
-const rawApiUrl = import.meta.env.VITE_API_URL || '/api';
+
+const rawApiUrl = getApiBaseUrl();
 const API_BASE = rawApiUrl.endsWith('/') ? rawApiUrl.slice(0, -1) : rawApiUrl;
 
 const getAuthHeaders = () => {
@@ -175,7 +176,7 @@ export default function RecruitmentPage() {
     }
 
     const cleanPath = path.replace(/^\//, '');
-    const rawApiUrl = import.meta.env.VITE_API_URL || '';
+    const rawApiUrl = getApiBaseUrl();
     const backendHost = rawApiUrl ? rawApiUrl.replace(/\/api\/v1\/?$/, '').replace(/\/api\/?$/, '') : window.location.origin;
     return `${backendHost}/${cleanPath}`;
   };

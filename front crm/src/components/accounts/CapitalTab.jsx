@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../../utils/apiUrl';
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import html2pdf from 'html2pdf.js';
@@ -16,8 +17,8 @@ import {
   Pencil
 } from 'lucide-react';
 import { useToast } from '../ToastProvider';
-
-const API_BASE = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
+
+const API_BASE = getApiBaseUrl();
 
 const getApiEndpoint = (path) => {
   const cleanPath = path.startsWith('/') ? path : `/${path}`;

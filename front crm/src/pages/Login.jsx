@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Lock, ChevronRight, Eye, EyeOff, X, Phone, Check, Key, Sun, Moon } from 'lucide-react';
@@ -6,7 +7,6 @@ import { useToast } from '../components/ToastProvider';
 import { useUser } from '../contexts/UserContext';
 import { GoogleLogin } from '@react-oauth/google';
 import { resolveUserDashboardPath } from '../utils/userDashboard';
-import { getApiBaseUrl } from '../utils/apiUrl';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);

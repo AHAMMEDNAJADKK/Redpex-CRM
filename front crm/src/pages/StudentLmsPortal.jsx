@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -6,8 +7,8 @@ import {
   Sparkles, Loader2, AlertCircle, BarChart3, PlayCircle, FolderKanban
 } from 'lucide-react';
 import { useToast } from '../components/ToastProvider';
-
-const API_BASE = import.meta.env.VITE_API_URL;
+
+const API_BASE = getApiBaseUrl();
 
 const StudentLmsPortal = () => {
   const navigate = useNavigate();

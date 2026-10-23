@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -14,8 +15,8 @@ import ConfirmModal from '../components/ConfirmModal';
 import TopScrollbar from '../components/TopScrollbar';
 import * as XLSX from 'xlsx';
 import { jsPDF } from 'jspdf';
-import autoTable from 'jspdf-autotable'; // 👈 Import it as a direct function
-const API_BASE = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
+import autoTable from 'jspdf-autotable'; // 👈 Import it as a direct function
+const API_BASE = getApiBaseUrl();
 
 const getApiEndpoint = (path) => {
   const cleanPath = path.startsWith('/') ? path : `/${path}`;

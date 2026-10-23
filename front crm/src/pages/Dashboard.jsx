@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -31,7 +32,8 @@ import {
 import { useNavigate } from "react-router-dom";
 import { AiAnalyzeButton, AiAnalyzeModal } from '../components/AiAnalyzeModal';
 
-const API_BASE = import.meta.env.VITE_API_URL || '/api';
+
+const API_BASE = getApiBaseUrl();
 
 const Dashboard = ({ isEmbedded = false, mdData = null }) => {
   const [user, setUser] = useState(null);

@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -23,8 +24,8 @@ import {
 import { useToast } from '../components/ToastProvider';
 import { sendEmail } from '../services/emailService';
 import { NOTIFICATION_THEMES, getNotificationTheme } from '../utils/notificationThemes';
-
-const rawApiBase = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
+
+const rawApiBase = getApiBaseUrl();
 const getApiEndpoint = (path) => {
   const cleanPath = path.startsWith('/') ? path : `/${path}`;
   if (rawApiBase.endsWith('/v1')) {

@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 // ==========================================
 // FRONTEND: StaffAttendance.jsx
 // Staff Attendance Roster Page
@@ -7,7 +8,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import ReactDOM from 'react-dom';
 import { motion } from 'framer-motion';
 import * as XLSX from 'xlsx';
-import {
+import {
   Users,
   UserCheck,
   UserX,
@@ -28,7 +29,7 @@ import {
   Filter
 } from 'lucide-react';
 
-const API_BASE = import.meta.env.VITE_API_URL || '/api';
+const API_BASE = getApiBaseUrl();
 
 // Helper to get IST Date YYYY-MM-DD
 const getISTDate = () => {

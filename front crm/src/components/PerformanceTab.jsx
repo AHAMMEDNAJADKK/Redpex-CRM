@@ -1,11 +1,12 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 import React, { useState, useEffect, useCallback } from 'react';
 import { 
   Award, Calendar, CheckCircle2, Shield, User, Clock, 
   Save, Send, RefreshCw, BarChart2, Crown, Sparkles
 } from 'lucide-react';
 import { useToast } from './ToastProvider';
-
-const API_BASE = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
+
+const API_BASE = getApiBaseUrl();
 
 const STATUS_OPTIONS = [
   'Outstanding',

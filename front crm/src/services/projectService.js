@@ -1,5 +1,5 @@
-import axios from 'axios';
 import { getApiBaseUrl } from '../utils/apiUrl';
+import axios from 'axios';
 
 const getBaseUrl = () => {
   const host = getApiBaseUrl();
@@ -82,7 +82,7 @@ export const createProjectCategory = async (categoryData) => {
 };
 
 export const fetchActiveEmployees = async (params = {}) => {
-  const host = import.meta.env.VITE_API_URL || '/api';
+  const host = getApiBaseUrl();
   const cleanHost = host.replace(/\/+$/, '');
   const listUrl = cleanHost.endsWith('/v1') ? `${cleanHost}/users/list` : `${cleanHost}/v1/users/list`;
   
@@ -103,14 +103,14 @@ export const fetchActiveEmployees = async (params = {}) => {
 };
 
 export const fetchDepartments = async () => {
-  const host = import.meta.env.VITE_API_URL || '/api';
+  const host = getApiBaseUrl();
   const deptUrl = `${host.replace(/\/+$/, '')}/v1/departments`;
   const response = await axios.get(deptUrl, getAuthHeaders());
   return response.data;
 };
 
 export const fetchDesignations = async () => {
-  const host = import.meta.env.VITE_API_URL || '/api';
+  const host = getApiBaseUrl();
   const desigUrl = `${host.replace(/\/+$/, '')}/v1/designations`;
   const response = await axios.get(desigUrl, getAuthHeaders());
   return response.data;

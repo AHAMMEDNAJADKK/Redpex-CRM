@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 import React, { useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -28,7 +29,7 @@ import {
   Edit3,
   Trash2
 } from 'lucide-react';
-import {
+import {
   getSalaryPayments,
   approveOrRejectSalaryPayment,
   approveAllSalaryPayments,
@@ -38,7 +39,7 @@ import {
   getExpenseCategories
 } from '../services/accountsService';
 
-const rawApiBase = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
+const rawApiBase = getApiBaseUrl();
 const API_BASE = rawApiBase.endsWith('/v1') ? rawApiBase : `${rawApiBase}/v1`;
 
 const getAuthHeaders = () => {
@@ -591,7 +592,7 @@ export default function ApprovalsPage() {
       return cleanUrl;
     }
     const cleanPath = path.replace(/^\//, '');
-    const rawApiUrl = import.meta.env.VITE_API_URL || '';
+    const rawApiUrl = getApiBaseUrl();
     const backendHost = rawApiUrl ? rawApiUrl.replace(/\/api\/v1\/?$/, '').replace(/\/api\/?$/, '') : window.location.origin;
     return `${backendHost}/${cleanPath}`;
   };

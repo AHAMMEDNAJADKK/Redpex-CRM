@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../../utils/apiUrl';
 // src/modules/departments/EditDepartmentModal.jsx
 
 import React, { useState, useEffect } from 'react';
@@ -5,7 +6,7 @@ import { X, Check, AlertCircle, Loader } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import { updateDepartment } from '../../services/departmentService';
-
+
 export const EditDepartmentModal = ({ isOpen, onClose, onSuccess, department }) => {
   const [name, setName] = useState('');
   const [code, setCode] = useState('');
@@ -35,7 +36,7 @@ export const EditDepartmentModal = ({ isOpen, onClose, onSuccess, department }) 
       const fetchUsers = async () => {
         setLoadingUsers(true);
         try {
-          const RAW_API_URL = import.meta.env?.VITE_API_URL || import.meta.env?.REACT_APP_API_URL || '/api';
+          const RAW_API_URL = getApiBaseUrl();
           const API_URL = RAW_API_URL.replace(/\/v1\/?$/, '').replace(/\/+$/, '');
           const token = localStorage.getItem('token');
           const res = await axios.get(`${API_URL}/v1/users/list`, {

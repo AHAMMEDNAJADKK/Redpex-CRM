@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -14,8 +15,8 @@ import {
   getCashBook, getExpenseCategories, getMonthlyReport
 } from '../services/accountsService';
 import CreatePayslipModal from '../components/accounts/CreatePayslipModal';
-
-const rawApiBase = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
+
+const rawApiBase = getApiBaseUrl();
 const API_BASE = rawApiBase.endsWith('/v1') ? rawApiBase.slice(0, -3) : rawApiBase;
 
 const getApiEndpoint = (path) => {

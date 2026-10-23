@@ -1,7 +1,9 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 // Calendar Work Service
 // Handles all API calls to the backend calendar-work endpoints
 
-const baseUrl = () => (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
+
+const baseUrl = () => getApiBaseUrl();
 
 const headers = () => {
   const raw = localStorage.getItem('token') || '';

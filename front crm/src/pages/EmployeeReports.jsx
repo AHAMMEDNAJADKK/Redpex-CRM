@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 import React, { useState, useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -8,8 +9,8 @@ import {
 import { createPortal } from 'react-dom';
 import { useToast } from '../components/ToastProvider';
 import { AiAnalyzeButton, AiAnalyzeModal } from '../components/AiAnalyzeModal';
-
-const rawApiBase = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
+
+const rawApiBase = getApiBaseUrl();
 const API_BASE = rawApiBase.endsWith('/v1') ? rawApiBase.slice(0, -3) : rawApiBase;
 
 // Map designation IDs to API endpoint prefixes

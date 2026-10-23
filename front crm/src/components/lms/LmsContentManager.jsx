@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../../utils/apiUrl';
 import React, { useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -6,8 +7,8 @@ import {
   Upload, Eye, EyeOff, Clock, CheckCircle2, AlertCircle, Loader2, X, Sparkles 
 } from 'lucide-react';
 import { useToast } from '../ToastProvider';
-
-const API_BASE = import.meta.env.VITE_API_URL;
+
+const API_BASE = getApiBaseUrl();
 
 const initialLessonForm = {
   title: '',

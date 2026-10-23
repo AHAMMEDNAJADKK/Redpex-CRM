@@ -1,10 +1,11 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   X, LogOut, Briefcase, Shield, Mail, Calendar, Phone, Hash, UserCheck, Loader2, Check, Lock, Key, Settings
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-
+
 const ProfileDrawer = ({ isOpen, onClose }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -51,7 +52,7 @@ const ProfileDrawer = ({ isOpen, onClose }) => {
         setLoading(true);
         const cleanToken = token.replace(/"/g, '');
         const authHeader = cleanToken.startsWith('Bearer ') ? cleanToken : `Bearer ${cleanToken}`;
-        const API_BASE = import.meta.env.VITE_API_URL || '';
+        const API_BASE = getApiBaseUrl();
         
         fetch(`${API_BASE}/v1/users/${activeUserId}`, {
           headers: { 'Authorization': authHeader }
@@ -84,7 +85,7 @@ const ProfileDrawer = ({ isOpen, onClose }) => {
     setIsUpdatingProfile(true);
     setProfileFeedback({ show: false, message: '', type: '' });
 
-    const API_BASE = import.meta.env.VITE_API_URL || '';
+    const API_BASE = getApiBaseUrl();
     const cleanToken = localStorage.getItem('token')?.replace(/"/g, '') || '';
     const authHeader = cleanToken.startsWith('Bearer ') ? cleanToken : `Bearer ${cleanToken}`;
     const userId = user?.id || user?._id;
@@ -138,7 +139,7 @@ const ProfileDrawer = ({ isOpen, onClose }) => {
     setIsUpdatingPassword(true);
     setPasswordFeedback({ show: false, message: '', type: '' });
 
-    const API_BASE = import.meta.env.VITE_API_URL || '';
+    const API_BASE = getApiBaseUrl();
     const cleanToken = localStorage.getItem('token')?.replace(/"/g, '') || '';
     const authHeader = cleanToken.startsWith('Bearer ') ? cleanToken : `Bearer ${cleanToken}`;
 

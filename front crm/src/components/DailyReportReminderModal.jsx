@@ -1,11 +1,12 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertTriangle, Clock, ArrowRight, X } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useToast } from './ToastProvider';
 import { playNotificationBeep } from '../utils/soundUtils';
-
-const API_BASE = import.meta.env.VITE_API_URL || '/api';
+
+const API_BASE = getApiBaseUrl();
 
 const getReportConfig = (user) => {
   return { route: '/daily-shift-report', apiPrefix: 'daily-shift-reports', name: 'Daily Shift Report' };

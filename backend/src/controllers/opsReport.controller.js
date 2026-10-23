@@ -133,7 +133,9 @@ export const saveReport = async (req, res, next) => {
 export const getOpsStaffList = async (req, res, next) => {
   try {
     const currentUserRole = String(req.user.role || req.user.role_id || '').toLowerCase().trim();
-    const isPrivileged = ['1', '2', 'hr', 'admin'].includes(currentUserRole);
+    const currentUserRoleId = String(req.user.role_id || req.user.roleId || '').trim();
+    const isSuperAdmin = req.user?.isSuperAdmin === true || req.user?.is_super_admin === true || currentUserRole === 'superadmin' || currentUserRole === '0' || currentUserRole.includes('super');
+    const isPrivileged = isSuperAdmin || ['0', '1', '2', 'hr', 'admin'].includes(currentUserRole) || ['0', '1', '2'].includes(currentUserRoleId);
 
     if (!isPrivileged) {
       return res.status(403).json({
@@ -175,7 +177,9 @@ export const getSubmittedDates = async (req, res, next) => {
     let targetUserId = req.query.userId;
     const currentUserId = req.user.id || req.user._id;
     const currentUserRole = String(req.user.role || req.user.role_id || '').toLowerCase().trim();
-    const isPrivileged = ['1', '2', 'hr', 'admin'].includes(currentUserRole);
+    const currentUserRoleId = String(req.user.role_id || req.user.roleId || '').trim();
+    const isSuperAdmin = req.user?.isSuperAdmin === true || req.user?.is_super_admin === true || currentUserRole === 'superadmin' || currentUserRole === '0' || currentUserRole.includes('super');
+    const isPrivileged = isSuperAdmin || ['0', '1', '2', 'hr', 'admin'].includes(currentUserRole) || ['0', '1', '2'].includes(currentUserRoleId);
 
     if (targetUserId) {
       if (targetUserId !== String(currentUserId) && !isPrivileged) {

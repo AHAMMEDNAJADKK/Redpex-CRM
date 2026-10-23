@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { 
   Award, TrendingUp, ShieldCheck, 
@@ -5,8 +6,8 @@ import {
 } from 'lucide-react';
 import { useToast } from '../components/ToastProvider';
 import { getKpiColorCode } from '../components/PerformanceTab';
-
-const API_BASE = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '').replace(/\/v1$/, '');
+
+const API_BASE = getApiBaseUrl();
 
 const STATUS_OPTIONS = [
   'Outstanding',
