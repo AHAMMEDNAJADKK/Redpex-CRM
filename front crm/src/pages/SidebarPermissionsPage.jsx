@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -6,8 +7,8 @@ import {
   Mail, Briefcase, Folder, CheckCircle2, XCircle, Filter
 } from 'lucide-react';
 import { useToast } from '../components/ToastProvider';
-
-const API_BASE = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
+
+const API_BASE = getApiBaseUrl();
 
 const getApiEndpoint = (path) => {
   const cleanPath = path.startsWith('/') ? path : `/${path}`;

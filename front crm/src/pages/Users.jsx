@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
@@ -13,8 +14,9 @@ import ConfirmModal from '../components/ConfirmModal';
 import PerformanceTab from '../components/PerformanceTab';
 import PerformanceDashboard from './PerformanceDashboard';
 
-const RAW_API_BASE = import.meta.env.VITE_API_URL || '/api';
-const API_BASE = (RAW_API_BASE.endsWith('/') ? RAW_API_BASE.slice(0, -1) : RAW_API_BASE).replace(/\/+$/, '');
+
+const API_BASE = getApiBaseUrl();
+
 
 const useLockBodyScroll = (isOpen = true) => {
   useEffect(() => {

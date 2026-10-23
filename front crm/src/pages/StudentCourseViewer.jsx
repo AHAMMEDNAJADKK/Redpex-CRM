@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -7,8 +8,8 @@ import {
   Loader2, AlertCircle, Sparkles, Upload, Send 
 } from 'lucide-react';
 import { useToast } from '../components/ToastProvider';
-
-const API_BASE = import.meta.env.VITE_API_URL;
+
+const API_BASE = getApiBaseUrl();
 
 const StudentCourseViewer = () => {
   const { courseId } = useParams();

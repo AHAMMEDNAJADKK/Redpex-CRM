@@ -1,11 +1,12 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Clock, AlertCircle, ArrowRight, X, CheckCircle2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from './ToastProvider';
 import { playNotificationBeep } from '../utils/soundUtils';
-
-const rawApiBase = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
+
+const rawApiBase = getApiBaseUrl();
 const API_BASE = rawApiBase.endsWith('/v1') ? rawApiBase : `${rawApiBase}/v1`;
 
 const formatTimeDisplay = (dVal) => {

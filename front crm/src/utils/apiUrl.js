@@ -1,8 +1,8 @@
 /**
- * Resolves and normalizes the backend API base URL.
- * Automatically ensures the URL includes the `/api` prefix without creating duplicate `/api/api` segments.
- * Handles both local proxy (/api) and production origins (e.g., https://redpex-crm.onrender.com or https://redpex-crm.onrender.com/api).
+ * Centralized API URL and endpoint resolution utilities for Redpex CRM.
+ * Resolves base URLs, prevents duplicate '/api/api' segments, and normalizes paths.
  */
+
 export const getApiBaseUrl = () => {
   let url = (import.meta.env.VITE_API_URL || '/api').trim().replace(/\/+$/, '');
   
@@ -18,6 +18,30 @@ export const getApiBaseUrl = () => {
   }
 
   return url;
+};
+
+export const getBackendOrigin = () => {
+  let url = (import.meta.env.VITE_API_URL || '').trim().replace(/\/+$/, '');
+  if (!url) {
+    if (typeof window !== 'undefined' && window.location) {
+      return window.location.origin;
+    }
+    return '';
+  }
+  return url.replace(/\/api\/v1\/?$/, '').replace(/\/api\/?$/, '').replace(/\/v1\/?$/, '');
+};
+
+export const getApiEndpoint = (endpoint = '') => {
+  const base = getApiBaseUrl();
+  let cleanEndpoint = String(endpoint).trim();
+  if (!cleanEndpoint.startsWith('/')) {
+    cleanEndpoint = `/${cleanEndpoint}`;
+  }
+  // Prevent /api/api if base ends with /api and endpoint starts with /api/
+  if (base.endsWith('/api') && cleanEndpoint.startsWith('/api/')) {
+    cleanEndpoint = cleanEndpoint.slice(4);
+  }
+  return `${base}${cleanEndpoint}`;
 };
 
 export default getApiBaseUrl;

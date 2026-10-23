@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -5,8 +6,8 @@ import {
   BookOpen, Calendar, Link as LinkIcon, ExternalLink, Filter, Sparkles, User
 } from 'lucide-react';
 import { useToast } from '../components/ToastProvider';
-
-const API_BASE = import.meta.env.VITE_API_URL;
+
+const API_BASE = getApiBaseUrl();
 
 const STATUSES = ['ALL', 'NOT_STARTED', 'IN_PROGRESS', 'COMPLETED'];
 

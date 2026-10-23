@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 import React, { useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
@@ -7,8 +8,8 @@ import {
   BookOpen, Users, CheckCircle2, Archive, Eye, Edit, X, Trash2
 } from 'lucide-react';
 import { useToast } from '../components/ToastProvider';
-
-const API_BASE = import.meta.env.VITE_API_URL;
+
+const API_BASE = getApiBaseUrl();
 
 const STATUSES = ['ALL', 'UPCOMING', 'ONGOING', 'COMPLETED', 'CANCELLED'];
 

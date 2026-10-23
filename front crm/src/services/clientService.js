@@ -1,5 +1,5 @@
-import axios from 'axios';
 import { getApiBaseUrl } from '../utils/apiUrl';
+import axios from 'axios';
 
 const getBaseUrl = () => {
   const host = getApiBaseUrl();

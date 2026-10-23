@@ -1,3 +1,4 @@
+import { getApiBaseUrl, getBackendOrigin } from '../utils/apiUrl';
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -13,7 +14,8 @@ import { useUser } from '../contexts/UserContext';
 import { sendEmail } from '../services/emailService';
 import TaskCollaboration from '../components/TaskCollaboration';
 
-const API_BASE = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, ''); // --- UTILS & CONSTANTS ---
+
+const API_BASE = getApiBaseUrl(); // --- UTILS & CONSTANTS ---
 const getTaskImageUrl = (path) => {
   if (!path) return null;
   if (typeof path === 'object') {
@@ -37,8 +39,8 @@ const getTaskImageUrl = (path) => {
   }
 
   const cleanPath = path.replace(/^\//, '');
-  const apiBase = import.meta.env.VITE_API_URL || '';
-  const backendHost = apiBase ? apiBase.replace(/\/api\/v1\/?$/, '').replace(/\/api\/?$/, '') : window.location.origin;
+
+  const backendHost = getBackendOrigin();
   return `${backendHost}/${cleanPath}`;
 };
 

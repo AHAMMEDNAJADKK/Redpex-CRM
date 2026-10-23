@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../../utils/apiUrl';
 // src/modules/departments/DepartmentUsersDrawer.jsx
 
 import React, { useState, useEffect } from 'react';
@@ -6,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import { getDepartmentUsers, addUserToDepartment, removeUserFromDepartment } from '../../services/departmentService';
 import StatusBadge from '../../components/StatusBadge';
-
+
 export const DepartmentUsersDrawer = ({ isOpen, onClose, department }) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -47,7 +48,7 @@ export const DepartmentUsersDrawer = ({ isOpen, onClose, department }) => {
     if (isOpen) {
       const fetchAllUsers = async () => {
         try {
-          const RAW_API_URL = import.meta.env?.VITE_API_URL || import.meta.env?.REACT_APP_API_URL || '/api';
+          const RAW_API_URL = getApiBaseUrl();
           const API_URL = RAW_API_URL.replace(/\/v1\/?$/, '').replace(/\/+$/, '');
           const token = localStorage.getItem('token');
           const res = await axios.get(`${API_URL}/v1/users/list`, {

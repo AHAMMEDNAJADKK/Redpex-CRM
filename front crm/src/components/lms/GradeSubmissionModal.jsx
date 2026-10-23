@@ -1,10 +1,11 @@
+import { getApiBaseUrl } from '../../utils/apiUrl';
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, CheckCircle2, Award, FileText, ExternalLink, Download, Loader2, AlertCircle } from 'lucide-react';
 import { useToast } from '../ToastProvider';
-
-const API_BASE = import.meta.env.VITE_API_URL;
+
+const API_BASE = getApiBaseUrl();
 
 const GradeSubmissionModal = ({ submission, assignment, onClose, onGraded }) => {
   const { showToast } = useToast();

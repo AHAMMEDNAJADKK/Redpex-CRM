@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Calendar, FileText, Plus, Trash2, Save, Download, RefreshCw, 
@@ -10,8 +11,8 @@ import autoTable from 'jspdf-autotable';
 import { useUser } from '../contexts/UserContext';
 import { uploadCompiledPDFReport } from '../services/departmentService';
 import SignatureUpload from '../components/SignatureUpload';
-
-const RAW_API_URL = import.meta.env?.VITE_API_URL || import.meta.env?.REACT_APP_API_URL || '/api';
+
+const RAW_API_URL = getApiBaseUrl();
 const API_URL = RAW_API_URL.replace(/\/v1\/?$/, '').replace(/\/+$/, '');
 
 const getAuthHeaders = () => {

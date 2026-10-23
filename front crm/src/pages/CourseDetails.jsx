@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 import React, { useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -10,8 +11,8 @@ import {
 import { useToast } from '../components/ToastProvider';
 import LmsContentManager from '../components/lms/LmsContentManager';
 import AssignmentManager from '../components/lms/AssignmentManager';
-
-const API_BASE = import.meta.env.VITE_API_URL;
+
+const API_BASE = getApiBaseUrl();
 
 const DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 

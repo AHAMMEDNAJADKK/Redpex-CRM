@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 import React, { useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { uploadCompiledPDFReport } from '../services/departmentService';
@@ -16,8 +17,8 @@ import { useNavigate } from 'react-router-dom';
 import { AiAnalyzeButton, AiAnalyzeModal } from '../components/AiAnalyzeModal';
 
 import { isUserAssigned } from '../utils/taskUtils';
-
-const RAW_API_BASE = import.meta.env.VITE_API_URL || '/api';
+
+const RAW_API_BASE = getApiBaseUrl();
 const API_BASE = RAW_API_BASE.replace(/\/v1\/?$/, '').replace(/\/+$/, '');
 
 const isRowEmpty = (item) => {

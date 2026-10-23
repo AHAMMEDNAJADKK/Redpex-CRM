@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 // ===============================
 // FRONTEND: DailyShiftReportPage.jsx
 // Duplicated from DeveloperReportPage framework & customized for Daily Shift Report
@@ -20,8 +21,8 @@ import { fetchCompletedTasks } from '../utils/taskUtils';
 import SignatureUpload from '../components/SignatureUpload';
 import { AiAnalyzeButton, AiAnalyzeModal } from '../components/AiAnalyzeModal';
 import { uploadCompiledPDFReport } from '../services/departmentService';
-
-const RAW_API_BASE = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
+
+const RAW_API_BASE = getApiBaseUrl();
 
 const getApiEndpoint = (path) => {
   const cleanPath = path.startsWith('/') ? path : `/${path}`;

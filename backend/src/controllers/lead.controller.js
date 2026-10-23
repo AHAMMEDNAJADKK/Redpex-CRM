@@ -718,7 +718,9 @@ export const leadController = {
 
       const userId = req.user?.id || req.user?._id;
       const userRole = String(req.user?.role || req.user?.role_id || '').toLowerCase().trim();
-      const isPrivileged = ['1', '2', 'hr', 'admin'].includes(userRole);
+      const userRoleId = String(req.user?.role_id || req.user?.roleId || '').trim();
+      const isSuperAdmin = req.user?.isSuperAdmin === true || req.user?.is_super_admin === true || userRole === 'superadmin' || userRole === '0' || userRole.includes('super');
+      const isPrivileged = isSuperAdmin || ['0', '1', '2', 'hr', 'admin'].includes(userRole) || ['0', '1', '2'].includes(userRoleId);
 
       const updatedLeads = [];
       const failedLeads = [];

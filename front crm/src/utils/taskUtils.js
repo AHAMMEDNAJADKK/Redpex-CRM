@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from './apiUrl';
 const getAuthHeader = () => {
   const rawToken = localStorage.getItem('token');
   const token = rawToken ? rawToken.replace(/^"(.*)"$/, '$1').replace(/"/g, '').replace(/^Bearer\s+/i, '').trim() : '';
@@ -13,7 +14,7 @@ const extractTasks = data => {
 };
 
 const getTasksUrl = () => {
-  const base = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
+  const base = getApiBaseUrl();
   return base.endsWith('/v1') ? `${base}/tasks/all` : `${base}/v1/tasks/all`;
 };
 

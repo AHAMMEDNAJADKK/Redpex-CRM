@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../../utils/apiUrl';
 import React, { useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
@@ -36,8 +37,8 @@ import { getClients } from '../../services/clientService';
 import { getOpeningBalance, setOpeningBalance as saveOpeningBalanceApi } from '../../services/accountsService';
 import ConfirmModal from '../ConfirmModal';
 import IncomeInvoiceModal from './IncomeInvoiceModal';
-
-const API_BASE = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
+
+const API_BASE = getApiBaseUrl();
 
 const getApiEndpoint = (path) => {
   const cleanPath = path.startsWith('/') ? path : `/${path}`;

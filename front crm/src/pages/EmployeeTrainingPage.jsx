@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -12,8 +13,8 @@ import {
 import { useToast } from '../components/ToastProvider';
 import EmployeeMultiSelect from '../components/EmployeeMultiSelect';
 import { fetchDepartments } from '../services/projectService';
-
-const API_BASE = import.meta.env.VITE_API_URL;
+
+const API_BASE = getApiBaseUrl();
 
 const CATEGORIES = [
   'ALL',

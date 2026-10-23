@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../../utils/apiUrl';
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { 
   BookOpen, 
@@ -23,8 +24,8 @@ import {
 import { getClients } from '../../services/clientService';
 import { useToast } from '../ToastProvider';
 import IncomeInvoiceModal from './IncomeInvoiceModal';
-
-const API_BASE = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
+
+const API_BASE = getApiBaseUrl();
 const getApiEndpoint = (path) => {
   const cleanPath = path.startsWith('/') ? path : `/${path}`;
   if (API_BASE.endsWith('/v1')) return `${API_BASE}${cleanPath}`;

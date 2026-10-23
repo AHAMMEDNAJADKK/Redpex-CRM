@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../../utils/apiUrl';
 import React, { useRef, useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { X, Printer, Download, Building2, GraduationCap, Coins, ShieldCheck, FileText, CheckCircle2, Pencil, Loader2, Save, History, Receipt, Plus, User, Trash2, Check, MessageCircle, ChevronDown } from 'lucide-react';
@@ -5,7 +6,7 @@ import { updatePaymentSettlement, deletePaymentSettlement } from '../../services
 import html2pdf from 'html2pdf.js';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
-
+
 const PAYMENT_METHODS = ['Bank Transfer', 'Cash', 'UPI', 'Credit Card', 'Cheque', 'Other'];
 
 const IncomeInvoiceModal = ({ isOpen, onClose, incomeRecord, initialMode = 'invoice', onUpdateSuccess, onSaveTransient, showToast }) => {
@@ -659,7 +660,7 @@ const IncomeInvoiceModal = ({ isOpen, onClose, incomeRecord, initialMode = 'invo
         'Authorization': cleanToken.startsWith('Bearer ') ? cleanToken : `Bearer ${cleanToken}`
       };
 
-      const API_BASE = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
+      const API_BASE = getApiBaseUrl();
       const getApiEndpoint = (path) => {
         const cleanPath = path.startsWith('/') ? path : `/${path}`;
         if (API_BASE.endsWith('/v1')) return `${API_BASE}${cleanPath}`;
@@ -1000,7 +1001,7 @@ const IncomeInvoiceModal = ({ isOpen, onClose, incomeRecord, initialMode = 'invo
         'Authorization': cleanToken.startsWith('Bearer ') ? cleanToken : `Bearer ${cleanToken}` 
       };
 
-      const API_BASE = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
+      const API_BASE = getApiBaseUrl();
       const getApiEndpoint = (path) => {
         const cleanPath = path.startsWith('/') ? path : `/${path}`;
         if (API_BASE.endsWith('/v1')) return `${API_BASE}${cleanPath}`;

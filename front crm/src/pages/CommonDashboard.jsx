@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -9,8 +10,8 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '../components/ToastProvider';
-
-const API_BASE = import.meta.env.VITE_API_URL || '/api';
+
+const API_BASE = getApiBaseUrl();
 
 /* ─── Status config ─── */
 const STATUS_CONFIG = {

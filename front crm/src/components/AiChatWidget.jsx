@@ -1,9 +1,10 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, X, Send, Loader2, Sparkles } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
-
-const RAW_API_URL = import.meta.env?.VITE_API_URL || import.meta.env?.REACT_APP_API_URL || '/api';
+
+const RAW_API_URL = getApiBaseUrl();
 const API_URL = RAW_API_URL.replace(/\/v1\/?$/, '').replace(/\/+$/, '');
 
 const AiChatWidget = ({ reportContext }) => {

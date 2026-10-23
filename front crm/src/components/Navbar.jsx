@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Search, Bell, User, LogOut, Sun, Moon, Menu } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -6,8 +7,8 @@ import ProfileDrawer from './ProfileDrawer';
 import NotificationPopover from './NotificationPopover';
 import NavbarNotificationPopup from './NavbarNotificationPopup';
 import { AiAnalyzeButton, AiAnalyzeModal } from './AiAnalyzeModal';
-
-const API_BASE = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
+
+const API_BASE = getApiBaseUrl();
 
 const Navbar = ({ isSidebarCollapsed, toggleMobileSidebar }) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
