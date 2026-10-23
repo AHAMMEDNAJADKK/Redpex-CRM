@@ -1,8 +1,8 @@
 import axios from 'axios';
+import { getApiBaseUrl } from '../utils/apiUrl';
 
 const getBaseUrl = () => {
-  let envUrl = import.meta.env?.VITE_API_URL || import.meta.env?.REACT_APP_API_URL || '/api';
-  envUrl = envUrl.replace(/\/+$/, '');
+  let envUrl = getApiBaseUrl();
   
   if (envUrl.endsWith('/v1')) {
     return `${envUrl}/accounts`;
@@ -11,8 +11,7 @@ const getBaseUrl = () => {
 };
 
 const getFallbackUrl = () => {
-  let envUrl = import.meta.env?.VITE_API_URL || import.meta.env?.REACT_APP_API_URL || '/api';
-  envUrl = envUrl.replace(/\/+$/, '');
+  let envUrl = getApiBaseUrl();
   return `${envUrl}/accounts`;
 };
 

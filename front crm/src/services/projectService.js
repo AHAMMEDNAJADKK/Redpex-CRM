@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { getApiBaseUrl } from '../utils/apiUrl';
 
 const getBaseUrl = () => {
-  const host = import.meta.env.VITE_API_URL || '/api';
+  const host = getApiBaseUrl();
   return `${host.replace(/\/+$/, '')}/v1/projects`;
 };
 

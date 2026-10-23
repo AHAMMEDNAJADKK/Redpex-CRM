@@ -1,10 +1,11 @@
 // src/services/departmentService.js
 
 import axios from 'axios';
+import { getApiBaseUrl } from '../utils/apiUrl';
 import { PDFDocument } from 'pdf-lib';
 
 // Get base URL from environment or default to local development port
-const RAW_API_URL = import.meta.env?.VITE_API_URL || import.meta.env?.REACT_APP_API_URL || '/api';
+const RAW_API_URL = getApiBaseUrl();
 const API_URL = RAW_API_URL.replace(/\/v1\/?$/, '').replace(/\/+$/, '');
 
 // Create dedicated Axios instance for departments

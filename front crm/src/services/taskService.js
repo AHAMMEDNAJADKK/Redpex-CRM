@@ -1,6 +1,7 @@
+import { getApiBaseUrl } from '../utils/apiUrl';
 // The backend mounts the task router at /api/tasks. VITE_API_URL is the
 // application API root (for example, https://your-backend.onrender.com/api), not /api/v1.
-const baseUrl = () => (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
+const baseUrl = () => getApiBaseUrl();
 
 const headers = () => {
   const raw = localStorage.getItem('token') || '';

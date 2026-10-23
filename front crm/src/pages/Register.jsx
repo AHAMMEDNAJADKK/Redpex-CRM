@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '../components/ToastProvider';
+import { getApiBaseUrl } from '../utils/apiUrl';
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -57,7 +58,7 @@ const Register = () => {
   });
 
   React.useEffect(() => {
-    const apiBaseUrl = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
+    const apiBaseUrl = getApiBaseUrl();
 
     const fetchDesignations = async () => {
       try {
@@ -158,7 +159,7 @@ const Register = () => {
     }
 
     // Pull Render backend target URL from env variables
-    const apiBaseUrl = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
+    const apiBaseUrl = getApiBaseUrl();
     const finalPayload = {
       ...formData,
       salary: parseFloat(formData.salary) || 0,

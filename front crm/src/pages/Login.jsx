@@ -6,6 +6,7 @@ import { useToast } from '../components/ToastProvider';
 import { useUser } from '../contexts/UserContext';
 import { GoogleLogin } from '@react-oauth/google';
 import { resolveUserDashboardPath } from '../utils/userDashboard';
+import { getApiBaseUrl } from '../utils/apiUrl';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -18,7 +19,7 @@ const Login = () => {
 
   const handleGoogleSuccess = async (credentialResponse) => {
     setIsLoading(true);
-    const apiBaseUrl = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
+    const apiBaseUrl = getApiBaseUrl();
 
     try {
       const response = await fetch(`${apiBaseUrl}/auth/google`, {
@@ -90,7 +91,7 @@ const Login = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    const apiBaseUrl = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
+    const apiBaseUrl = getApiBaseUrl();
 
     try {
       const response = await fetch(`${apiBaseUrl}/auth/login`, {
@@ -350,7 +351,7 @@ const ForgotPasswordModal = ({ isOpen, onClose, defaultEmail, showToast, onSucce
   const handleVerify = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    const apiBaseUrl = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
+    const apiBaseUrl = getApiBaseUrl();
 
     try {
       const response = await fetch(`${apiBaseUrl}/auth/forgot-password/verify`, {
@@ -379,7 +380,7 @@ const ForgotPasswordModal = ({ isOpen, onClose, defaultEmail, showToast, onSucce
     e.preventDefault();
     if (!isPasswordValid) return;
     setIsLoading(true);
-    const apiBaseUrl = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
+    const apiBaseUrl = getApiBaseUrl();
 
     try {
       const response = await fetch(`${apiBaseUrl}/auth/forgot-password/reset`, {
