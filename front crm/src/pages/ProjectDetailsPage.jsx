@@ -101,7 +101,7 @@ const ProjectDetailsPage = () => {
     );
   }
 
-  const { project, activities = [], comments = [], documents = [], tasks = [] } = data;
+  const { project, activities = [], comments = [], documents = [], tasks = [], milestones = [] } = data;
 
   // Task metrics calculation
   const totalTasksCount = tasks.length;

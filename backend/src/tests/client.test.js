@@ -7,7 +7,7 @@ import { createClient, getClients, getClientById, updateClient, deleteClient, ex
 
 dotenv.config();
 
-const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://najadahammed34_db_user:TxIXECCRZ2hIkdBB@cluster0.e6luv3h.mongodb.net/crm';
+const MONGO_URI = process.env.MONGO_URI || process.env.MONGODB_URI || process.env.MONGO_URI || process.env.DATABASE_URL;
 
 const mockResponse = () => {
   const res = {};

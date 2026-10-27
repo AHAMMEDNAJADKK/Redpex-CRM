@@ -17,7 +17,7 @@ import CalendarWork from './src/models/calendarWork.model.js';
 import Notification from './src/models/notification.model.js';
 import Designation from './src/models/designation.model.js';
 
-const MONGO_URI = process.env.MONGO_URI || process.env.DATABASE_URL || 'mongodb+srv://najadahammed34_db_user:TxIXECCRZ2hIkdBB@cluster0.e6luv3h.mongodb.net/crm';
+const MONGO_URI = process.env.MONGO_URI || process.env.DATABASE_URL || process.env.MONGODB_URI || process.env.MONGO_URI || process.env.DATABASE_URL;
 const JWT_SECRET = process.env.JWT_SECRET || 'supersecretjwtkey_12345';
 
 const results = {

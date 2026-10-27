@@ -7,7 +7,7 @@ const departmentSchema = new mongoose.Schema({
 const Department = mongoose.model('Department', departmentSchema);
 
 async function run() {
-  await mongoose.connect('mongodb+srv://najadahammed34_db_user:TxIXECCRZ2hIkdBB@cluster0.e6luv3h.mongodb.net/crm');
+  await mongoose.connect(process.env.MONGODB_URI || process.env.MONGO_URI || process.env.DATABASE_URL);
   const depts = await Department.find({});
   console.log(JSON.stringify(depts, null, 2));
   process.exit(0);

@@ -600,7 +600,11 @@ export const getAllLeaveRequests = async (req, res) => {
 export const approveOrRejectLeave = async (req, res) => {
   try {
     const { id } = req.params;
-    const { action, comment } = req.body; // action: 'APPROVED' | 'REJECTED'
+    const { action, comment } = req.body;
+    if (!id || !mongoose.Types.ObjectId.isValid(String(id))) {
+      // Invalid leave request identifier in approve
+      return res.status(400).json({ success: false, message: 'Invalid leave request identifier.' });
+    } // action: 'APPROVED' | 'REJECTED'
     const actorId = req.user.id || req.user._id;
 
     if (!['APPROVED', 'REJECTED'].includes(action)) {
@@ -838,6 +842,10 @@ export const getLeaveHistory = async (req, res) => {
 export const cancelLeaveRequest = async (req, res) => {
   try {
     const { id } = req.params;
+    if (!id || !mongoose.Types.ObjectId.isValid(String(id))) {
+      // Invalid leave request identifier in cancel
+      return res.status(400).json({ success: false, message: 'Invalid leave request identifier.' });
+    }
     const userId = req.user.id || req.user._id;
     const currentUser = await User.findById(userId);
 
@@ -876,6 +884,10 @@ export const cancelLeaveRequest = async (req, res) => {
 export const updateLeaveRequest = async (req, res) => {
   try {
     const { id } = req.params;
+    if (!id || !mongoose.Types.ObjectId.isValid(String(id))) {
+      // Invalid leave request identifier in update
+      return res.status(400).json({ success: false, message: 'Invalid leave request identifier.' });
+    }
     const { leaveType, startDate, endDate, reason, teamLeadStatus, hrStatus, finalStatus } = req.body;
     const userId = req.user.id || req.user._id;
     const currentUser = await User.findById(userId);

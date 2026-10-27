@@ -1810,7 +1810,7 @@ const [activePriority, setActivePriority] = useState('all');
 /* ==========================================
    CREATE LEAD MODAL COMPONENT
    ========================================== */
-const CreateModal = ({ isOpen, onClose, onCreated, staff, getAuthHeaders, showToast, isPrivilegedUser }) => {
+const CreateModal = ({ isOpen, onClose, onCreated, staff, getAuthHeaders, showToast, isPrivilegedUser, canEditAssignedTo = isPrivilegedUser }) => {
   const [formData, setFormData] = useState({
     leadName: '',
     companyName: '',
@@ -2173,7 +2173,7 @@ const CreateModal = ({ isOpen, onClose, onCreated, staff, getAuthHeaders, showTo
 /* ==========================================
    EDIT LEAD MODAL COMPONENT
    ========================================== */
-const EditModal = ({ isOpen, onClose, onUpdated, lead, staff, getAuthHeaders, showToast, isPrivilegedUser }) => {
+const EditModal = ({ isOpen, onClose, onUpdated, lead, staff, getAuthHeaders, showToast, isPrivilegedUser, canEditAssignedTo = isPrivilegedUser }) => {
   const formatDateForInput = (dateString) => {
     if (!dateString) return '';
     try {

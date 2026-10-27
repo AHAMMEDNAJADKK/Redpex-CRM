@@ -339,16 +339,7 @@ const GraphicDesignerReportPage = () => {
           if (su) freshestUser = JSON.parse(su);
         } catch(e){}
 
-        let staffList = [];
-        if (typeof developers !== 'undefined') staffList = developers;
-        else if (typeof marketingStaff !== 'undefined') staffList = marketingStaff;
-        else if (typeof hrStaff !== 'undefined') staffList = hrStaff;
-        else if (typeof designers !== 'undefined') staffList = designers;
-        else if (typeof hods !== 'undefined') staffList = hods;
-        else if (typeof videographers !== 'undefined') staffList = videographers;
-        else if (typeof counselors !== 'undefined') staffList = counselors;
-        else if (typeof accountants !== 'undefined') staffList = accountants;
-        else if (typeof opsStaff !== 'undefined') staffList = opsStaff;
+        let staffList = designers || [];
 
         let isPriv = true;
         if (typeof isPrivileged !== 'undefined') isPriv = isPrivileged;

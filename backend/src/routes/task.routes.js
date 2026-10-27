@@ -56,6 +56,18 @@ router.use(verifyJWT);
 // CREATE TASK
 // POST /api/v1/tasks/create
 router.post(
+  '/',
+  upload.any(),
+  validateBody(createTaskSchema),
+  createTask
+);
+
+router.get(
+  '/',
+  getAllTasks
+);
+
+router.post(
   '/create',
   upload.any(),
   validateBody(createTaskSchema),
@@ -86,6 +98,12 @@ router.get(
 
 // DELETE TASK
 // DELETE /api/v1/tasks/delete/:task_id or DELETE /api/v1/tasks/:task_id
+router.delete(
+  '/task-delete/:task_id',
+  validateParams(taskIdParamsSchema),
+  deleteTask
+);
+
 router.delete(
   '/delete/:task_id',
   validateParams(taskIdParamsSchema),
@@ -158,6 +176,14 @@ router.get(
 
 // ADD COMMENT
 // POST /api/v1/tasks/:task_id/comments
+router.post(
+  '/comment/:task_id',
+  upload.any(),
+  validateParams(taskIdParamsSchema),
+  validateBody(addCommentSchema),
+  addTaskComment
+);
+
 router.post(
   '/:task_id/comments',
   upload.any(),

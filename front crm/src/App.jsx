@@ -135,17 +135,17 @@ const RestrictedRoute = ({ children }) => {
 const PublicRoute = ({ children }) => {
   const token = getStoredToken();
   if (token) {
+    let targetDashboard = '/dashboard';
     try {
       const userStr = localStorage.getItem('user');
       if (userStr) {
         const userObj = JSON.parse(userStr);
-        const targetDashboard = resolveUserDashboardPath(userObj);
-        return <Navigate to={targetDashboard} replace />;
+        targetDashboard = resolveUserDashboardPath(userObj);
       }
     } catch (e) {
       console.error("Public redirect role parse failed:", e);
     }
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to={targetDashboard} replace />;
   }
   return children;
 };
@@ -154,18 +154,18 @@ const LandingRoute = () => {
   const token = getStoredToken();
   if (!token) return <Navigate to="/login" replace />;
 
+  let targetDashboard = '/login';
   try {
     const userStr = localStorage.getItem('user');
     if (userStr) {
       const userObj = JSON.parse(userStr);
-      const targetDashboard = resolveUserDashboardPath(userObj);
-      return <Navigate to={targetDashboard} replace />;
+      targetDashboard = resolveUserDashboardPath(userObj);
     }
   } catch (e) {
     console.error("Landing redirect role parse failed:", e);
   }
 
-  return <Navigate to="/login" replace />;
+  return <Navigate to={targetDashboard} replace />;
 };
 
 function App() {

@@ -35,7 +35,7 @@ const wrapHtmlTemplate = (content, subjectStr, senderNameStr) => {
   }
 
   const cleanSubject = (subjectStr || 'New CRM Notification Alert')
-    .replace(/^[📌🔔]\s*/, '')
+    .replace(/^[📌🔔]\s*/u, '')
     .replace(/^Notification:\s*/i, '');
 
   const formattedBody = content

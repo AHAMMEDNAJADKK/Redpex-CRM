@@ -3,7 +3,7 @@ import fs from 'fs';
 import User from './src/models/user.model.js';
 import { userController } from './src/controllers/user.controller.js';
 
-const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://najadahammed34_db_user:TxIXECCRZ2hIkdBB@cluster0.e6luv3h.mongodb.net/crm';
+const MONGO_URI = process.env.MONGO_URI || process.env.MONGODB_URI || process.env.MONGO_URI || process.env.DATABASE_URL;
 
 async function testApiLogic() {
   await mongoose.connect(MONGO_URI);
