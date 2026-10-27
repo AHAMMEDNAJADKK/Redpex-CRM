@@ -93,6 +93,7 @@ router.get('/:id', apiRateLimiter, leadController.getLeadById);
 
 // CREATE LEAD (with Zod validation, rate limiting, blocked for Admin)
 router.post('/create', leadMutationRateLimiter, restrictAdminMutations, validateBody(createLeadSchema), leadController.createLead);
+router.post('/', leadMutationRateLimiter, restrictAdminMutations, validateBody(createLeadSchema), leadController.createLead);
 
 // BULK UPDATE LEAD STATUS (blocked for Admin)
 router.put('/update', leadMutationRateLimiter, restrictAdminMutations, validateBody(bulkUpdateStatusSchema), leadController.bulkUpdateStatus);

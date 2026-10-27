@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 
 const run = async () => {
   try {
-    await mongoose.connect('mongodb+srv://najadahammed34_db_user:TxIXECCRZ2hIkdBB@cluster0.e6luv3h.mongodb.net/crm');
+    await mongoose.connect(process.env.MONGODB_URI || process.env.MONGO_URI || process.env.DATABASE_URL);
     
     // Find Athira and Liyana
     const users = await User.find({ name: /Liyana|Athira/i });

@@ -13,7 +13,7 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "node prisma/seeds/seed.js",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --testPathPattern=\"(lead|health|superadmin_auth|qa_redpex_workflows)\\.test\\.js\""
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --testPathPattern=\"(lead|health|superadmin_auth|qa_redpex_workflows|qa_comprehensive_audit)\\.test\\.js\""
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

@@ -312,6 +312,24 @@ const CommonDashboard = () => {
   const fmtTime = d => d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
   const fmtDate = d => d.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
   const fmtShort = str => { if (!str) return '—'; return new Date(str).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }); };
+  const getReportRoute = useCallback(() => {
+    if (!user) return '/basic-report';
+    const dept = String(user.department || user.departmentId?.name || '').toLowerCase();
+    const desig = String(user.designation || user.designationId?.name || '').toLowerCase();
+    const role = String(user.role || '').toLowerCase();
+    const combined = `${dept} ${desig} ${role}`;
+
+    if (combined.includes('develop') || combined.includes('r&d') || combined.includes('software')) return '/developer-report';
+    if (combined.includes('graphic') || combined.includes('designer') || combined.includes('ui')) return '/graphic-designer-report';
+    if (combined.includes('video') || combined.includes('media')) return '/videographer-report';
+    if (combined.includes('hr') || combined.includes('human')) return '/hr-report';
+    if (combined.includes('account') || combined.includes('finance')) return '/accountant-report';
+    if (combined.includes('counselor') || combined.includes('academic')) return '/academic-counselor-report';
+    if (combined.includes('ops') || combined.includes('operation')) return '/ops-report';
+    if (combined.includes('market') || combined.includes('digital')) return '/marketing-report';
+    return '/basic-report';
+  }, [user]);
+
   const fmtLogin = str => {
     if (!str) return 'Never logged in';
     return new Date(str).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', hour12: true });

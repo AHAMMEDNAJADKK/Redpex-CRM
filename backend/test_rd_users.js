@@ -3,7 +3,7 @@ import User from './src/models/user.model.js';
 
 const run = async () => {
   try {
-    await mongoose.connect('mongodb+srv://najadahammed34_db_user:TxIXECCRZ2hIkdBB@cluster0.e6luv3h.mongodb.net/crm');
+    await mongoose.connect(process.env.MONGODB_URI || process.env.MONGO_URI || process.env.DATABASE_URL);
     
     const users = await User.find({}).select('name role designation department departmentId isActive email');
     

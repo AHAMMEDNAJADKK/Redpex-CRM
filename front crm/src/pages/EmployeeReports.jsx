@@ -192,10 +192,10 @@ const EmployeeReports = () => {
     const desigName = emp.designationId?.name || emp.designation || '';
     const desigMatch = selectedDesignation === 'all' || desigName.toLowerCase().trim() === selectedDesignation.toLowerCase().trim();
 
-    if (!isSuperAdmin && userDept) {
+    if (!isSuperAdmin && deptName) {
       const empIdStr = String(emp._id || emp.id || '');
       const loggedInIdStr = String(loggedInUser?._id || loggedInUser?.id || '');
-      if (empIdStr !== loggedInIdStr && deptName.toLowerCase().trim() !== userDept.toLowerCase().trim()) {
+      if (empIdStr !== loggedInIdStr && deptName.toLowerCase().trim() !== String(deptName).toLowerCase().trim()) {
         return false;
       }
     }

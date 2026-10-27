@@ -173,9 +173,9 @@ export const courseController = {
    */
   createCourse: async (req, res, next) => {
     try {
+      const courseName = (req.body.courseName || req.body.title || req.body.name || "").trim();
       const {
         courseCode,
-        courseName,
         category,
         shortDescription,
         description,

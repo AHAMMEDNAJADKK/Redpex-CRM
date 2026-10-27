@@ -37,6 +37,16 @@ router.delete(
 );
 
 router.post(
+  '/',
+  requireRole(['admin', 'manager', 'superadmin', '0', '1', '2']),
+  [
+    body('name').trim().notEmpty().withMessage('Department name is required'),
+    body('code').trim().notEmpty().withMessage('Department code is required')
+  ],
+  departmentController.create
+);
+
+router.post(
   '/create',
   requireRole(['admin', 'manager', 'superadmin', '0', '1', '2']),
   [
