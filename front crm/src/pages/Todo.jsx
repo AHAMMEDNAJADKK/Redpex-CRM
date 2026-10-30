@@ -156,7 +156,7 @@ const COLUMN_META = {
   pending: { label: 'Pending', icon: Layout, color: 'bg-[#e26a6a]', glow: 'shadow-[#e26a6a]/20' },
   current: { label: 'Current', icon: Clock, color: 'bg-[#e5a23a]', glow: 'shadow-[#e5a23a]/20' },
   preview: { label: 'Preview', icon: Eye, color: 'bg-indigo-500', glow: 'shadow-indigo-500/20' },
-  done: { label: 'Completed', icon: CheckCircle2, color: 'bg-[#b7d333]', glow: 'shadow-[#b7d333]/20' }
+  done: { label: 'Completed', icon: CheckCircle2, color: 'bg-[#10b981]', glow: 'shadow-[#10b981]/20' }
 };
 
 const PRIORITY_META = {

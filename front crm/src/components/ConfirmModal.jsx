@@ -56,7 +56,7 @@ const ConfirmModal = ({
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
             transition={{ type: "spring", duration: 0.4, bounce: 0.1 }}
-            className="relative w-full max-w-md overflow-hidden bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl shadow-2xl z-10 p-6 flex flex-col items-center text-center"
+            className="relative w-full max-w-md overflow-hidden bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl shadow-xl z-10 p-6 flex flex-col items-center text-center"
           >
             {/* Close Button */}
             <button
@@ -101,7 +101,7 @@ const ConfirmModal = ({
                 onClick={onConfirm}
                 className={`flex-1 py-2.5 text-white rounded-xl text-xs font-bold transition cursor-pointer shadow-lg ${
                   type === 'danger'
-                    ? 'bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 shadow-rose-500/20'
+                    ? 'bg-[#be1e2d] hover:bg-[#a81724] shadow-sm shadow-[#be1e2d]/25'
                     : type === 'emerald'
                     ? 'bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 shadow-emerald-600/20'
                     : 'bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 shadow-amber-500/20'

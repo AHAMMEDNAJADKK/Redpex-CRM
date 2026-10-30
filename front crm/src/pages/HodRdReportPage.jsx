@@ -1324,7 +1324,7 @@ const HodRdReportPage = () => {
   const handleDownloadWeeklyPDF = async () => {
     try {
       const logoImg = new Image();
-      logoImg.src = '/logo3.png';
+      logoImg.src = '/redpex-full.png';
       await new Promise((resolve) => {
         logoImg.onload = resolve;
         logoImg.onerror = resolve;
@@ -1671,7 +1671,7 @@ const HodRdReportPage = () => {
   const handleDownloadMonthlyPDF = async () => {
     try {
       const logoImg = new Image();
-      logoImg.src = '/logo3.png';
+      logoImg.src = '/redpex-full.png';
       await new Promise((resolve) => {
         logoImg.onload = resolve;
         logoImg.onerror = resolve;

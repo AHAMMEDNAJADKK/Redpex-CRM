@@ -19,10 +19,10 @@ const API_BASE = getApiBaseUrl();
 
 /* ─── Status config ─── */
 const STATUS_CONFIG = {
-  pending:  { label: 'Pending',     icon: Layout,       color: '#e26a6a', bg: 'bg-[#e26a6a]/10',  text: 'text-[#e26a6a]',  border: 'border-[#e26a6a]/25'  },
-  current:  { label: 'In Progress', icon: Clock,        color: '#e5a23a', bg: 'bg-[#e5a23a]/10',  text: 'text-[#e5a23a]',  border: 'border-[#e5a23a]/25'  },
-  preview:  { label: 'In Review',   icon: Eye,          color: '#442d82', bg: 'bg-indigo-500/10', text: 'text-indigo-500', border: 'border-indigo-500/25' },
-  done:     { label: 'Completed',   icon: CheckCircle2, color: '#b7d333', bg: 'bg-[#b7d333]/10',  text: 'text-[#b7d333]',  border: 'border-[#b7d333]/25'  },
+  pending:  { label: 'Pending',     icon: Layout,       color: '#ef4444', bg: 'bg-[#ef4444]/10',  text: 'text-[#ef4444]',  border: 'border-[#ef4444]/25'  },
+  current:  { label: 'In Progress', icon: Clock,        color: '#f59e0b', bg: 'bg-[#f59e0b]/10',  text: 'text-[#f59e0b]',  border: 'border-[#f59e0b]/25'  },
+  preview:  { label: 'In Review',   icon: Eye,          color: '#be1e2d', bg: 'bg-indigo-500/10', text: 'text-indigo-500', border: 'border-indigo-500/25' },
+  done:     { label: 'Completed',   icon: CheckCircle2, color: '#10b981', bg: 'bg-[#10b981]/10',  text: 'text-[#10b981]',  border: 'border-[#10b981]/25'  },
 };
 
 /* ─────────────────────────────────────────────
@@ -57,7 +57,7 @@ const DonutChart = ({ segments, size = 130, strokeWidth = 14 }) => {
 };
 
 /* SVG Line/Area chart */
-const AreaChart = ({ points: rawPoints = [], color = '#442d82', areaColor = '#442d8220', height = 120 }) => {
+const AreaChart = ({ points: rawPoints = [], color = '#be1e2d', areaColor = '#be1e2d18', height = 120 }) => {
   const max = Math.max(...rawPoints.map(p => p.value), 1);
   const W = 500, H = height, PL = 8, PR = 8, PT = 10, PB = 20;
   const cW = W - PL - PR, cH = H - PT - PB;
@@ -90,7 +90,7 @@ const AreaChart = ({ points: rawPoints = [], color = '#442d82', areaColor = '#44
 };
 
 /* Horizontal progress bar */
-const ProgressBar = ({ pct = 0, color = '#b7d333', height = 6, animated = true }) => (
+const ProgressBar = ({ pct = 0, color = '#10b981', height = 6, animated = true }) => (
   <div className={`w-full rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden`} style={{ height }}>
     <motion.div
       className="h-full rounded-full"
@@ -129,7 +129,7 @@ const BigMetricCard = ({ label, value, icon: Icon, color, subtext, trend, delay 
         <Icon size={22} style={{ color }} />
       </div>
       {trend !== undefined && (
-        <div className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black ${trend >= 0 ? 'bg-[#b7d333]/10 text-[#b7d333]' : 'bg-[#e26a6a]/10 text-[#e26a6a]'}`}>
+        <div className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black ${trend >= 0 ? 'bg-[#10b981]/10 text-[#10b981]' : 'bg-[#ef4444]/10 text-[#ef4444]'}`}>
           <ChevronUp size={9} className={trend >= 0 ? '' : 'rotate-180'} />
           {Math.abs(trend)}%
         </div>
@@ -284,10 +284,10 @@ const DeveloperDashboard = () => {
   const fmtFull  = str => { if (!str) return '—'; return new Date(str).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }); };
 
   const donutSegments = [
-    { value: statusCounts.pending, color: '#e26a6a' },
-    { value: statusCounts.current, color: '#e5a23a' },
-    { value: statusCounts.preview, color: '#442d82' },
-    { value: statusCounts.done,    color: '#b7d333' },
+    { value: statusCounts.pending, color: '#ef4444' },
+    { value: statusCounts.current, color: '#f59e0b' },
+    { value: statusCounts.preview, color: '#be1e2d' },
+    { value: statusCounts.done,    color: '#10b981' },
   ];
 
   /* ────── Loading screen ────── */
@@ -384,11 +384,11 @@ const DeveloperDashboard = () => {
 
       {/* ══ ROW 1: 5 BIG METRIC CARDS ══ */}
       <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 mb-6">
-        <BigMetricCard label="Total Assigned"   value={myTasks.length}       icon={ListChecks}   color="#442d82" subtext="Lifetime tasks"          delay={0}    />
-        <BigMetricCard label="In Progress"      value={statusCounts.current} icon={Zap}          color="#e5a23a" subtext="Active right now"        delay={0.06} />
-        <BigMetricCard label="In Review"        value={statusCounts.preview} icon={Eye}          color="#442d82" subtext="Awaiting feedback"       delay={0.12} />
-        <BigMetricCard label="Pending"          value={statusCounts.pending} icon={AlertCircle}  color="#e26a6a" subtext="Not started yet"         delay={0.18} />
-        <BigMetricCard label="Completed"        value={statusCounts.done}    icon={CheckCircle2} color="#b7d333" subtext={`${completionRate}% rate`} delay={0.24} />
+        <BigMetricCard label="Total Assigned"   value={myTasks.length}       icon={ListChecks}   color="#be1e2d" subtext="Lifetime tasks"          delay={0}    />
+        <BigMetricCard label="In Progress"      value={statusCounts.current} icon={Zap}          color="#f59e0b" subtext="Active right now"        delay={0.06} />
+        <BigMetricCard label="In Review"        value={statusCounts.preview} icon={Eye}          color="#be1e2d" subtext="Awaiting feedback"       delay={0.12} />
+        <BigMetricCard label="Pending"          value={statusCounts.pending} icon={AlertCircle}  color="#ef4444" subtext="Not started yet"         delay={0.18} />
+        <BigMetricCard label="Completed"        value={statusCounts.done}    icon={CheckCircle2} color="#10b981" subtext={`${completionRate}% rate`} delay={0.24} />
       </div>
 
       {/* ══ ROW 2: Donut + Activity Chart + Progress Card ══ */}
@@ -454,7 +454,7 @@ const DeveloperDashboard = () => {
             </div>
           </div>
 
-          <AreaChart points={weeklyActivity} color="#442d82" height={120} />
+          <AreaChart points={weeklyActivity} color="#be1e2d" height={120} />
 
           {/* Summary row */}
           <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
@@ -481,7 +481,7 @@ const DeveloperDashboard = () => {
               <h2 className="text-sm font-black text-slate-700 dark:text-slate-200 uppercase tracking-wider">Performance</h2>
               <p className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5">Individual metrics</p>
             </div>
-            <div className="p-2.5 rounded-2xl bg-[#b7d333]/10"><Award size={16} className="text-[#b7d333]" /></div>
+            <div className="p-2.5 rounded-2xl bg-[#10b981]/10"><Award size={16} className="text-[#10b981]" /></div>
           </div>
 
           {/* Big completion % */}
@@ -489,7 +489,7 @@ const DeveloperDashboard = () => {
             <div className="relative mb-3">
               <svg width="110" height="110" viewBox="0 0 110 110">
                 <circle cx="55" cy="55" r="44" fill="none" stroke="#e2e8f0" strokeWidth="10" className="dark:stroke-slate-800" />
-                <motion.circle cx="55" cy="55" r="44" fill="none" stroke="#b7d333" strokeWidth="10"
+                <motion.circle cx="55" cy="55" r="44" fill="none" stroke="#10b981" strokeWidth="10"
                   strokeDasharray={`${2*Math.PI*44}`}
                   initial={{ strokeDashoffset: 2*Math.PI*44 }}
                   animate={{ strokeDashoffset: 2*Math.PI*44 * (1 - completionRate/100) }}
@@ -505,9 +505,9 @@ const DeveloperDashboard = () => {
 
           {/* Quick KPI bars */}
           {[
-            { label: 'Completed',   val: statusCounts.done,    max: myTasks.length || 1, color: '#b7d333' },
-            { label: 'In Progress', val: statusCounts.current, max: myTasks.length || 1, color: '#e5a23a' },
-            { label: 'Pending',     val: statusCounts.pending, max: myTasks.length || 1, color: '#e26a6a' },
+            { label: 'Completed',   val: statusCounts.done,    max: myTasks.length || 1, color: '#10b981' },
+            { label: 'In Progress', val: statusCounts.current, max: myTasks.length || 1, color: '#f59e0b' },
+            { label: 'Pending',     val: statusCounts.pending, max: myTasks.length || 1, color: '#ef4444' },
           ].map((kpi, i) => (
             <div key={i} className="mb-3 last:mb-0">
               <div className="flex justify-between items-center mb-1.5">
@@ -547,7 +547,7 @@ const DeveloperDashboard = () => {
               {devUserTasks.map((dev, i) => {
                 const pct  = dev.total ? Math.round((dev.done / dev.total) * 100) : 0;
                 const isMe = String(dev.aId) === String(currentUserId);
-                const barColor = pct >= 75 ? '#b7d333' : pct >= 40 ? '#e5a23a' : '#e26a6a';
+                const barColor = pct >= 75 ? '#10b981' : pct >= 40 ? '#f59e0b' : '#ef4444';
                 return (
                   <motion.div key={i}
                     initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }}
@@ -574,9 +574,9 @@ const DeveloperDashboard = () => {
                       <ProgressBar pct={pct} color={barColor} height={6} />
                       <div className="flex items-center gap-4 mt-1.5">
                         <span className="text-[9px] font-bold text-slate-400">Total: <b className="text-slate-600 dark:text-slate-300">{dev.total}</b></span>
-                        <span className="text-[9px] font-bold text-[#b7d333]">✓ {dev.done} done</span>
-                        <span className="text-[9px] font-bold text-[#e5a23a]">⚡ {dev.current} active</span>
-                        <span className="text-[9px] font-bold text-[#e26a6a]">⏳ {dev.pending} pending</span>
+                        <span className="text-[9px] font-bold text-[#10b981]">✓ {dev.done} done</span>
+                        <span className="text-[9px] font-bold text-[#f59e0b]">⚡ {dev.current} active</span>
+                        <span className="text-[9px] font-bold text-[#ef4444]">⏳ {dev.pending} pending</span>
                         {dev.preview > 0 && <span className="text-[9px] font-bold text-indigo-400">🔍 {dev.preview} review</span>}
                       </div>
                     </div>
@@ -595,8 +595,8 @@ const DeveloperDashboard = () => {
               <h2 className="text-sm font-black text-slate-700 dark:text-slate-200 uppercase tracking-wider">Recently Done</h2>
               <p className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5">Latest completed tasks</p>
             </div>
-            <div className="p-2.5 rounded-2xl bg-[#b7d333]/10">
-              <Rocket size={14} className="text-[#b7d333]" />
+            <div className="p-2.5 rounded-2xl bg-[#10b981]/10">
+              <Rocket size={14} className="text-[#10b981]" />
             </div>
           </div>
 
@@ -614,9 +614,9 @@ const DeveloperDashboard = () => {
                 <motion.div key={t.id || i}
                   initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.05 * i }}
-                  className="flex items-start gap-3 p-3.5 rounded-2xl bg-[#b7d333]/5 border border-[#b7d333]/15 hover:bg-[#b7d333]/10 transition-colors">
-                  <div className="mt-0.5 w-5 h-5 rounded-full bg-[#b7d333]/20 flex items-center justify-center shrink-0">
-                    <CheckCircle2 size={11} className="text-[#b7d333]" />
+                  className="flex items-start gap-3 p-3.5 rounded-2xl bg-[#10b981]/5 border border-[#10b981]/15 hover:bg-[#10b981]/10 transition-colors">
+                  <div className="mt-0.5 w-5 h-5 rounded-full bg-[#10b981]/20 flex items-center justify-center shrink-0">
+                    <CheckCircle2 size={11} className="text-[#10b981]" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-[11px] font-bold text-slate-700 dark:text-slate-200 truncate leading-tight">{t.title}</p>
@@ -632,10 +632,10 @@ const DeveloperDashboard = () => {
       {/* ══ ROW 4: Quick Stats ══ */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5">
         {[
-          { icon: Braces,     label: 'Total Team Tasks', value: devUserTasks.reduce((sum, u) => sum + u.total, 0),                               color: '#442d82' },
-          { icon: Users,      label: 'Team Members',     value: devUserTasks.length,                        color: '#e5a23a' },
-          { icon: GitCommit,  label: 'My Completion',    value: `${completionRate}%`,                       color: '#b7d333' },
-          { icon: Flame,      label: 'Active Tasks',     value: statusCounts.current + statusCounts.preview, color: '#e26a6a' },
+          { icon: Braces,     label: 'Total Team Tasks', value: devUserTasks.reduce((sum, u) => sum + u.total, 0),                               color: '#be1e2d' },
+          { icon: Users,      label: 'Team Members',     value: devUserTasks.length,                        color: '#f59e0b' },
+          { icon: GitCommit,  label: 'My Completion',    value: `${completionRate}%`,                       color: '#10b981' },
+          { icon: Flame,      label: 'Active Tasks',     value: statusCounts.current + statusCounts.preview, color: '#ef4444' },
         ].map((s, i) => (
           <motion.div key={i}
             initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
@@ -747,7 +747,7 @@ const DeveloperDashboard = () => {
                           <td className="px-6 py-4 max-w-[200px]">
                             <div className="flex items-center gap-2.5">
                               <div className="w-1.5 h-7 rounded-full shrink-0"
-                                style={{ backgroundColor: STATUS_CONFIG[(task.status||'pending').toLowerCase()]?.color || '#442d82' }} />
+                                style={{ backgroundColor: STATUS_CONFIG[(task.status||'pending').toLowerCase()]?.color || '#be1e2d' }} />
                               <p className="text-[12px] font-bold text-slate-700 dark:text-slate-200 truncate leading-snug group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{task.title}</p>
                             </div>
                           </td>

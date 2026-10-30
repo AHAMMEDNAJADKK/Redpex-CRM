@@ -233,7 +233,7 @@ const CategoryDropdownGroup = ({ group, isCollapsed, activePath, onMobileClick }
           onClick={onMobileClick}
           className={`flex items-center justify-center w-10 h-10 rounded-2xl transition-all duration-200 cursor-pointer ${
             isAnyChildActive
-              ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/25 font-bold scale-105'
+              ? 'bg-[#be1e2d] text-white shadow-sm shadow-[#be1e2d]/25 font-bold scale-105'
               : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-slate-900 dark:hover:text-slate-100'
           }`}
         >
@@ -299,13 +299,13 @@ const CategoryDropdownGroup = ({ group, isCollapsed, activePath, onMobileClick }
         onClick={() => setIsOpen(!isOpen)}
         className={`w-full flex items-center justify-between px-3 py-2 rounded-xl transition-all duration-200 cursor-pointer ${
           isAnyChildActive
-            ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 font-bold'
+            ? 'bg-red-50 dark:bg-red-950/30 text-[#be1e2d] dark:text-red-400 font-bold'
             : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/60 font-semibold'
         }`}
         title={isOpen ? `Collapse ${group.name}` : `Expand ${group.name}`}
       >
         <div className="flex items-center gap-3 min-w-0">
-          <CategoryIcon size={18} className="shrink-0 text-indigo-600 dark:text-indigo-400" />
+          <CategoryIcon size={18} className="shrink-0 text-[#be1e2d] dark:text-red-400" />
           <span className="text-xs font-bold uppercase tracking-wide truncate">
             {group.name}
           </span>
@@ -620,31 +620,68 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOpen })
         }`}
       >
         {/* Logo header */}
-        <div className="h-16 flex items-center justify-between px-5 shrink-0 overflow-hidden border-b border-slate-100 dark:border-slate-800/40">
-          <div className="flex items-center gap-3">
-            {!isCollapsed ? (
-              <div className="flex items-center gap-2">
-                <img src="/redpex.png" alt="Redpex Fire & Safety" className="h-8 w-8 object-contain" />
-                <span className="font-extrabold text-sm tracking-tight text-slate-900 dark:text-white uppercase">REDPEX</span>
-              </div>
-            ) : (
-              <img src="/redpex.png" alt="Redpex Logo" className="h-8 w-8 object-contain shrink-0" />
-            )}
-          </div>
-          <button
-            type="button"
-            onClick={() => {
-              setIsCollapsed(prev => {
-                const nextState = !prev;
-                localStorage.setItem('sidebarCollapsed', JSON.stringify(nextState));
-                return nextState;
-              });
-            }}
-            className="p-1.5 rounded-xl text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
-            title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
-          >
-            {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
-          </button>
+        <div className={`h-16 flex items-center shrink-0 border-b border-slate-100 dark:border-slate-800/60 transition-all duration-300 ${
+          isCollapsed ? 'justify-center px-2 relative' : 'justify-between px-5'
+        }`}>
+          {!isCollapsed ? (
+            <>
+              <Link to="/" className="flex items-center justify-center p-1 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors" title="Redpex Operations">
+                <img 
+                  src="/redpex-logo.png" 
+                  alt="Redpex Logo" 
+                  className="h-11 w-11 object-contain dark:hidden transition-transform duration-200 hover:scale-105" 
+                />
+                <img 
+                  src="/redpex-logo-dark.png" 
+                  alt="Redpex Logo" 
+                  className="h-11 w-11 object-contain hidden dark:block transition-transform duration-200 hover:scale-105" 
+                />
+              </Link>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsCollapsed(prev => {
+                    const nextState = !prev;
+                    localStorage.setItem('sidebarCollapsed', JSON.stringify(nextState));
+                    return nextState;
+                  });
+                }}
+                className="p-1.5 rounded-xl text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                title="Collapse Sidebar"
+              >
+                <ChevronLeft size={18} />
+              </button>
+            </>
+          ) : (
+            <div className="flex items-center justify-center w-full relative">
+              <Link to="/" className="flex items-center justify-center p-1 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors" title="Redpex Operations">
+                <img 
+                  src="/redpex-logo.png" 
+                  alt="Redpex Logo" 
+                  className="h-10 w-10 object-contain dark:hidden transition-transform duration-200 hover:scale-105" 
+                />
+                <img 
+                  src="/redpex-logo-dark.png" 
+                  alt="Redpex Logo" 
+                  className="h-10 w-10 object-contain hidden dark:block transition-transform duration-200 hover:scale-105" 
+                />
+              </Link>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsCollapsed(prev => {
+                    const nextState = !prev;
+                    localStorage.setItem('sidebarCollapsed', JSON.stringify(nextState));
+                    return nextState;
+                  });
+                }}
+                className="absolute -right-2 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-center text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition cursor-pointer z-50"
+                title="Expand Sidebar"
+              >
+                <ChevronRight size={13} />
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Menu Items (Grouped as Category Accordion Dropdowns) */}
@@ -697,10 +734,18 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOpen })
         }`}
       >
         <div className="h-16 flex items-center justify-between px-6 border-b border-slate-100 dark:border-slate-800/80 shrink-0">
-          <div className="flex items-center gap-2">
-            <img src="/redpex.png" alt="Redpex Fire & Safety" className="h-8 w-8 object-contain" />
-            <span className="font-extrabold text-sm tracking-tight text-slate-900 dark:text-white uppercase">REDPEX</span>
-          </div>
+          <Link to="/" onClick={() => setIsMobileOpen(false)} className="flex items-center justify-center" title="Redpex Operations">
+            <img 
+              src="/redpex-logo.png" 
+              alt="Redpex Logo" 
+              className="h-11 w-11 object-contain dark:hidden" 
+            />
+            <img 
+              src="/redpex-logo-dark.png" 
+              alt="Redpex Logo" 
+              className="h-11 w-11 object-contain hidden dark:block" 
+            />
+          </Link>
           <button 
             onClick={() => setIsMobileOpen(false)}
             className="p-1.5 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
@@ -784,7 +829,7 @@ const NavItem = ({ icon, label, to, active, isLogout, isCollapsed, onClick, chil
             }}
             className={`flex-1 flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-200 
               ${isParentActive 
-                ? 'text-white bg-indigo-600 shadow-md shadow-indigo-500/15 font-semibold' 
+                ? 'text-white bg-[#be1e2d] shadow-sm shadow-[#be1e2d]/25 font-semibold' 
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/50 font-medium'
               }`}
           >
@@ -857,7 +902,7 @@ const NavItem = ({ icon, label, to, active, isLogout, isCollapsed, onClick, chil
                     onClick={onClick}
                     className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
                       childActive
-                        ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 font-bold'
+                        ? 'text-[#be1e2d] dark:text-red-400 bg-red-50 dark:bg-red-950/30 font-bold'
                         : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/40'
                     }`}
                   >
@@ -885,7 +930,7 @@ const NavItem = ({ icon, label, to, active, isLogout, isCollapsed, onClick, chil
       <div
         className={`relative w-full flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-200 
           ${active 
-            ? 'text-white bg-indigo-600 shadow-md shadow-indigo-500/15' 
+            ? 'text-white bg-[#be1e2d] shadow-sm shadow-[#be1e2d]/25' 
             : isLogout 
               ? 'text-rose-500 hover:bg-rose-500/10'
               : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/50'

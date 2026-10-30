@@ -49,7 +49,7 @@ const DailyReportReminderModal = () => {
         if (Notification.permission === 'granted') {
           new Notification('⚠️ Daily Report Reminder', {
             body: `It is past 4:45 PM. Please save your ${config.name} for today.`,
-            icon: '/logo2.png',
+            icon: '/pwa-192x192.png',
             tag: `report_reminder_${todayStr}`
           });
         } else if (Notification.permission !== 'denied') {
@@ -57,7 +57,7 @@ const DailyReportReminderModal = () => {
             if (permission === 'granted') {
               new Notification('⚠️ Daily Report Reminder', {
                 body: `It is past 4:45 PM. Please save your ${config.name} for today.`,
-                icon: '/logo2.png',
+                icon: '/pwa-192x192.png',
                 tag: `report_reminder_${todayStr}`
               });
             }

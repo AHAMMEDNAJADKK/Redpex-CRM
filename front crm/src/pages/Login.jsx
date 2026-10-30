@@ -161,32 +161,40 @@ const Login = () => {
         <button
           type="button"
           onClick={() => setIsDark(!isDark)}
-          className="p-3 rounded-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/50 dark:border-slate-800/50 text-slate-500 dark:text-slate-400 hover:text-indigo-650 dark:hover:text-lime-400 shadow-lg cursor-pointer transition-all hover:scale-105 active:scale-95 flex items-center justify-center"
+          className="p-3 rounded-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/50 dark:border-slate-800/50 text-slate-500 dark:text-slate-400 hover:text-[#be1e2d] dark:hover:text-red-400 shadow-lg cursor-pointer transition-all hover:scale-105 active:scale-95 flex items-center justify-center"
           title="Toggle theme"
         >
           {isDark ? <Sun size={18} className="text-amber-400" /> : <Moon size={18} />}
         </button>
       </div>
       {/* Glow Effects */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-600/10 blur-[120px] rounded-full" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-lime-500/10 dark:bg-lime-500/5 blur-[120px] rounded-full" />
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#be1e2d]/5 blur-[100px] rounded-full" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-slate-800/5 blur-[100px] rounded-full" />
       
       <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-md z-10">
 
         <div className="text-center mb-10">
-         <div className="flex justify-center items-center mb-10">
+         <div className="flex flex-col justify-center items-center mb-8">
           <img 
-            src="/redpex.png" 
-            alt="Redpex Fire & Safety Logo" 
-            className="h-22 w-auto object-contain" 
+            src="/redpex-full.png" 
+            alt="Redpex Fire & Safety" 
+            className="h-16 w-auto object-contain dark:hidden" 
           />
+          <img 
+            src="/redpex-full-dark.png" 
+            alt="Redpex Fire & Safety" 
+            className="h-16 w-auto object-contain hidden dark:block" 
+          />
+          <p className="mt-3 text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wider uppercase">
+            Enterprise Operations Portal
+          </p>
         </div>
 
 
         </div>
 
         {/* Card Form */}
-        <div className="glass-card p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/60 backdrop-blur-2xl shadow-xl">
+        <div className="glass-card p-8 rounded-2xl border border-slate-200 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/60 backdrop-blur-2xl shadow-xl">
           <form onSubmit={handleSubmit} className="space-y-6">
             
             {/* Email Field */}
@@ -207,7 +215,7 @@ const Login = () => {
                   autoComplete="username"
                   value={loginData.email}
                   onChange={handleChange}
-                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-2xl py-4 pl-11 pr-4 text-slate-900 dark:text-slate-100 focus:border-indigo-500/50 outline-none transition-all"
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-2xl py-4 pl-11 pr-4 text-slate-900 dark:text-slate-100 focus:border-[#be1e2d] outline-none transition-all"
                 />
               </div>
             </div>
@@ -221,7 +229,7 @@ const Login = () => {
                 <button
                   type="button"
                   onClick={() => setIsForgotOpen(true)}
-                  className="text-[10px] font-bold text-indigo-500 dark:text-indigo-400 uppercase tracking-widest hover:underline cursor-pointer transition-all"
+                  className="text-[10px] font-bold text-[#be1e2d] dark:text-red-400 uppercase tracking-widest hover:underline cursor-pointer transition-all"
                 >
                   Forgot Password?
                 </button>
@@ -239,7 +247,7 @@ const Login = () => {
                   value={loginData.password}
                   onChange={handleChange}
                   type={showPassword ? "text" : "password"}
-                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-2xl py-4 pl-11 pr-12 text-slate-900 dark:text-slate-100 focus:border-indigo-500/50 outline-none transition-all"
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-2xl py-4 pl-11 pr-12 text-slate-900 dark:text-slate-100 focus:border-[#be1e2d] outline-none transition-all"
                 />
                 <button
                   type="button"
@@ -257,7 +265,7 @@ const Login = () => {
               whileTap={{ scale: 0.98 }} 
               disabled={isLoading} 
               type="submit" 
-              className="w-full py-5 bg-gradient-to-r from-indigo-600 to-cyan-600 text-white rounded-2xl font-black text-xs uppercase tracking-[0.3em] flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 cursor-pointer"
+              className="w-full py-5 bg-[#be1e2d] hover:bg-[#a81724] text-white rounded-2xl font-black text-xs uppercase tracking-[0.3em] flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 cursor-pointer"
             >
               {isLoading ? "Verifying..." : "Authorize Access"} 
               {!isLoading && <ChevronRight size={18} />}
@@ -435,7 +443,7 @@ const ForgotPasswordModal = ({ isOpen, onClose, defaultEmail, showToast, onSucce
         initial={{ y: -50, scale: 0.95 }} 
         animate={{ y: 0, scale: 1 }} 
         exit={{ y: -50, scale: 0.95 }}
-        className="bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-slate-850 w-full max-w-md rounded-[2.5rem] p-8 shadow-2xl relative mt-12"
+        className="bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-slate-850 w-full max-w-md rounded-2xl p-8 shadow-2xl relative mt-12"
       >
         <button 
           onClick={onClose} 
@@ -468,7 +476,7 @@ const ForgotPasswordModal = ({ isOpen, onClose, defaultEmail, showToast, onSucce
                   autoComplete="username"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-2xl py-4.5 pl-11 pr-4 text-slate-900 dark:text-slate-100 focus:border-indigo-500/50 outline-none transition-all text-sm"
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-2xl py-4.5 pl-11 pr-4 text-slate-900 dark:text-slate-100 focus:border-[#be1e2d] outline-none transition-all text-sm"
                 />
               </div>
             </div>
@@ -493,7 +501,7 @@ const ForgotPasswordModal = ({ isOpen, onClose, defaultEmail, showToast, onSucce
                   className={`w-full bg-slate-50 dark:bg-slate-950 border rounded-2xl py-4.5 pl-11 pr-4 text-slate-900 dark:text-slate-100 outline-none transition-all text-sm ${
                     formData.phone && formData.phone.length !== 10
                       ? 'border-red-400 focus:border-red-400'
-                      : 'border-slate-200 dark:border-slate-850 focus:border-indigo-500/50'
+                      : 'border-slate-200 dark:border-slate-850 focus:border-[#be1e2d]'
                   }`}
                 />
               </div>
@@ -505,7 +513,7 @@ const ForgotPasswordModal = ({ isOpen, onClose, defaultEmail, showToast, onSucce
             <button
               disabled={isLoading}
               type="submit"
-              className="w-full py-4.5 bg-gradient-to-r from-indigo-600 to-cyan-600 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 cursor-pointer"
+              className="w-full py-4.5 bg-[#be1e2d] hover:bg-[#a81724] text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 cursor-pointer"
             >
               {isLoading ? "Checking..." : "Verify Identity"}
               {!isLoading && <ChevronRight size={16} />}
@@ -528,7 +536,7 @@ const ForgotPasswordModal = ({ isOpen, onClose, defaultEmail, showToast, onSucce
                   autoComplete="new-password"
                   value={formData.newPassword}
                   onChange={handleChange}
-                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-2xl py-4.5 pl-11 pr-12 text-slate-900 dark:text-slate-100 focus:border-indigo-500/50 outline-none transition-all text-sm"
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-2xl py-4.5 pl-11 pr-12 text-slate-900 dark:text-slate-100 focus:border-[#be1e2d] outline-none transition-all text-sm"
                 />
                 <button
                   type="button"
@@ -553,7 +561,7 @@ const ForgotPasswordModal = ({ isOpen, onClose, defaultEmail, showToast, onSucce
                   autoComplete="new-password"
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-2xl py-4.5 pl-11 pr-12 text-slate-900 dark:text-slate-100 focus:border-indigo-500/50 outline-none transition-all text-sm"
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-2xl py-4.5 pl-11 pr-12 text-slate-900 dark:text-slate-100 focus:border-[#be1e2d] outline-none transition-all text-sm"
                 />
             </div>
           </div>

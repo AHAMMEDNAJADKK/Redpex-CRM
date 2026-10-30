@@ -7,7 +7,7 @@ import ProfileDrawer from './ProfileDrawer';
 import NotificationPopover from './NotificationPopover';
 import NavbarNotificationPopup from './NavbarNotificationPopup';
 import { AiAnalyzeButton, AiAnalyzeModal } from './AiAnalyzeModal';
-
+
 const API_BASE = getApiBaseUrl();
 
 const Navbar = ({ isSidebarCollapsed, toggleMobileSidebar }) => {
@@ -232,11 +232,11 @@ const Navbar = ({ isSidebarCollapsed, toggleMobileSidebar }) => {
 
   return (
     <>
-      <header className={`fixed top-0 right-0 z-30 h-16 flex items-center justify-between px-6 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/50 dark:border-slate-800/50 transition-all duration-300 transform ${
+      <header className={`fixed top-0 right-0 z-30 h-16 flex items-center justify-between px-6 bg-white/95 dark:bg-[#0f172a]/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition-all duration-300 transform ${
         isVisible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
       } ${isSidebarCollapsed ? 'lg:left-20' : 'lg:left-64'} left-0`}>
         
-        {/* Left Side: Mobile Hamburger */}
+        {/* Left Side: Navigation Context & Mobile Hamburger */}
         <div className="flex items-center gap-3">
           <button
             onClick={toggleMobileSidebar}
@@ -245,6 +245,13 @@ const Navbar = ({ isSidebarCollapsed, toggleMobileSidebar }) => {
           >
             <Menu size={20} />
           </button>
+
+          <div className="hidden sm:flex items-center gap-2.5">
+            <div className="w-2 h-2 rounded-full bg-[#be1e2d]" />
+            <span className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Redpex CRM</span>
+            <span className="text-slate-300 dark:text-slate-700">/</span>
+            <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">{pageTitle}</span>
+          </div>
         </div>
 
         {/* Right Section Container */}
@@ -278,19 +285,19 @@ const Navbar = ({ isSidebarCollapsed, toggleMobileSidebar }) => {
             {/* Bell Icon Notification Trigger */}
             <button
               onClick={() => setIsNotificationOpen(!isNotificationOpen)}
-              className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-lime-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all cursor-pointer relative"
+              className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:text-[#be1e2d] dark:hover:text-[#be1e2d] hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all cursor-pointer relative"
               title="Notifications"
             >
               <Bell size={18} />
               {unreadCount > 0 && (
-                <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-rose-500 rounded-full ring-2 ring-white dark:ring-slate-900 animate-pulse" />
+                <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-[#be1e2d] rounded-full ring-2 ring-white dark:ring-slate-900 animate-pulse" />
               )}
             </button>
 
             {/* Theme Toggle Button */}
             <button
               onClick={() => setIsDark(!isDark)}
-              className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-lime-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all cursor-pointer relative"
+              className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:text-[#be1e2d] dark:hover:text-[#be1e2d] hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all cursor-pointer relative"
               title="Toggle theme"
             >
               <motion.div
@@ -307,11 +314,15 @@ const Navbar = ({ isSidebarCollapsed, toggleMobileSidebar }) => {
             {/* Profile Trigger */}
             <div
               onClick={() => setIsProfileOpen(true)}
-              className="flex items-center gap-2 p-1 group cursor-pointer"
-              title={currentUser.name}
+              className="flex items-center gap-2.5 px-2 py-1 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/60 cursor-pointer transition-all group"
+              title={`${currentUser.name} (${currentUser.role})`}
             >
-              <div className="relative w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200/50 dark:border-slate-700/50 flex items-center justify-center text-slate-600 dark:text-slate-300 group-hover:border-indigo-500/50 group-hover:bg-indigo-500/10 dark:group-hover:bg-indigo-500/20 transition-all shadow-sm overflow-hidden">
-                <User size={16} />
+              <div className="relative w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-center text-slate-700 dark:text-slate-200 font-bold text-xs group-hover:border-[#be1e2d] group-hover:text-[#be1e2d] transition-all shadow-sm overflow-hidden">
+                {currentUser.name ? currentUser.name.charAt(0).toUpperCase() : <User size={15} />}
+              </div>
+              <div className="hidden xl:flex flex-col text-left leading-none">
+                <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 group-hover:text-[#be1e2d] transition-colors">{currentUser.name}</span>
+                <span className="text-[10px] text-slate-400 capitalize mt-0.5">{currentUser.role}</span>
               </div>
             </div>
 

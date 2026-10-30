@@ -1337,7 +1337,7 @@ const AccountantReportPage = () => {
   const handleDownloadMonthlyPDF = async () => {
     try {
       const logoImg = new Image();
-      logoImg.src = '/logo3.png';
+      logoImg.src = '/redpex-full.png';
       await new Promise((resolve) => {
         logoImg.onload = resolve;
         logoImg.onerror = resolve;
@@ -1734,7 +1734,7 @@ const AccountantReportPage = () => {
   const handleDownloadWeeklyPDF = async () => {
     try {
       const logoImg = new Image();
-      logoImg.src = '/logo3.png';
+      logoImg.src = '/redpex-full.png';
       await new Promise((resolve) => {
         logoImg.onload = resolve;
         logoImg.onerror = resolve;
@@ -2185,7 +2185,7 @@ const AccountantReportPage = () => {
 
       // Header Brand Logo
       const logoImg = new Image();
-      logoImg.src = '/logo3.png';
+      logoImg.src = '/redpex-full.png';
       await new Promise((resolve) => {
         logoImg.onload = () => {
           doc.addImage(logoImg, 'PNG', 14, 10, 32, 12);

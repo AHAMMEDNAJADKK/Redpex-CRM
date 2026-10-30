@@ -564,11 +564,11 @@ const Dashboard = ({ isEmbedded = false, mdData = null }) => {
           <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-full overflow-visible">
             <defs>
               <linearGradient id="userTodoGrad" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="#442d82" />
-                <stop offset="100%" stopColor="#b7d333" />
+                <stop offset="0%" stopColor="#be1e2d" />
+                <stop offset="100%" stopColor="#10b981" />
               </linearGradient>
               <filter id="shadow-user" x="-10%" y="-20%" width="120%" height="150%">
-                <feDropShadow dx="0" dy="1.5" stdDeviation="2" floodColor="#442d82" floodOpacity="0.25" />
+                <feDropShadow dx="0" dy="1.5" stdDeviation="2" floodColor="#be1e2d" floodOpacity="0.25" />
               </filter>
             </defs>
 
@@ -746,9 +746,9 @@ const Dashboard = ({ isEmbedded = false, mdData = null }) => {
     const chartHeight = height - paddingTop - paddingBottom;
 
     const lineColors = [
-      "#442d82", // indigo
+      "#be1e2d", // indigo
       "#ec4899", // pink
-      "#b7d333", // emerald
+      "#10b981", // emerald
       "#f59e0b", // amber
       "#3b82f6", // blue
       "#a855f7", // purple
@@ -870,7 +870,7 @@ const Dashboard = ({ isEmbedded = false, mdData = null }) => {
   const leadSourceData = useMemo(() => {
     if (!sourcePerformance) return [];
     return sourcePerformance.slice(0, 6).map((src, i) => {
-      const colors = ["#442d82", "#b7d333", "#f59e0b", "#ec4899", "#06b6d4", "#8b5cf6"];
+      const colors = ["#be1e2d", "#10b981", "#f59e0b", "#ec4899", "#06b6d4", "#8b5cf6"];
       return {
         label: src.source || "Unknown",
         value: src.totalLeads || 0,
@@ -883,7 +883,7 @@ const Dashboard = ({ isEmbedded = false, mdData = null }) => {
   const operatorConversionData = useMemo(() => {
     if (!processedStaffPerformance) return [];
     return processedStaffPerformance.slice(0, 6).map((staff, i) => {
-      const colors = ["#8b5cf6", "#3b82f6", "#b7d333", "#f59e0b", "#ec4899", "#06b6d4"];
+      const colors = ["#8b5cf6", "#3b82f6", "#10b981", "#f59e0b", "#ec4899", "#06b6d4"];
       return {
         label: staff.name || "Unknown",
         value: Math.round(staff.conversionRate || 0),
@@ -1019,8 +1019,8 @@ const Dashboard = ({ isEmbedded = false, mdData = null }) => {
           <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-full overflow-visible">
             <defs>
               <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#442d82" stopOpacity="0.22" />
-                <stop offset="100%" stopColor="#442d82" stopOpacity="0.0" />
+                <stop offset="0%" stopColor="#be1e2d" stopOpacity="0.22" />
+                <stop offset="100%" stopColor="#be1e2d" stopOpacity="0.0" />
               </linearGradient>
             </defs>
 
@@ -1044,10 +1044,10 @@ const Dashboard = ({ isEmbedded = false, mdData = null }) => {
               <path 
                 d={pathD} 
                 fill="none" 
-                stroke="#442d82" 
+                stroke="#be1e2d" 
                 strokeWidth="2.5" 
                 strokeLinecap="round" 
-                className="drop-shadow-[0_2px_6px_rgba(99,102,241,0.35)]" 
+                className="drop-shadow-[0_2px_6px_rgba(190,30,45,0.25)]" 
               />
             )}
 
@@ -1058,10 +1058,10 @@ const Dashboard = ({ isEmbedded = false, mdData = null }) => {
                   cx={p.x} 
                   cy={p.y} 
                   r="4" 
-                  fill="#442d82" 
+                  fill="#be1e2d" 
                   stroke="#fff" 
                   strokeWidth="1.5" 
-                  className="cursor-pointer transition-all duration-300 group-hover/anchor:r-5 group-hover/anchor:fill-lime-400" 
+                  className="cursor-pointer transition-all duration-300 group-hover/anchor:r-5 group-hover/anchor:fill-[#be1e2d]" 
                 />
                 
                 {/* Micro-tooltip */}

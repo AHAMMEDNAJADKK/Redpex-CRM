@@ -1,0 +1,20 @@
+{
+  "name": "Redpex CRM | Fire & Safety Operations",
+  "short_name": "Redpex CRM",
+  "description": "Enterprise Fire & Safety Operations Platform",
+  "icons": [
+    {
+      "src": "/pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#be1e2d",
+  "background_color": "#0f172a",
+  "display": "standalone"
+}
