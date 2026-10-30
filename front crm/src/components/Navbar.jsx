@@ -2,13 +2,33 @@ import { getApiBaseUrl } from '../utils/apiUrl';
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Search, Bell, User, LogOut, Sun, Moon, Menu } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import ProfileDrawer from './ProfileDrawer';
 import NotificationPopover from './NotificationPopover';
 import NavbarNotificationPopup from './NavbarNotificationPopup';
 import { AiAnalyzeButton, AiAnalyzeModal } from './AiAnalyzeModal';
 
 const API_BASE = getApiBaseUrl();
+
+const SEARCHABLE_MODULES = [
+  { label: 'Admin Dashboard', path: '/dashboard', category: 'Dashboards', desc: 'KPIs, pipeline metrics & real-time analytics' },
+  { label: 'Client Leads', path: '/client-leads', category: 'Sales & CRM', desc: 'Manage enterprise sales pipeline & opportunities' },
+  { label: 'Clients Directory', path: '/clients', category: 'Sales & CRM', desc: 'Company accounts & client relationships' },
+  { label: 'Projects & Deals', path: '/projects', category: 'Sales & CRM', desc: 'Project deliverables, stages & milestones' },
+  { label: 'Tasks & Missions', path: '/todo', category: 'Operations', desc: 'Operational tasks, to-dos & assignments' },
+  { label: 'Daily Operations OS', path: '/daily-operations', category: 'Operations', desc: 'Shift tracking, attendance & duty logs' },
+  { label: 'Staff Attendance', path: '/staff-attendance', category: 'People & HR', desc: 'Real-time check-in, presence & shifts' },
+  { label: 'Leave Requests', path: '/leaves', category: 'People & HR', desc: 'Leave applications, balances & approvals' },
+  { label: 'Approvals Console', path: '/approvals', category: 'Management', desc: 'Management sign-offs & authorizations' },
+  { label: 'Users & Roles', path: '/users', category: 'People & HR', desc: 'Staff directory & access credentials' },
+  { label: 'Departments', path: '/departments', category: 'People & HR', desc: 'Enterprise organizational hierarchy' },
+  { label: 'Accounts & Finances', path: '/accounts', category: 'Finance', desc: 'Invoices, expenses, ledger & cash books' },
+  { label: 'Payslips & Payroll', path: '/payslips', category: 'Finance', desc: 'Monthly payslips & salary distribution' },
+  { label: 'Daily Reports', path: '/basic-report', category: 'Reports', desc: 'Daily operational reports & submissions' },
+  { label: 'Notifications', path: '/notifications', category: 'System', desc: 'System alerts, task pings & updates' },
+  { label: 'System Settings', path: '/settings', category: 'System', desc: 'User profile, preferences & security' }
+];
+
 
 const Navbar = ({ isSidebarCollapsed, toggleMobileSidebar }) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -24,6 +44,42 @@ const Navbar = ({ isSidebarCollapsed, toggleMobileSidebar }) => {
   const [currentPopupIndex, setCurrentPopupIndex] = useState(0);
 
   const location = useLocation();
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const searchInputRef = React.useRef(null);
+
+  // Global keyboard shortcut Ctrl+K / Cmd+K
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsSearchOpen(true);
+        setTimeout(() => searchInputRef.current?.focus(), 50);
+      } else if (e.key === 'Escape') {
+        setIsSearchOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  const searchResults = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return [];
+    return SEARCHABLE_MODULES.filter(m => 
+      m.label.toLowerCase().includes(q) || 
+      m.category.toLowerCase().includes(q) || 
+      m.desc.toLowerCase().includes(q)
+    ).slice(0, 6);
+  }, [searchQuery]);
+
+  const handleSelectSearchResult = (path) => {
+    setSearchQuery('');
+    setIsSearchOpen(false);
+    navigate(path);
+  };
+
 
   const pathName = location.pathname.substring(1);
   const pageTitle = pathName
@@ -236,7 +292,7 @@ const Navbar = ({ isSidebarCollapsed, toggleMobileSidebar }) => {
         isVisible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
       } ${isSidebarCollapsed ? 'lg:left-20' : 'lg:left-64'} left-0`}>
         
-        {/* Left Side: Navigation Context & Mobile Hamburger */}
+        {/* Left Side: Navigation Context, Mobile Hamburger, and Global Quick Search */}
         <div className="flex items-center gap-3">
           <button
             onClick={toggleMobileSidebar}
@@ -247,10 +303,84 @@ const Navbar = ({ isSidebarCollapsed, toggleMobileSidebar }) => {
           </button>
 
           <div className="hidden sm:flex items-center gap-2.5">
-            <div className="w-2 h-2 rounded-full bg-[#be1e2d]" />
+            <div className="w-2 h-2 rounded-full bg-[#be1e2d] shadow-[0_0_6px_rgba(190,30,45,0.6)]" />
             <span className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Redpex CRM</span>
             <span className="text-slate-300 dark:text-slate-700">/</span>
             <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">{pageTitle}</span>
+          </div>
+
+          {/* Global Quick Search Bar */}
+          <div className="hidden md:flex items-center relative ml-4">
+            <div className="relative">
+              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+              <input
+                ref={searchInputRef}
+                type="text"
+                placeholder="Search CRM... (Ctrl+K)"
+                value={searchQuery}
+                onFocus={() => setIsSearchOpen(true)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setIsSearchOpen(true);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    if (searchResults.length > 0) {
+                      handleSelectSearchResult(searchResults[0].path);
+                    } else if (searchQuery.trim()) {
+                      handleSelectSearchResult(`/client-leads?search=${encodeURIComponent(searchQuery.trim())}`);
+                    }
+                  }
+                }}
+                className="pl-8.5 pr-12 py-1.5 w-44 lg:w-60 bg-slate-100/80 dark:bg-slate-800/60 border border-slate-200/50 dark:border-slate-700/50 focus:border-[#be1e2d]/60 focus:bg-white dark:focus:bg-slate-900 rounded-xl text-xs font-medium text-slate-800 dark:text-slate-200 placeholder:text-slate-400 outline-none transition-all"
+              />
+              <kbd className="absolute right-2.5 top-1/2 -translate-y-1/2 px-1.5 py-0.5 text-[9px] font-bold text-slate-400 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded shadow-xs pointer-events-none">
+                ⌘K
+              </kbd>
+            </div>
+
+            {/* Quick Search Dropdown */}
+            {isSearchOpen && (
+              <>
+                <div className="fixed inset-0 z-30" onClick={() => setIsSearchOpen(false)} />
+                <div className="absolute left-0 top-11 w-80 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl z-40 p-2 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+                  <div className="px-3 py-1.5 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest border-b border-slate-100 dark:border-slate-800/80 mb-1">
+                    {searchQuery.trim() ? `Matches for "${searchQuery}"` : 'Quick Jump'}
+                  </div>
+                  <div className="max-h-64 overflow-y-auto space-y-1">
+                    {(searchQuery.trim() ? searchResults : SEARCHABLE_MODULES.slice(0, 5)).map((item) => (
+                      <button
+                        key={item.path}
+                        type="button"
+                        onClick={() => handleSelectSearchResult(item.path)}
+                        className="w-full text-left px-3 py-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center justify-between group transition-colors cursor-pointer"
+                      >
+                        <div className="min-w-0 pr-2">
+                          <div className="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-[#be1e2d] transition-colors truncate">
+                            {item.label}
+                          </div>
+                          <div className="text-[10px] text-slate-400 truncate">
+                            {item.desc}
+                          </div>
+                        </div>
+                        <span className="shrink-0 text-[9px] font-bold px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded-md">
+                          {item.category}
+                        </span>
+                      </button>
+                    ))}
+                    {searchQuery.trim() && searchResults.length === 0 && (
+                      <button
+                        type="button"
+                        onClick={() => handleSelectSearchResult(`/client-leads?search=${encodeURIComponent(searchQuery.trim())}`)}
+                        className="w-full text-left px-3 py-2.5 rounded-xl bg-red-50/50 dark:bg-red-950/20 text-[#be1e2d] text-xs font-bold hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors cursor-pointer"
+                      >
+                        Search Client Leads for "{searchQuery}" →
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
 

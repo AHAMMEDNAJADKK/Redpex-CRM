@@ -155,7 +155,7 @@ const ProjectDetailsPage = () => {
       </div>
 
       {/* Hero Banner */}
-      <div className="p-6 md:p-8 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-md shadow-xl flex flex-col gap-6">
+      <div className="p-6 md:p-8 rounded-2xl bg-white/70 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-md shadow-xl flex flex-col gap-6">
         <div className="flex flex-col md:flex-row justify-between gap-4 items-start md:items-center">
           <div>
             <div className="flex items-center gap-3">
@@ -214,7 +214,7 @@ const ProjectDetailsPage = () => {
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-4 py-2.5 text-xs font-extrabold rounded-xl transition-all ${
                 isActive 
-                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20' 
+                  ? 'bg-indigo-600 text-white shadow-md shadow-[#be1e2d]/20' 
                   : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50'
               }`}
             >
@@ -228,7 +228,7 @@ const ProjectDetailsPage = () => {
       {/* Tab Content 1: Overview */}
       {activeTab === 'overview' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 p-6 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-md flex flex-col gap-6">
+          <div className="lg:col-span-2 p-6 rounded-2xl bg-white/70 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-md flex flex-col gap-6">
             <h2 className="text-sm font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 border-b border-slate-100 dark:border-slate-800 pb-2">
               Project Description & Tech Stack
             </h2>
@@ -311,7 +311,7 @@ const ProjectDetailsPage = () => {
             </div>
           </div>
 
-          <div className="p-6 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-md flex flex-col gap-4">
+          <div className="p-6 rounded-2xl bg-white/70 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-md flex flex-col gap-4">
             <h2 className="text-sm font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 border-b border-slate-100 dark:border-slate-800 pb-2">
               Schedule & Budget
             </h2>
@@ -346,7 +346,7 @@ const ProjectDetailsPage = () => {
           {/* Key Leadership Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {project.projectManager && (
-              <div className="p-5 rounded-3xl bg-indigo-50/60 dark:bg-indigo-950/30 border border-indigo-200/60 dark:border-indigo-800/60 flex items-center gap-4">
+              <div className="p-5 rounded-2xl bg-indigo-50/60 dark:bg-indigo-950/30 border border-indigo-200/60 dark:border-indigo-800/60 flex items-center gap-4">
                 <img
                   src={project.projectManager.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${project.projectManager.name}`}
                   alt=""
@@ -361,7 +361,7 @@ const ProjectDetailsPage = () => {
             )}
 
             {project.assignedTeamLead && (
-              <div className="p-5 rounded-3xl bg-purple-50/60 dark:bg-purple-950/30 border border-purple-200/60 dark:border-purple-800/60 flex items-center gap-4">
+              <div className="p-5 rounded-2xl bg-purple-50/60 dark:bg-purple-950/30 border border-purple-200/60 dark:border-purple-800/60 flex items-center gap-4">
                 <img
                   src={project.assignedTeamLead.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${project.assignedTeamLead.name}`}
                   alt=""

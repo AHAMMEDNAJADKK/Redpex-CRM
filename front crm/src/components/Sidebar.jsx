@@ -625,17 +625,27 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOpen })
         }`}>
           {!isCollapsed ? (
             <>
-              <Link to="/" className="flex items-center justify-center p-1 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors" title="Redpex Operations">
-                <img 
-                  src="/redpex-logo.png" 
-                  alt="Redpex Logo" 
-                  className="h-11 w-11 object-contain dark:hidden transition-transform duration-200 hover:scale-105" 
-                />
-                <img 
-                  src="/redpex-logo-dark.png" 
-                  alt="Redpex Logo" 
-                  className="h-11 w-11 object-contain hidden dark:block transition-transform duration-200 hover:scale-105" 
-                />
+              <Link to="/" className="flex items-center gap-3 p-1 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors group select-none min-w-0" title="Redpex Fire & Safety Operations">
+                <div className="relative shrink-0 flex items-center justify-center">
+                  <img 
+                    src="/redpex-logo.png" 
+                    alt="Redpex Logo" 
+                    className="h-10 w-10 object-contain dark:hidden transition-transform duration-200 group-hover:scale-105" 
+                  />
+                  <img 
+                    src="/redpex-logo-dark.png" 
+                    alt="Redpex Logo" 
+                    className="h-10 w-10 object-contain hidden dark:block transition-transform duration-200 group-hover:scale-105" 
+                  />
+                </div>
+                <div className="flex flex-col justify-center min-w-0">
+                  <span className="font-black text-xl tracking-wider text-slate-900 dark:text-white uppercase transition-colors group-hover:text-[#be1e2d] leading-none">
+                    REDPEX
+                  </span>
+                  <span className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mt-0.5">
+                    Fire & Safety
+                  </span>
+                </div>
               </Link>
               <button
                 type="button"
@@ -646,7 +656,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOpen })
                     return nextState;
                   });
                 }}
-                className="p-1.5 rounded-xl text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                className="p-1.5 rounded-xl text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer shrink-0 ml-1"
                 title="Collapse Sidebar"
               >
                 <ChevronLeft size={18} />
@@ -654,16 +664,16 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOpen })
             </>
           ) : (
             <div className="flex items-center justify-center w-full relative">
-              <Link to="/" className="flex items-center justify-center p-1 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors" title="Redpex Operations">
+              <Link to="/" className="flex items-center justify-center p-1 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors group select-none" title="Redpex Operations">
                 <img 
                   src="/redpex-logo.png" 
                   alt="Redpex Logo" 
-                  className="h-10 w-10 object-contain dark:hidden transition-transform duration-200 hover:scale-105" 
+                  className="h-10 w-10 object-contain dark:hidden transition-transform duration-200 group-hover:scale-105" 
                 />
                 <img 
                   src="/redpex-logo-dark.png" 
                   alt="Redpex Logo" 
-                  className="h-10 w-10 object-contain hidden dark:block transition-transform duration-200 hover:scale-105" 
+                  className="h-10 w-10 object-contain hidden dark:block transition-transform duration-200 group-hover:scale-105" 
                 />
               </Link>
               <button
@@ -734,17 +744,25 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOpen })
         }`}
       >
         <div className="h-16 flex items-center justify-between px-6 border-b border-slate-100 dark:border-slate-800/80 shrink-0">
-          <Link to="/" onClick={() => setIsMobileOpen(false)} className="flex items-center justify-center" title="Redpex Operations">
+          <Link to="/" onClick={() => setIsMobileOpen(false)} className="flex items-center gap-3 select-none" title="Redpex Fire & Safety Operations">
             <img 
               src="/redpex-logo.png" 
               alt="Redpex Logo" 
-              className="h-11 w-11 object-contain dark:hidden" 
+              className="h-10 w-10 object-contain dark:hidden" 
             />
             <img 
               src="/redpex-logo-dark.png" 
               alt="Redpex Logo" 
-              className="h-11 w-11 object-contain hidden dark:block" 
+              className="h-10 w-10 object-contain hidden dark:block" 
             />
+            <div className="flex flex-col justify-center min-w-0">
+              <span className="font-black text-xl tracking-wider text-slate-900 dark:text-white uppercase leading-none">
+                REDPEX
+              </span>
+              <span className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mt-0.5">
+                Fire & Safety
+              </span>
+            </div>
           </Link>
           <button 
             onClick={() => setIsMobileOpen(false)}

@@ -576,7 +576,7 @@ const ClientDetailsPage = () => {
       </button>
 
       {/* Profile Header Hero Card */}
-      <div className="p-6 md:p-8 rounded-3xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-md shadow-xl flex flex-col md:flex-row justify-between gap-6 items-start md:items-center">
+      <div className="p-6 md:p-8 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-md shadow-xl flex flex-col md:flex-row justify-between gap-6 items-start md:items-center">
         <div className="flex items-center gap-5">
           {client.companyLogo ? (
             <img src={client.companyLogo} alt="" className="w-16 h-16 rounded-2xl object-cover ring-4 ring-indigo-500/20 shadow-md" />
@@ -605,7 +605,7 @@ const ClientDetailsPage = () => {
         <div className="flex items-center gap-2.5 w-full md:w-auto justify-end flex-wrap">
           <button
             onClick={() => handleOpenAddMeeting()}
-            className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-md shadow-indigo-600/20 transition-all cursor-pointer hover:scale-[1.02]"
+            className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-md shadow-[#be1e2d]/20 transition-all cursor-pointer hover:scale-[1.02]"
           >
             <Video className="w-4 h-4" />
             <span>Schedule Meeting</span>
@@ -653,7 +653,7 @@ const ClientDetailsPage = () => {
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-4 py-2.5 text-xs font-extrabold rounded-xl transition-all whitespace-nowrap cursor-pointer ${
                 isActive 
-                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20' 
+                  ? 'bg-indigo-600 text-white shadow-md shadow-[#be1e2d]/20' 
                   : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50'
               }`}
             >
@@ -668,7 +668,7 @@ const ClientDetailsPage = () => {
       {/* 1. OVERVIEW TAB */}
       {activeTab === 'overview' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 p-6 rounded-3xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-md shadow-sm flex flex-col gap-6">
+          <div className="lg:col-span-2 p-6 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-md shadow-sm flex flex-col gap-6">
             <h2 className="text-sm font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 border-b border-slate-100 dark:border-slate-800 pb-2 flex items-center gap-2">
               <Building size={16} className="text-indigo-600" /> Commercial & Account Parameters
             </h2>
@@ -706,7 +706,7 @@ const ClientDetailsPage = () => {
             )}
           </div>
 
-          <div className="p-6 rounded-3xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-md shadow-sm flex flex-col gap-4">
+          <div className="p-6 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-md shadow-sm flex flex-col gap-4">
             <h2 className="text-sm font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 border-b border-slate-100 dark:border-slate-800 pb-2">
               Contact & Location
             </h2>
@@ -820,7 +820,7 @@ const ClientDetailsPage = () => {
 
             <button
               onClick={() => handleOpenAddMeeting()}
-              className="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 cursor-pointer shadow-md shadow-indigo-600/20 w-fit transition"
+              className="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 cursor-pointer shadow-md shadow-[#be1e2d]/20 w-fit transition"
             >
               <Plus size={14} /> Schedule Meeting
             </button>
@@ -949,7 +949,7 @@ const ClientDetailsPage = () => {
 
             <button
               onClick={() => handleOpenAddFollowUp()}
-              className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 cursor-pointer shadow-md shadow-indigo-600/20 w-fit transition"
+              className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 cursor-pointer shadow-md shadow-[#be1e2d]/20 w-fit transition"
             >
               <Plus size={14} /> Add Follow-up
             </button>
@@ -1034,7 +1034,7 @@ const ClientDetailsPage = () => {
 
       {/* 5. CALENDAR TAB - Sleek Enterprise UI & Interactive Date Detail Modal */}
       {activeTab === 'calendar' && (
-        <div className="p-6 rounded-3xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-md shadow-xl space-y-6">
+        <div className="p-6 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-md shadow-xl space-y-6">
           <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
             <div className="flex items-center gap-3">
               <div className="p-2.5 rounded-2xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/50">
@@ -1195,7 +1195,7 @@ const ClientDetailsPage = () => {
 
           {/* MEETING REPORT */}
           {reportsSubTab === 'meetings' && (
-            <div className="p-6 rounded-3xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-md shadow-sm space-y-6">
+            <div className="p-6 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-md shadow-sm space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="p-4 rounded-2xl bg-indigo-50/50 dark:bg-indigo-950/40 border border-indigo-200/50 dark:border-indigo-800/50">
                   <span className="text-[10px] font-extrabold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Total Scheduled Meetings</span>
@@ -1247,7 +1247,7 @@ const ClientDetailsPage = () => {
 
           {/* FOLLOW-UP REPORT */}
           {reportsSubTab === 'followups' && (
-            <div className="p-6 rounded-3xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-md shadow-sm space-y-6">
+            <div className="p-6 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-md shadow-sm space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="p-4 rounded-2xl bg-indigo-50/50 dark:bg-indigo-950/40 border border-indigo-200/50 dark:border-indigo-800/50">
                   <span className="text-[10px] font-extrabold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Total Follow-ups</span>
@@ -1292,7 +1292,7 @@ const ClientDetailsPage = () => {
 
       {/* 7. TIMELINE TAB - Activity Log showing ONLY Completed Meetings and System Logs */}
       {activeTab === 'timeline' && (
-        <div className="p-6 rounded-3xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-md shadow-sm space-y-5">
+        <div className="p-6 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-md shadow-sm space-y-5">
           <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
             <div>
               <h2 className="text-sm font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-2">
@@ -1362,7 +1362,7 @@ const ClientDetailsPage = () => {
       {/* Calendar Date Event Details Modal rendered via Portal */}
       {isDateDetailsOpen && createPortal(
         <div className="fixed inset-0 z-[99999] bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full p-6 space-y-5 border border-slate-200 dark:border-slate-800 shadow-2xl animate-in fade-in zoom-in-95 duration-150 max-h-[90vh] overflow-y-auto">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-lg w-full p-6 space-y-5 border border-slate-200 dark:border-slate-800 shadow-2xl animate-in fade-in zoom-in-95 duration-150 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
               <div className="flex items-center gap-2.5">
                 <CalendarDays className="text-indigo-600" size={20} />
@@ -1509,7 +1509,7 @@ const ClientDetailsPage = () => {
       {/* Schedule / Edit Meeting Modal rendered via Portal */}
       {isAddMeetingOpen && createPortal(
         <div className="fixed inset-0 z-[99999] bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 space-y-4 border border-slate-200 dark:border-slate-800 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-6 space-y-4 border border-slate-200 dark:border-slate-800 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
               <h3 className="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-2">
                 <Video className="text-indigo-600" size={18} /> {editingMeeting ? 'Edit Client Meeting' : 'Schedule Client Meeting'}
@@ -1636,7 +1636,7 @@ const ClientDetailsPage = () => {
       {/* Postpone & Reschedule Meeting Modal rendered via Portal */}
       {isPostponeModalOpen && createPortal(
         <div className="fixed inset-0 z-[99999] bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 space-y-4 border border-amber-200 dark:border-amber-800 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-6 space-y-4 border border-amber-200 dark:border-amber-800 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
               <h3 className="font-extrabold text-sm text-amber-600 dark:text-amber-400 flex items-center gap-2">
                 <CalendarClock size={18} /> Postpone & Reschedule Meeting
@@ -1711,7 +1711,7 @@ const ClientDetailsPage = () => {
       {/* Add / Edit Follow-up Modal rendered via Portal */}
       {isAddFollowUpOpen && createPortal(
         <div className="fixed inset-0 z-[99999] bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 space-y-4 border border-slate-200 dark:border-slate-800 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-6 space-y-4 border border-slate-200 dark:border-slate-800 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
               <h3 className="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-2">
                 <CheckSquare className="text-indigo-600" size={18} /> {editingFollowup ? 'Edit Follow-up Task' : 'Add Follow-up Task'}

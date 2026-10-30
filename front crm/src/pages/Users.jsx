@@ -289,14 +289,14 @@ const PermissionModal = ({ isOpen, onClose, user, onSave, showToast, getAuthHead
         className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-3xl max-h-[90vh] flex flex-col rounded-3xl shadow-2xl overflow-hidden my-auto"
       >
         {/* Header */}
-        <div className="p-6 bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-600 text-white flex justify-between items-center">
+        <div className="p-6 bg-gradient-to-r from-[#be1e2d] via-rose-700 to-red-800 text-white flex justify-between items-center">
           <div className="flex items-center gap-3">
             <div className="p-2.5 bg-white/10 rounded-2xl backdrop-blur-md">
               <ShieldCheck size={24} className="text-white" />
             </div>
             <div>
               <h2 className="text-lg font-black tracking-tight">{user.name}</h2>
-              <p className="text-xs text-indigo-100 font-bold uppercase tracking-wider">Configure Sidebar Access & Permissions</p>
+              <p className="text-xs text-rose-100 font-bold uppercase tracking-wider">Configure Sidebar Access & Permissions</p>
             </div>
           </div>
           <button
@@ -412,7 +412,7 @@ const PermissionModal = ({ isOpen, onClose, user, onSave, showToast, getAuthHead
             type="button"
             onClick={handleSave}
             disabled={saving}
-            className="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-xs shadow-lg shadow-indigo-600/20 transition active:scale-95 disabled:opacity-50 cursor-pointer flex items-center gap-2"
+            className="px-6 py-2.5 rounded-xl bg-[#be1e2d] hover:bg-[#a81724] text-white font-bold text-xs shadow-md shadow-red-600/20 transition active:scale-95 disabled:opacity-50 cursor-pointer flex items-center gap-2"
           >
             {saving && <Loader2 size={14} className="animate-spin" />}
             <span>Save Permissions</span>
@@ -674,7 +674,7 @@ const Users = () => {
               <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500">Nexus Staff Portal</span>
             </div> */}
             <h1 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-slate-100 italic tracking-tighter leading-none">
-              EMPLOYEE <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-indigo-600 dark:from-indigo-400 dark:to-lime-400">LIST</span>
+              EMPLOYEE <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#be1e2d] to-rose-600 dark:from-red-400 dark:to-rose-400">DIRECTORY</span>
             </h1>
           </div>
 
@@ -693,9 +693,9 @@ const Users = () => {
 
             <button
               onClick={() => setIsCreateOpen(true)}
-              className="group relative flex items-center justify-center gap-2 px-8 py-4 bg-indigo-600 dark:bg-slate-900 text-white dark:text-slate-100 border border-transparent dark:border-slate-800 shadow-lg hover:shadow-indigo-500/20 dark:hover:shadow-none rounded-full font-bold text-[12px] uppercase tracking-wider transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] overflow-hidden cursor-pointer"
+              className="group flex items-center justify-center gap-2 px-6 py-3.5 bg-[#be1e2d] hover:bg-[#a81724] text-white shadow-md shadow-red-600/20 rounded-xl font-bold text-[12px] uppercase tracking-wider transition-all duration-200 active:scale-95 cursor-pointer"
             >
-              <div className="absolute inset-0 bg-indigo-700 dark:bg-lime-500/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+
               <Plus size={16} className="relative z-10" />
               <span className="relative z-10">Add Employee</span>
             </button>

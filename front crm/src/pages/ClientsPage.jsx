@@ -145,7 +145,7 @@ const ClientsPage = () => {
 
           <Link
             to="/clients/new"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white text-xs font-bold shadow-lg shadow-indigo-600/20 transition-all hover:scale-[1.02]"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#be1e2d] hover:bg-[#a81724] text-white text-xs font-bold shadow-lg shadow-[#be1e2d]/20 transition-all hover:scale-[1.02]"
           >
             <Plus className="w-4 h-4" />
             <span>Add New Client</span>
@@ -182,7 +182,7 @@ const ClientsPage = () => {
       </div>
 
       {/* Filters & Search Toolbar */}
-      <div className="p-4 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-md flex flex-col gap-4 shadow-xs">
+      <div className="p-4 rounded-2xl bg-white/70 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-md flex flex-col gap-4 shadow-xs">
         <div className="flex flex-col sm:flex-row gap-3 items-center justify-between">
           <div className="relative w-full sm:w-96">
             <div className="w-4 h-4 absolute left-3.5 top-3.5 text-slate-400" />
@@ -201,7 +201,7 @@ const ClientsPage = () => {
               onClick={() => setIsFilterOpen(!isFilterOpen)}
               className={`px-3.5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition cursor-pointer relative ${
                 isFilterOpen || (statusFilter || typeFilter || priorityFilter || (sortBy !== 'createdAt'))
-                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20'
+                  ? 'bg-indigo-600 text-white shadow-md shadow-[#be1e2d]/20'
                   : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700'
               }`}
             >
@@ -302,7 +302,7 @@ const ClientsPage = () => {
           <span>Loading client profiles & metrics...</span>
         </div>
       ) : clients.length === 0 ? (
-        <div className="py-20 text-center text-xs text-slate-400 font-semibold flex flex-col items-center gap-3 bg-white/50 dark:bg-slate-900/50 rounded-3xl border border-slate-200/80 dark:border-slate-800/80">
+        <div className="py-20 text-center text-xs text-slate-400 font-semibold flex flex-col items-center gap-3 bg-white/50 dark:bg-slate-900/50 rounded-2xl border border-slate-200/80 dark:border-slate-800/80">
           <Building className="w-12 h-12 text-slate-300 dark:text-slate-700" />
           <span className="text-sm font-bold text-slate-700 dark:text-slate-300">No client accounts found</span>
           <span>Try resetting your search query or filters.</span>

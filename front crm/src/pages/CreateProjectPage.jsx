@@ -187,7 +187,7 @@ const CreateProjectPage = () => {
       )}
 
       {/* Main Form Container - Removed overflow-hidden so absolute dropdowns render cleanly */}
-      <form onSubmit={handleSubmit} className="rounded-3xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800/90 backdrop-blur-md shadow-xl flex flex-col">
+      <form onSubmit={handleSubmit} className="rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800/90 backdrop-blur-md shadow-xl flex flex-col">
         
         <div className="p-6 md:p-8 flex flex-col gap-8">
           {/* Section 1: Project & Client Definition */}
@@ -238,7 +238,7 @@ const CreateProjectPage = () => {
           </div>
 
           {/* Section 2: REDESIGNED ASSIGNED TEAM MEMBERS SECTION (Z-Index fix applied) */}
-          <div className="relative z-30 flex flex-col gap-4 p-6 rounded-3xl bg-indigo-50/40 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/40 shadow-xs">
+          <div className="relative z-30 flex flex-col gap-4 p-6 rounded-2xl bg-indigo-50/40 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/40 shadow-xs">
             <h2 className="text-xs font-black uppercase tracking-wider text-indigo-700 dark:text-indigo-300 flex items-center justify-between border-b border-indigo-100/60 dark:border-indigo-900/40 pb-2">
               <span>2. Team & Leadership Allocation</span>
               <span className="text-[10px] bg-indigo-600 text-white px-2.5 py-0.5 rounded-full font-extrabold">Mandatory</span>
@@ -403,7 +403,7 @@ const CreateProjectPage = () => {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full sm:w-auto h-11 px-7 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white text-xs font-black uppercase tracking-wider shadow-lg shadow-indigo-600/25 focus:ring-2 focus:ring-indigo-500 focus:outline-hidden transition-all hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full sm:w-auto h-11 px-7 rounded-xl bg-[#be1e2d] hover:bg-[#a81724] text-white text-xs font-black uppercase tracking-wider shadow-lg shadow-indigo-600/25 focus:ring-2 focus:ring-indigo-500 focus:outline-hidden transition-all hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
           >
             {submitting ? (
               <>
