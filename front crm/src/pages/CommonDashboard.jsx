@@ -15,10 +15,10 @@ const API_BASE = getApiBaseUrl();
 
 /* ─── Status config ─── */
 const STATUS_CONFIG = {
-  pending:  { label: 'Pending',     icon: LayoutDashboard, color: '#e26a6a', bg: 'bg-[#e26a6a]/10',  text: 'text-[#e26a6a]',  border: 'border-[#e26a6a]/25'  },
-  current:  { label: 'In Progress', icon: Clock,        color: '#e5a23a', bg: 'bg-[#e5a23a]/10',  text: 'text-[#e5a23a]',  border: 'border-[#e5a23a]/25'  },
-  preview:  { label: 'In Review',   icon: Eye,          color: '#442d82', bg: 'bg-indigo-500/10', text: 'text-indigo-500', border: 'border-indigo-500/25' },
-  done:     { label: 'Completed',   icon: CheckCircle2, color: '#b7d333', bg: 'bg-[#b7d333]/10',  text: 'text-[#b7d333]',  border: 'border-[#b7d333]/25'  },
+  pending:  { label: 'Pending',     icon: LayoutDashboard, color: '#ef4444', bg: 'bg-[#ef4444]/10',  text: 'text-[#ef4444]',  border: 'border-[#ef4444]/25'  },
+  current:  { label: 'In Progress', icon: Clock,        color: '#f59e0b', bg: 'bg-[#f59e0b]/10',  text: 'text-[#f59e0b]',  border: 'border-[#f59e0b]/25'  },
+  preview:  { label: 'In Review',   icon: Eye,          color: '#be1e2d', bg: 'bg-indigo-500/10', text: 'text-indigo-500', border: 'border-indigo-500/25' },
+  done:     { label: 'Completed',   icon: CheckCircle2, color: '#10b981', bg: 'bg-[#10b981]/10',  text: 'text-[#10b981]',  border: 'border-[#10b981]/25'  },
 };
 
 /* ─── Sub-components ─── */
@@ -48,7 +48,7 @@ const DonutChart = ({ segments, size = 130, strokeWidth = 14 }) => {
   );
 };
 
-const AreaChart = ({ points: rawPoints = [], color = '#442d82', height = 120 }) => {
+const AreaChart = ({ points: rawPoints = [], color = '#be1e2d', height = 120 }) => {
   const max = Math.max(...rawPoints.map(p => p.value), 1);
   const W = 500, H = height, PL = 8, PR = 8, PT = 10, PB = 20;
   const cW = W - PL - PR, cH = H - PT - PB;
@@ -80,7 +80,7 @@ const AreaChart = ({ points: rawPoints = [], color = '#442d82', height = 120 }) 
   );
 };
 
-const ProgressBar = ({ pct = 0, color = '#b7d333', height = 6, animated = true }) => (
+const ProgressBar = ({ pct = 0, color = '#10b981', height = 6, animated = true }) => (
   <div className={`w-full rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden`} style={{ height }}>
     <motion.div
       className="h-full rounded-full"
@@ -115,7 +115,7 @@ const BigMetricCard = ({ label, value, icon: Icon, color, subtext, trend, delay 
         <Icon size={22} style={{ color }} />
       </div>
       {trend !== undefined && (
-        <div className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black ${trend >= 0 ? 'bg-[#b7d333]/10 text-[#b7d333]' : 'bg-[#e26a6a]/10 text-[#e26a6a]'}`}>
+        <div className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black ${trend >= 0 ? 'bg-[#10b981]/10 text-[#10b981]' : 'bg-[#ef4444]/10 text-[#ef4444]'}`}>
           <ChevronUp size={9} className={trend >= 0 ? '' : 'rotate-180'} />
           {Math.abs(trend)}%
         </div>
@@ -336,10 +336,10 @@ const CommonDashboard = () => {
   };
 
   const donutSegments = [
-    { value: statusCounts.pending, color: '#e26a6a' },
-    { value: statusCounts.current, color: '#e5a23a' },
-    { value: statusCounts.preview, color: '#442d82' },
-    { value: statusCounts.done,    color: '#b7d333' },
+    { value: statusCounts.pending, color: '#ef4444' },
+    { value: statusCounts.current, color: '#f59e0b' },
+    { value: statusCounts.preview, color: '#be1e2d' },
+    { value: statusCounts.done,    color: '#10b981' },
   ];
 
   /* Loading State */
@@ -422,10 +422,10 @@ const CommonDashboard = () => {
 
       {/* ══ ROW 1: METRIC CARDS ══ */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <BigMetricCard label="Total Assigned"   value={myTasks.length}       icon={ListChecks}   color="#442d82" subtext="All tasks assigned"   delay={0}    />
-        <BigMetricCard label="In Progress"      value={statusCounts.current} icon={Zap}          color="#e5a23a" subtext="Working on currently" delay={0.05} />
-        <BigMetricCard label="In Review"        value={statusCounts.preview} icon={Eye}          color="#442d82" subtext="Submitted for review" delay={0.1}  />
-        <BigMetricCard label="Completed"        value={statusCounts.done}    icon={CheckCircle2} color="#b7d333" subtext={`${completionRate}% complete`} delay={0.15} />
+        <BigMetricCard label="Total Assigned"   value={myTasks.length}       icon={ListChecks}   color="#be1e2d" subtext="All tasks assigned"   delay={0}    />
+        <BigMetricCard label="In Progress"      value={statusCounts.current} icon={Zap}          color="#f59e0b" subtext="Working on currently" delay={0.05} />
+        <BigMetricCard label="In Review"        value={statusCounts.preview} icon={Eye}          color="#be1e2d" subtext="Submitted for review" delay={0.1}  />
+        <BigMetricCard label="Completed"        value={statusCounts.done}    icon={CheckCircle2} color="#10b981" subtext={`${completionRate}% complete`} delay={0.15} />
       </div>
 
       {/* ══ ROW 2: CHARTS & STATS ══ */}
@@ -485,7 +485,7 @@ const CommonDashboard = () => {
             </div>
           </div>
 
-          <AreaChart points={weeklyActivity} color="#442d82" height={100} />
+          <AreaChart points={weeklyActivity} color="#be1e2d" height={100} />
 
           <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
             <div>
@@ -723,7 +723,7 @@ const CommonDashboard = () => {
               ) : (
                 recentlyCompleted.map(t => (
                   <div key={t._id} className="flex items-start gap-2.5">
-                    <CheckCircle2 size={14} className="text-[#b7d333] shrink-0 mt-0.5" />
+                    <CheckCircle2 size={14} className="text-[#10b981] shrink-0 mt-0.5" />
                     <div>
                       <p className="text-xs font-bold text-slate-700 dark:text-slate-200 line-clamp-1 leading-snug">
                         {t.title}

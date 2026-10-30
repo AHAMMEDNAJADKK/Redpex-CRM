@@ -529,7 +529,7 @@ const PayslipModal = ({ isOpen, onClose, salaryRecord, onSaved, isSmall = false 
               <div className="flex flex-row justify-between items-stretch gap-2 pb-0.5">
                 <div className="flex flex-col justify-center">
                   <img
-                    src="/logo3.png"
+                    src="/redpex-full.png"
                     alt="KOD.Brand Logo"
                     className="h-8 sm:h-9 w-auto object-contain"
                     crossOrigin="anonymous"

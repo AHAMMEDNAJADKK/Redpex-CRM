@@ -943,13 +943,13 @@ const HrReportPage = () => {
     
     // Header Brand Logo - Only on First Page
     const logoImg = new Image();
-    logoImg.src = '/logo3.png';
+    logoImg.src = '/redpex-full.png';
     await new Promise((resolve) => {
       logoImg.onload = () => {
         try {
           doc.addImage(logoImg, 'PNG', 14, 10, 32, 12);
         } catch (e) {
-          console.error("Failed to render logo3.png in HR PDF:", e);
+          console.error("Failed to render redpex-full.png in HR PDF:", e);
         }
         resolve();
       };

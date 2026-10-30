@@ -62,7 +62,7 @@ const TaskDueReminderModal = () => {
         if (Notification.permission === 'granted') {
           new Notification('⏰ Task Due Soon Reminder!', {
             body: notifBody,
-            icon: '/logo2.png',
+            icon: '/pwa-192x192.png',
             tag: `task_due_${taskId}`
           });
         } else if (Notification.permission !== 'denied') {
@@ -70,7 +70,7 @@ const TaskDueReminderModal = () => {
             if (perm === 'granted') {
               new Notification('⏰ Task Due Soon Reminder!', {
                 body: notifBody,
-                icon: '/logo2.png',
+                icon: '/pwa-192x192.png',
                 tag: `task_due_${taskId}`
               });
             }

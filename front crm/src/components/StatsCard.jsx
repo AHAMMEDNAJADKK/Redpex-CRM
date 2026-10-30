@@ -5,10 +5,10 @@ import { motion } from 'framer-motion';
 
 const colorMap = {
   indigo: {
-    bg: 'from-indigo-500/10 to-purple-500/10 dark:from-indigo-500/20 dark:to-purple-500/20',
-    border: 'border-indigo-500/20 dark:border-indigo-500/30',
-    text: 'text-indigo-600 dark:text-indigo-400',
-    glow: 'shadow-indigo-500/10'
+    bg: 'from-[#be1e2d]/10 to-rose-500/10 dark:from-[#be1e2d]/20 dark:to-rose-500/20',
+    border: 'border-[#be1e2d]/20 dark:border-[#be1e2d]/30',
+    text: 'text-[#be1e2d] dark:text-red-400',
+    glow: 'shadow-[#be1e2d]/10'
   },
   emerald: {
     bg: 'from-emerald-500/10 to-teal-500/10 dark:from-emerald-500/20 dark:to-teal-500/20',
@@ -35,31 +35,28 @@ export const StatsCard = ({ title, value, icon: Icon, color = 'indigo', loading 
 
   return (
     <motion.div
-      whileHover={{ y: -4, scale: 1.02 }}
-      className={`relative overflow-hidden rounded-[2rem] p-6 bg-white/70 dark:bg-slate-900/70 backdrop-blur-2xl border border-slate-200/50 dark:border-slate-800/50 shadow-xl ${scheme.glow} transition-all duration-300`}
-      initial={{ opacity: 0, y: 20 }}
+      whileHover={{ y: -2 }}
+      className={`relative overflow-hidden rounded-xl p-5 bg-white dark:bg-[#131c2e] border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-md transition-all duration-200`}
+      initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ type: 'spring', damping: 22, stiffness: 100 }}
+      transition={{ duration: 0.25, ease: 'easeOut' }}
     >
-      {/* Dynamic Background Gradients */}
-      <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${scheme.bg} blur-3xl opacity-60 rounded-full`} />
-
-      <div className="flex items-center justify-between">
-        <div className="space-y-2">
-          <p className="text-xs font-semibold text-slate-400 tracking-wider uppercase">
+      <div className="flex items-center justify-between gap-4">
+        <div className="space-y-1.5 min-w-0">
+          <p className="text-[11px] font-bold text-slate-400 dark:text-slate-500 tracking-wider uppercase truncate">
             {title}
           </p>
           {loading ? (
-            <div className="h-9 w-20 bg-slate-200 dark:bg-slate-800 rounded-lg animate-pulse" />
+            <div className="h-8 w-24 bg-slate-200 dark:bg-slate-800 rounded-lg animate-pulse" />
           ) : (
-            <h3 className="text-3xl font-black text-slate-800 dark:text-white tracking-tight">
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight truncate">
               {value}
             </h3>
           )}
         </div>
 
-        <div className={`p-4 rounded-2xl bg-gradient-to-tr ${scheme.bg} border ${scheme.border} ${scheme.text} flex items-center justify-center shadow-lg shadow-black/5`}>
-          {Icon && <Icon size={24} className="stroke-[2px]" />}
+        <div className={`p-3 rounded-xl bg-gradient-to-tr ${scheme.bg} border ${scheme.border} ${scheme.text} flex items-center justify-center shrink-0 shadow-sm`}>
+          {Icon && <Icon size={20} className="stroke-[2.2px]" />}
         </div>
       </div>
     </motion.div>

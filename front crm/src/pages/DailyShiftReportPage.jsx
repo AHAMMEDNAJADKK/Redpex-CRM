@@ -869,7 +869,7 @@ const DailyShiftReportPage = () => {
 
       // Header Brand Logo
       const logoImg = new Image();
-      logoImg.src = '/logo3.png';
+      logoImg.src = '/redpex-full.png';
       await new Promise((resolve) => {
         logoImg.onload = () => {
           doc.addImage(logoImg, 'PNG', 14, 10, 32, 12);
@@ -1713,7 +1713,7 @@ const DailyShiftReportPage = () => {
         {/* LOGO & TITLE HEADER */}
         <div className="flex flex-col sm:flex-row items-center justify-between border-b-2 border-slate-900 dark:border-slate-700 pb-5 gap-4">
           <div className="flex items-center gap-3">
-            <img src="/logo3.png" alt="KOD.BRAND Logo" className="h-12 sm:h-14 w-auto object-contain" />
+            <img src="/redpex-full.png" alt="Redpex Fire & Safety Logo" className="h-12 sm:h-14 w-auto object-contain" />
           </div>
 
           <div className="text-right sm:text-right text-center">

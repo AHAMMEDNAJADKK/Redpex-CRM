@@ -49,7 +49,7 @@ const NotificationPopover = ({
             {/* Header */}
             <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50/80 dark:bg-slate-950/60">
               <div className="flex items-center gap-2">
-                <BellRing size={16} className="text-indigo-600 dark:text-indigo-400" />
+                <BellRing size={16} className="text-[#be1e2d] dark:text-red-400" />
                 <h3 className="text-xs font-black text-slate-900 dark:text-slate-100 uppercase tracking-widest">
                   Notifications
                 </h3>
@@ -58,7 +58,7 @@ const NotificationPopover = ({
               {notifications.some(n => !n.isRead) && (
                 <button 
                   onClick={onMarkAllRead}
-                  className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1 cursor-pointer"
+                  className="text-[10px] font-bold text-[#be1e2d] dark:text-red-400 hover:underline flex items-center gap-1 cursor-pointer"
                 >
                   <CheckCircle2 size={12} /> Mark all read
                 </button>
@@ -81,11 +81,11 @@ const NotificationPopover = ({
                       navigate('/notifications');
                     }}
                     className={`p-4 hover:bg-slate-50 dark:hover:bg-slate-950/40 transition-all cursor-pointer relative group ${
-                      !n.isRead ? 'bg-indigo-50/30 dark:bg-indigo-950/20' : ''
+                      !n.isRead ? 'bg-red-50/40 dark:bg-red-950/20' : ''
                     }`}
                   >
                     {!n.isRead && (
-                      <div className="absolute left-2 top-1/2 -translate-y-1/2 w-1.5 h-8 bg-indigo-600 rounded-full shadow-[0_0_10px_#4f46e5]" />
+                      <div className="absolute left-2 top-1/2 -translate-y-1/2 w-1.5 h-8 bg-[#be1e2d] rounded-full shadow-[0_0_8px_rgba(190,30,45,0.4)]" />
                     )}
 
                     <div className="flex justify-between items-start mb-1 gap-2">
@@ -114,7 +114,7 @@ const NotificationPopover = ({
             {/* View All Button */}
             <button 
               onClick={handleNavigateToAll}
-              className="w-full py-3.5 text-center text-[10px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-[0.15em] hover:bg-indigo-50 dark:hover:bg-slate-950 transition-all border-t border-slate-200 dark:border-slate-800 cursor-pointer"
+              className="w-full py-3.5 text-center text-[10px] font-black text-[#be1e2d] dark:text-red-400 uppercase tracking-[0.15em] hover:bg-indigo-50 dark:hover:bg-slate-950 transition-all border-t border-slate-200 dark:border-slate-800 cursor-pointer"
             >
               View All Notifications
             </button>

@@ -1311,7 +1311,7 @@ const IncomeInvoiceModal = ({ isOpen, onClose, incomeRecord, initialMode = 'invo
                 {/* Top Header Branding */}
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b pb-4" style={{ borderColor: '#e2e8f0' }}>
                   <div>
-                    <img src="/logo3.png" alt="Logo" className="h-11 w-auto object-contain mb-1" />
+                    <img src="/redpex-full.png" alt="Logo" className="h-11 w-auto object-contain mb-1" />
                     <h2 className="text-xs font-extrabold uppercase tracking-wide" style={{ color: '#0f172a' }}>KOD.BRAND TECH PVT LTD</h2>
                     <p className="text-[11px]" style={{ color: '#64748b' }}>Aranyakam Building ,Thamarakuzhi Rd <br/>Uphill ,Malappuram</p>
                     {/* <p className="text-[10px] font-mono" style={{ color: '#94a3b8' }}>GSTIN: 32ABCDE1234F1Z5</p> */}
@@ -1422,7 +1422,7 @@ const IncomeInvoiceModal = ({ isOpen, onClose, incomeRecord, initialMode = 'invo
                 {/* Header Branding & Meta Block */}
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b pb-4" style={{ borderColor: '#e2e8f0' }}>
                   <div>
-                    <img src="/logo3.png" alt="Logo" className="h-12 w-auto object-contain mb-1" />
+                    <img src="/redpex-full.png" alt="Logo" className="h-12 w-auto object-contain mb-1" />
                     <h2 className="text-xs font-extrabold uppercase tracking-wide" style={{ color: '#0f172a' }}>KOD.BRAND TECH PVT LTD</h2>
                     <p className="text-[11px]" style={{ color: '#64748b' }}>Aranyakam Building ,Thamarakuzhi Rd <br/>Uphill ,Malappuram</p>
                     {/* <p className="text-[10px] font-mono" style={{ color: '#94a3b8' }}>GSTIN: 32ABCDE1234F1Z5 | HSN/SAC: 998314</p> */}

@@ -225,7 +225,7 @@ export default function MonthlyPerformanceReportPage() {
 
     // Header Logo
     const logoImg = new Image();
-    logoImg.src = '/logo3.png';
+    logoImg.src = '/redpex-full.png';
     await new Promise((resolve) => {
       logoImg.onload = () => {
         doc.addImage(logoImg, 'PNG', 14, 10, 32, 12);
@@ -732,7 +732,7 @@ export default function MonthlyPerformanceReportPage() {
         {/* Document Header */}
         <div className="flex flex-col sm:flex-row items-center justify-between pb-6 border-b border-slate-200 dark:border-slate-800 gap-4">
           <div className="flex items-center gap-4">
-            <img src="/logo3.png" alt="KOD.BRAND" className="h-10 object-contain" onError={(e) => { e.target.style.display = 'none'; }} />
+            <img src="/redpex-full.png" alt="Redpex Fire & Safety" className="h-10 object-contain" onError={(e) => { e.target.style.display = 'none'; }} />
             <div>
               <h2 className="text-xl font-black tracking-tight text-slate-900 dark:text-white uppercase">
                 {isAcademicCounselor ? "ACADEMIC COUNSELOR MONTHLY PERFORMANCE REPORT" : "MONTHLY PERFORMANCE REPORT"}
