@@ -354,17 +354,17 @@ const fetchData = useCallback(async () => {
               <span className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-500/70 dark:text-indigo-400/80">System Live</span> */}
             </div>
             <h1 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-slate-100 italic tracking-tighter leading-none">
-              TASKS <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500"></span>
+              TASKS <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#be1e2d] to-rose-600">MANAGEMENT</span>
             </h1>
           </div>
           
           <button 
             onClick={() => setIsModalOpen(true)} 
-            className="group relative flex items-center justify-center gap-3 px-10 py-5 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-800 shadow-sm rounded-full font-black text-[11px] uppercase tracking-widest transition-all hover:scale-105 active:scale-95 overflow-hidden cursor-pointer"
+            className="flex items-center justify-center gap-2 px-6 py-3.5 bg-[#be1e2d] hover:bg-[#a81724] text-white shadow-md shadow-red-600/20 rounded-xl font-bold text-xs uppercase tracking-wider transition-all duration-200 active:scale-95 cursor-pointer"
           >
-            <div className="absolute inset-0 bg-indigo-500 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-            <Plus size={18} className="relative z-10 group-hover:text-white" /> 
-            <span className="relative z-10 group-hover:text-white">Create Task</span>
+
+            <Plus size={16} /> 
+            <span>Create Task</span>
           </button>
         </header>
 

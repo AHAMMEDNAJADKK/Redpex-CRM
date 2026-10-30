@@ -115,7 +115,7 @@ const CreateClientPage = () => {
       )}
 
       {/* Form Card */}
-      <form onSubmit={handleSubmit} className="p-6 md:p-8 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-md shadow-xl flex flex-col gap-8">
+      <form onSubmit={handleSubmit} className="p-6 md:p-8 rounded-2xl bg-white/70 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-md shadow-xl flex flex-col gap-8">
         
         {/* Section 1: Basic Company Info */}
         <div className="flex flex-col gap-4">
@@ -294,7 +294,7 @@ const CreateClientPage = () => {
           <button
             type="submit"
             disabled={submitting}
-            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white text-xs font-bold shadow-lg shadow-indigo-600/20 transition-all hover:scale-[1.02] disabled:opacity-50"
+            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#be1e2d] hover:bg-[#a81724] text-white text-xs font-bold shadow-lg shadow-[#be1e2d]/20 transition-all hover:scale-[1.02] disabled:opacity-50"
           >
             <Save className="w-4 h-4" />
             <span>{submitting ? 'Creating Profile...' : 'Save Client Profile'}</span>

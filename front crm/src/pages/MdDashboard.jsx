@@ -19,16 +19,16 @@ import {
 const API_BASE = getApiBaseUrl();
 
 const DEPARTMENT_TABS = [
-  { id: 'overview', label: 'Executive Overview', icon: ShieldCheck, color: 'text-indigo-600' },
+  { id: 'overview', label: 'Executive Overview', icon: ShieldCheck, color: 'text-[#be1e2d]' },
   { id: 'hr', label: 'HR View', icon: Users, color: 'text-rose-600' },
   { id: 'attendance', label: 'Attendance Logs', icon: Clock, color: 'text-rose-600' },
   { id: 'accountant', label: 'Finance & Accounts', icon: Calculator, color: 'text-emerald-600' },
-  { id: 'academy', label: 'Academy & LMS', icon: BookOpen, color: 'text-indigo-600' },
+  { id: 'academy', label: 'Academy & LMS', icon: BookOpen, color: 'text-[#be1e2d]' },
   { id: 'marketing', label: 'Digital Marketing', icon: Megaphone, color: 'text-purple-600' },
   { id: 'counselor', label: 'Academic Counselor', icon: GraduationCap, color: 'text-blue-600' },
   { id: 'developer', label: 'Development & Tech', icon: Code2, color: 'text-cyan-600' },
   { id: 'graphic', label: 'Graphic Design', icon: Palette, color: 'text-pink-600' },
-  { id: 'video', label: 'Video Production', icon: Video, color: 'text-indigo-600' },
+  { id: 'video', label: 'Video Production', icon: Video, color: 'text-[#be1e2d]' },
 ];
 
 /**
@@ -36,7 +36,7 @@ const DEPARTMENT_TABS = [
  */
 const ExecutivePieChart = ({ data }) => {
   const slices = [
-    { label: 'Corporate Clients', value: data?.activeClientsCount || 0, color: '#6366f1' },
+    { label: 'Corporate Clients', value: data?.activeClientsCount || 0, color: '#be1e2d' },
     { label: 'Active Projects', value: data?.activeProjectsCount || 0, color: '#a855f7' },
     { label: 'Workforce Staff', value: data?.activeEmployeesCount || 0, color: '#f43f5e' },
     { label: 'Academy Students', value: data?.activeStudentsCount || 0, color: '#3b82f6' },
@@ -50,7 +50,7 @@ const ExecutivePieChart = ({ data }) => {
     <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col gap-4">
       <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
         <div className="flex items-center gap-2">
-          <PieChart className="w-4 h-4 text-indigo-500" />
+          <PieChart className="w-4 h-4 text-[#be1e2d]" />
           <h3 className="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200">
             Enterprise Operations Distribution
           </h3>
@@ -178,7 +178,7 @@ const OverallStatCards = ({ data }) => {
         <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col gap-2">
           <div className="flex items-center justify-between text-slate-400">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Corporate Clients</span>
-            <div className="p-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400">
+            <div className="p-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-[#be1e2d] dark:text-indigo-400">
               <Building2 className="w-5 h-5" />
             </div>
           </div>
@@ -355,7 +355,7 @@ const MdDashboard = () => {
       {/* EXECUTIVE HEADER */}
       <div className="px-5 py-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-md flex items-center justify-between gap-4 shadow-md">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 border border-indigo-200/80 dark:border-indigo-800">
+          <div className="p-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-[#be1e2d] dark:text-indigo-400 border border-indigo-200/80 dark:border-indigo-800">
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
@@ -372,7 +372,7 @@ const MdDashboard = () => {
           className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold transition-all border border-slate-200 dark:border-slate-700 cursor-pointer"
           title="Refresh Data"
         >
-          <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin text-indigo-600' : ''}`} />
+          <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin text-[#be1e2d]' : ''}`} />
           <span className="hidden sm:inline">Refresh Data</span>
         </button>
       </div>
@@ -389,7 +389,7 @@ const MdDashboard = () => {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all whitespace-nowrap cursor-pointer shrink-0 ${
                   isActive
-                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20'
+                    ? 'bg-[#be1e2d] text-white shadow-md shadow-indigo-600/20'
                     : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100'
                 }`}
               >

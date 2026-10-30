@@ -1113,20 +1113,23 @@ const Dashboard = ({ isEmbedded = false, mdData = null }) => {
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-10 pb-24 pt-4 max-w-7xl mx-auto px-4">
         
         {/* HEADER */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white dark:bg-[#131c2e] p-6 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
           <div>
-            {/* <div className="flex items-center gap-2 mb-1">
-              <Shield size={14} className="text-indigo-500" />
-              <p className="text-[10px] font-black text-indigo-500 uppercase tracking-[0.3em]">
-                System Control Console
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#be1e2d] animate-pulse" />
+              <p className="text-[10px] font-black text-[#be1e2d] dark:text-red-400 uppercase tracking-widest">
+                Redpex Operations Command
               </p>
-            </div> */}
-            <h1 className="text-4xl font-black text-slate-900 dark:text-slate-100 italic uppercase tracking-tighter">
-               <span className="text-indigo-650 dark:text-indigo-400">Dashboard</span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+              Enterprise Operations Dashboard
             </h1>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">
+              Live operational telemetry: leads pipeline, field safety projects, staff workloads, and task executions
+            </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
             <AiAnalyzeButton
               onClick={() => {
                 setAiModalContext({
@@ -1140,12 +1143,12 @@ const Dashboard = ({ isEmbedded = false, mdData = null }) => {
             />
             <button
               onClick={handleSync}
-              className="px-5 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl flex items-center gap-2 text-xs font-bold text-slate-600 dark:text-slate-400 hover:border-indigo-500/50 dark:hover:border-indigo-500/50 transition-all active:scale-95 shadow-sm cursor-pointer"
+              className="px-4 py-2.5 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded-xl flex items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-200 transition-all active:scale-95 shadow-xs cursor-pointer"
             >
               <RefreshCw size={14} />
-              <span>Sync System</span>
+              <span>Sync Telemetry</span>
             </button>
-            <div className="px-5 py-3 bg-indigo-600/5 dark:bg-indigo-500/10 border border-indigo-500/20 rounded-2xl text-xs font-black text-white uppercase tracking-wider">
+            <div className="px-4 py-2.5 bg-[#be1e2d]/10 border border-[#be1e2d]/20 rounded-xl text-xs font-bold text-[#be1e2d] dark:text-red-400 uppercase tracking-wider">
               {currentTime.toLocaleDateString("en-IN", { weekday: "short", day: "2-digit", month: "short" })}
             </div>
           </div>
@@ -1164,7 +1167,7 @@ const Dashboard = ({ isEmbedded = false, mdData = null }) => {
             onClick={() => setGlobalDepartment("all")}
             className={`px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer ${
               globalDepartment === "all"
-                ? "bg-indigo-700 text-white shadow-md shadow-indigo-600/20"
+                ? "bg-[#be1e2d] text-white shadow-sm shadow-[#be1e2d]/25"
                 : "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-350 dark:hover:border-slate-700"
             }`}
           >
@@ -1178,7 +1181,7 @@ const Dashboard = ({ isEmbedded = false, mdData = null }) => {
                 onClick={() => setGlobalDepartment("Academy")}
                 className={`px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer ${
                   globalDepartment.toLowerCase() === "academy"
-                    ? "bg-indigo-700 text-white shadow-md shadow-indigo-600/20"
+                    ? "bg-[#be1e2d] text-white shadow-sm shadow-[#be1e2d]/25"
                     : "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-350 dark:hover:border-slate-700"
                 }`}
               >
@@ -1189,7 +1192,7 @@ const Dashboard = ({ isEmbedded = false, mdData = null }) => {
                 onClick={() => setGlobalDepartment("HR Analytics")}
                 className={`px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer ${
                   globalDepartment.toLowerCase() === "hr analytics" || globalDepartment.toLowerCase() === "hr/admin" || globalDepartment.toLowerCase() === "hr"
-                    ? "bg-indigo-700 text-white shadow-md shadow-indigo-600/20"
+                    ? "bg-[#be1e2d] text-white shadow-sm shadow-[#be1e2d]/25"
                     : "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-350 dark:hover:border-slate-700"
                 }`}
               >
@@ -1200,7 +1203,7 @@ const Dashboard = ({ isEmbedded = false, mdData = null }) => {
                 onClick={() => setGlobalDepartment("Daily Task Tracker")}
                 className={`px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer ${
                   globalDepartment.toLowerCase() === "daily task tracker"
-                    ? "bg-indigo-700 text-white shadow-md shadow-indigo-600/20"
+                    ? "bg-[#be1e2d] text-white shadow-sm shadow-[#be1e2d]/25"
                     : "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-350 dark:hover:border-slate-700"
                 }`}
               >
@@ -1216,7 +1219,7 @@ const Dashboard = ({ isEmbedded = false, mdData = null }) => {
                 onClick={() => setGlobalDepartment(dept)}
                 className={`px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer ${
                   globalDepartment.toLowerCase() === dept.toLowerCase()
-                    ? "bg-indigo-700 text-white shadow-md shadow-indigo-800/20"
+                    ? "bg-[#be1e2d] text-white shadow-sm shadow-[#be1e2d]/25"
                     : "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-350 dark:hover:border-slate-700"
                 }`}
               >
@@ -1283,7 +1286,7 @@ const Dashboard = ({ isEmbedded = false, mdData = null }) => {
         {!["academy", "hr analytics", "hr/admin", "daily task tracker"].includes(globalDepartment.toLowerCase()) && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* UNIFIED DEPARTMENT & USER TODO ANALYTICS CONSOLE (Full-Width Premium Dashboard Card) */}
-          <div className="lg:col-span-12 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-8 shadow-sm flex flex-col justify-between">
+          <div className="lg:col-span-12 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 shadow-sm flex flex-col justify-between">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b border-slate-50 dark:border-slate-850 pb-4">
               <div>
                 <h3 className="text-xs font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider">
@@ -1342,7 +1345,7 @@ const Dashboard = ({ isEmbedded = false, mdData = null }) => {
         {showLeadsArea && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             {/* LEAD PIPELINE FUNNEL CHART */}
-            <div className="lg:col-span-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-8 shadow-sm flex flex-col justify-between">
+            <div className="lg:col-span-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 shadow-sm flex flex-col justify-between">
               <div className="flex justify-between items-center mb-6">
                 <div>
                   <h2 className="text-xs font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider">
@@ -1402,7 +1405,7 @@ const Dashboard = ({ isEmbedded = false, mdData = null }) => {
             </div>
 
             {/* LEAD SOURCE ATTRIBUTION */}
-            <div className="lg:col-span-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-8 shadow-sm flex flex-col justify-between">
+            <div className="lg:col-span-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 shadow-sm flex flex-col justify-between">
               <div className="flex justify-between items-center mb-6">
                 <div>
                   <h3 className="text-xs font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider">
@@ -1484,7 +1487,7 @@ const Dashboard = ({ isEmbedded = false, mdData = null }) => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* QUICK ADMINISTRATIVE ACTIONS */}
           {/* QUICK ADMINISTRATIVE ACTIONS */}
-          <div className="lg:col-span-12 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-8 shadow-sm">
+          <div className="lg:col-span-12 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 shadow-sm">
             <h2 className="text-xs font-black text-slate-800 dark:text-slate-255 uppercase tracking-wider mb-6">
               Console Navigation
             </h2>
@@ -1520,7 +1523,7 @@ const Dashboard = ({ isEmbedded = false, mdData = null }) => {
         </div>
 
         {/* TASKS SYSTEM MONITOR */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-8 shadow-sm">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 shadow-sm">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-8">
             <div>
               <h2 className="text-xl font-black text-slate-900 dark:text-slate-100 italic uppercase tracking-tight">
@@ -1673,7 +1676,7 @@ const Dashboard = ({ isEmbedded = false, mdData = null }) => {
         </div>
 
         {/* CLIENTS SECTION */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-8 shadow-sm">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 shadow-sm">
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-xl font-black text-slate-900 dark:text-slate-100 italic uppercase tracking-tight flex items-center gap-2">
@@ -1755,7 +1758,7 @@ const Dashboard = ({ isEmbedded = false, mdData = null }) => {
         </div>
 
         {/* PROJECTS SECTION */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-8 shadow-sm">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 shadow-sm">
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-xl font-black text-slate-900 dark:text-slate-100 italic uppercase tracking-tight flex items-center gap-2">
@@ -1837,7 +1840,7 @@ const Dashboard = ({ isEmbedded = false, mdData = null }) => {
         </div>
 
         {/* CLIENT LEADS SECTION */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-8 shadow-sm">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 shadow-sm">
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-xl font-black text-slate-900 dark:text-slate-100 italic uppercase tracking-tight flex items-center gap-2">
@@ -1969,7 +1972,7 @@ const Dashboard = ({ isEmbedded = false, mdData = null }) => {
         </div>
 
         {/* MISSIONS SECTION */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-8 shadow-xl">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 shadow-xl">
           <div className="flex justify-between items-center mb-8">
             <div className="flex items-center gap-3">
               <div className="w-2 h-2 bg-indigo-500 rounded-full animate-pulse" />
@@ -2050,13 +2053,13 @@ const Dashboard = ({ isEmbedded = false, mdData = null }) => {
 };
 
 const StatCard = ({ label, value, icon: Icon, color, borderColor, bgColor, trend, subtext }) => (
-  <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/50 p-6 rounded-[2rem] relative overflow-hidden group shadow-sm hover:shadow-md transition-all hover:border-slate-350 dark:hover:border-slate-700">
+  <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/50 p-6 rounded-xl relative overflow-hidden group shadow-sm hover:shadow-md transition-all hover:border-[#be1e2d]/40 dark:hover:border-[#be1e2d]/40">
     <div className={`absolute top-0 left-0 bottom-0 w-1.5 ${borderColor}`} />
 
     <div className="flex justify-between items-start">
       <div className="space-y-1">
         <p className="text-[10px] font-black text-slate-555 dark:text-slate-455 uppercase tracking-[0.15em] mb-1">{label}</p>
-        <h3 className={`text-3xl font-black italic tracking-tight ${color}`}>{value}</h3>
+        <h3 className={`text-2xl font-black tracking-tight ${color}`}>{value}</h3>
         {trend !== undefined && (
           <div className="flex items-center gap-1.5 mt-1">
             <span className={`flex items-center text-[9px] font-black px-1.5 py-0.5 rounded ${

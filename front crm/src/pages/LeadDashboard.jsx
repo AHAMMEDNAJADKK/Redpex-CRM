@@ -172,7 +172,7 @@ const LeadDashboard = () => {
     return (
       <div className="min-h-[70vh] flex items-center justify-center p-6">
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-          className="max-w-md w-full bg-white dark:bg-slate-900 border border-red-500/30 rounded-3xl p-8 shadow-2xl text-center">
+          className="max-w-md w-full bg-white dark:bg-slate-900 border border-red-500/30 rounded-2xl p-8 shadow-2xl text-center">
           <div className="mx-auto w-16 h-16 bg-red-500/10 text-red-500 rounded-2xl flex items-center justify-center mb-6">
             <ShieldAlert size={36} />
           </div>
@@ -195,7 +195,7 @@ const LeadDashboard = () => {
   if (loading) {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center">
-        <Loader2 className="animate-spin text-indigo-500 mb-4" size={40} />
+        <Loader2 className="animate-spin text-[#be1e2d] mb-4" size={40} />
         <p className="text-xs text-slate-500 uppercase tracking-widest font-bold">Loading Lead Dashboard...</p>
       </div>
     );
@@ -206,14 +206,14 @@ const LeadDashboard = () => {
       <div className="max-w-[1600px] mx-auto space-y-6">
 
         {/* ─── Header ─── */}
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200/50 dark:border-slate-800/50 shadow-sm">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200/50 dark:border-slate-800/50 shadow-sm">
           <div className="flex items-center gap-4">
-            <div className="p-3.5 bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-2xl shadow-lg shadow-indigo-500/30">
+            <div className="p-3.5 bg-gradient-to-br from-[#be1e2d] to-rose-700 text-white rounded-xl shadow-sm shadow-[#be1e2d]/25">
               <BarChart3 size={28} />
             </div>
             <div>
               <div className="flex items-center gap-2 mb-0.5">
-                <span className="px-2 py-0.5 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-[8px] font-black uppercase tracking-wider rounded-md">
+                <span className="px-2 py-0.5 bg-[#be1e2d]/10 text-[#be1e2d] dark:text-red-400 text-[8px] font-black uppercase tracking-wider rounded-md">
                   Telecaller Analytics
                 </span>
                 <span className="w-1.5 h-1.5 bg-lime-500 rounded-full animate-pulse" />
@@ -232,7 +232,7 @@ const LeadDashboard = () => {
               Refresh
             </button>
             <button onClick={() => window.location.href = '/leads-telecaller'}
-              className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs rounded-xl shadow-lg shadow-indigo-500/20 transition-all cursor-pointer">
+              className="flex items-center gap-2 px-5 py-2.5 bg-[#be1e2d] hover:bg-[#a81724] text-white font-semibold text-xs rounded-xl shadow-sm shadow-[#be1e2d]/25 transition-all cursor-pointer">
               Manage Leads
               <ChevronRight size={14} />
             </button>
@@ -255,7 +255,7 @@ const LeadDashboard = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
               {/* ─── Status Funnel (2 cols) ─── */}
-              <div className="lg:col-span-2 bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800/50 rounded-3xl p-6 shadow-sm">
+              <div className="lg:col-span-2 bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800/50 rounded-2xl p-6 shadow-sm">
                 <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200 mb-5 flex items-center gap-2">
                   <span className="w-1 h-5 bg-indigo-500 rounded-full" />
                   Lead Status Funnel
@@ -291,7 +291,7 @@ const LeadDashboard = () => {
               </div>
 
               {/* ─── Weekly Trend (1 col) ─── */}
-              <div className="bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800/50 rounded-3xl p-6 shadow-sm">
+              <div className="bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800/50 rounded-2xl p-6 shadow-sm">
                 <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200 mb-5 flex items-center gap-2">
                   <span className="w-1 h-5 bg-cyan-500 rounded-full" />
                   Leads This Week
@@ -303,7 +303,7 @@ const LeadDashboard = () => {
                     return (
                       <div key={idx} className="flex flex-col items-center flex-1 h-full justify-end group">
                         {/* Always visible count above the bar */}
-                        <span className="text-[10px] font-extrabold text-slate-650 dark:text-slate-300 font-mono mb-1 transition-colors group-hover:text-indigo-500">
+                        <span className="text-[10px] font-extrabold text-slate-650 dark:text-slate-300 font-mono mb-1 transition-colors group-hover:text-[#be1e2d]">
                           {day.count}
                         </span>
                         
@@ -330,7 +330,7 @@ const LeadDashboard = () => {
                 </div>
                 <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
                   <span className="text-[10px] text-slate-400 font-semibold">MTD Total</span>
-                  <span className="text-sm font-black text-indigo-500 font-mono">{analytics.mtdLeads}</span>
+                  <span className="text-sm font-black text-[#be1e2d] font-mono">{analytics.mtdLeads}</span>
                 </div>
               </div>
             </div>
@@ -339,7 +339,7 @@ const LeadDashboard = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
               {/* Course Interest Breakdown */}
-              <div className="bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800/50 rounded-3xl p-6 shadow-sm">
+              <div className="bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800/50 rounded-2xl p-6 shadow-sm">
                 <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200 mb-5 flex items-center gap-2">
                   <span className="w-1 h-5 bg-emerald-500 rounded-full" />
                   Course Interest Breakdown
@@ -380,7 +380,7 @@ const LeadDashboard = () => {
               </div>
 
               {/* Source Attribution */}
-              <div className="bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800/50 rounded-3xl p-6 shadow-sm">
+              <div className="bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800/50 rounded-2xl p-6 shadow-sm">
                 <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200 mb-5 flex items-center gap-2">
                   <span className="w-1 h-5 bg-violet-500 rounded-full" />
                   Source Attribution
@@ -422,14 +422,14 @@ const LeadDashboard = () => {
             </div>
 
             {/* ─── Recent Leads Table ─── */}
-            <div className="bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800/50 rounded-3xl p-6 shadow-sm">
+            <div className="bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800/50 rounded-2xl p-6 shadow-sm">
               <div className="flex items-center justify-between mb-5">
                 <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200 flex items-center gap-2">
                   <span className="w-1 h-5 bg-amber-500 rounded-full" />
                   Recent Leads
                 </h3>
                 <button onClick={() => window.location.href = '/leads-telecaller'}
-                  className="text-[10px] text-indigo-500 font-bold uppercase tracking-wider hover:text-indigo-400 cursor-pointer flex items-center gap-1 transition">
+                  className="text-[10px] text-[#be1e2d] font-bold uppercase tracking-wider hover:text-indigo-400 cursor-pointer flex items-center gap-1 transition">
                   View All <ChevronRight size={12} />
                 </button>
               </div>
@@ -497,7 +497,7 @@ const LeadDashboard = () => {
         )}
 
         {!analytics && !loading && (
-          <div className="flex flex-col items-center justify-center py-20 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/50 dark:border-slate-800/50 shadow-sm text-center">
+          <div className="flex flex-col items-center justify-center py-20 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/50 dark:border-slate-800/50 shadow-sm text-center">
             <Activity className="text-slate-300 dark:text-slate-700 mb-4" size={48} />
             <h3 className="text-base font-bold text-slate-700 dark:text-slate-300">No leads data available</h3>
             <p className="text-xs text-slate-400 mt-1">Add leads to see analytics here.</p>
@@ -512,7 +512,7 @@ const LeadDashboard = () => {
 /* ─── KPI Card Component ─── */
 const KpiCard = ({ icon, label, value, sub, color }) => {
   const colorMap = {
-    indigo:  'from-indigo-500/15 to-indigo-500/5 border-indigo-500/20 text-indigo-500',
+    indigo:  'from-indigo-500/15 to-indigo-500/5 border-indigo-500/20 text-[#be1e2d]',
     cyan:    'from-cyan-500/15 to-cyan-500/5 border-cyan-500/20 text-cyan-500',
     amber:   'from-amber-500/15 to-amber-500/5 border-amber-500/20 text-amber-500',
     emerald: 'from-emerald-500/15 to-emerald-500/5 border-emerald-500/20 text-emerald-500',
